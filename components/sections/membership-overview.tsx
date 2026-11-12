@@ -53,7 +53,7 @@ function PlanSteps({ plans }: { plans: Plan[] }) {
   return (
     <ul
       aria-label="The three plans"
-      className="grid aspect-[5/4] grid-cols-3 items-end gap-2 sm:aspect-[4/3] sm:gap-3 lg:aspect-[1/1]"
+      className="grid aspect-[5/4] grid-cols-3 items-end gap-xs sm:aspect-[4/3] sm:gap-s lg:aspect-[1/1]"
     >
       {plans.map((p) => {
         const lit = Boolean(p.badge)
@@ -62,9 +62,13 @@ function PlanSteps({ plans }: { plans: Plan[] }) {
             <a
               href={`#plan-${p.slug}`}
               className={cn(
-                "group flex h-full flex-col justify-between rounded-t-2xl p-3 no-underline outline-offset-4 focus-visible:outline-2 focus-visible:outline-foreground sm:p-5",
+                "group flex h-full flex-col justify-between",
+                "corner-t-xl p-s",
+                "no-underline",
+                "outline-offset-4",
+                "focus-visible:outline-2 focus-visible:outline-foreground sm:p-l",
                 lit
-                  ? "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+                  ? "bg-[var(--cat-strength)] text-neutral-1"
                   : "bg-night text-night-foreground"
               )}
             >
@@ -72,7 +76,7 @@ function PlanSteps({ plans }: { plans: Plan[] }) {
                   step keeps Summit's seven objects inside it. */}
               <span
                 aria-hidden="true"
-                className="flex flex-wrap gap-1.5 sm:gap-2"
+                className="flex flex-wrap gap-xs sm:gap-xs"
               >
                 {planObjects[p.slug].map((id) => (
                   <GymObject
@@ -85,19 +89,19 @@ function PlanSteps({ plans }: { plans: Plan[] }) {
               </span>
               <span>
                 {p.badge ? (
-                  <span className="mb-2 block text-caption font-semibold max-sm:hidden">
+                  <span className="mb-xs block text-body-s font-heavy max-sm:hidden">
                     {p.badge}
                   </span>
                 ) : null}
-                <span className="font-display-wide block text-label group-hover:underline sm:text-h3">
+                <span className="font-display-wide block text-body-s group-hover:underline sm:text-body-l font-heavy sm:font-medium">
                   {p.name}
                 </span>
-                <span className="tabular block font-data text-h3 leading-tight font-bold sm:text-h1">
+                <span className="tabular block font-data text-body-l font-heavy sm:text-display-m">
                   ${p.price}
                   <span
                     className={cn(
-                      "text-caption font-normal sm:text-body",
-                      lit ? "text-[var(--neutral-1)]" : "text-night-muted"
+                      "text-body-s font-regular sm:text-body-m",
+                      lit ? "text-neutral-1" : "text-night-muted"
                     )}
                   >
                     /mo
@@ -130,29 +134,29 @@ export function MembershipHero({
     <section aria-labelledby="membership-hero-title" className="rule-b">
       {/* The steps have no space under them: they stand on the section's bottom rule, so the plans rise from
           the floor. The copy keeps its own space below. */}
-      <Container className="grid gap-10 pt-8 lg:grid-cols-12 lg:items-end lg:gap-16 lg:pt-14">
-        <div className="lg:col-span-6 lg:self-center lg:pb-14">
+      <Container className="grid gap-xxl pt-xl lg:grid-cols-12 lg:items-end lg:gap-section lg:pt-section">
+        <div className="lg:col-span-6 lg:self-center lg:pb-section">
           {/* The offer, as one link above the title: a Copper tag that names it, the price fact, the usual
               price struck through, and an arrow to the terms. The tag sits 4px inside the pill on the top,
               bottom and left, so the two shapes are concentric; the arrow sits closer to the text it ends,
               and the right padding is a little smaller than 16px because the arrow glyph has its own side space. */}
           <Link
             href="/offers/fall-climb"
-            className="group/offer mb-6 inline-flex min-h-11 max-w-full items-stretch gap-3 rounded-full bg-card p-1 pr-3.5 text-label no-underline edge ring-border hover:ring-border-strong lg:mb-8"
+            className="group/offer mb-l inline-flex min-h-11 max-w-full items-stretch gap-s corner-full bg-card p-xxs pr-m text-body-s no-underline hairline ring-border hover:ring-border-strong lg:mb-xl font-heavy"
           >
-            <span className="flex shrink-0 items-center rounded-full bg-[var(--cat-strength)] px-3.5 text-[var(--neutral-1)]">
+            <span className="flex shrink-0 items-center corner-full bg-[var(--cat-strength)] px-m text-neutral-1">
               Fall offer
             </span>
-            <span className="min-w-0 self-center py-1 text-pretty">
+            <span className="min-w-0 self-center py-xxs text-pretty">
               $0 to join through Nov{"\u00a0"}30{" "}
               {/* The usual price shows from sm; on a phone the badge keeps to one line. */}
-              <s className="font-normal text-muted-foreground tabular-nums max-sm:sr-only">
+              <s className="font-regular text-muted-foreground tabular-nums max-sm:sr-only">
                 <span className="sr-only">, usually </span>${prices.enrollment}
               </s>
             </span>
             <span
               aria-hidden="true"
-              className="-ml-1 shrink-0 self-center text-muted-foreground transition-transform group-hover/offer:translate-x-0.5 motion-reduce:transition-none"
+              className="-ml-xxs shrink-0 self-center text-muted-foreground transition-transform group-hover/offer:translate-x-0.5 motion-reduce:transition-none"
             >
               →
             </span>
@@ -163,11 +167,11 @@ export function MembershipHero({
           >
             Every plan starts with every class.
           </h1>
-          <p className="lede mt-5 max-w-[38ch] text-pretty text-muted-foreground lg:mt-6">
+          <p className="lede mt-l max-w-[38ch] text-pretty text-muted-foreground lg:mt-l">
             Trailhead covers your home club. Ridge opens all 5. Summit adds
             recovery. Month to month, so you can move up the day you are ready.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-xl flex flex-wrap items-center gap-s">
             <LinkButton
               href={`/join/plan?plan=${featured.slug}`}
               size="lg"
@@ -184,7 +188,7 @@ export function MembershipHero({
               Try a free 3-day pass
             </LinkButton>
           </div>
-          <p className="mt-6 text-body text-muted-foreground">
+          <p className="mt-l text-body-m text-muted-foreground">
             Already a member?{" "}
             <Link
               href="/app"
@@ -216,19 +220,27 @@ export function PlanNotes({ className }: { className?: string }) {
     <div className={className}>
       <aside
         aria-labelledby="medicare-title"
-        className="grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+        className={cn(
+          "grid gap-l hairline",
+          "corner-m p-l",
+          "bg-card ring-border",
+          "sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
+        )}
       >
         <span
           aria-hidden="true"
-          className="grid size-14 place-items-center rounded-md bg-night"
+          className="grid size-14 place-items-center corner-s bg-night"
         >
           <GymObject id="heart-watch" scheme="night" className="size-9" />
         </span>
         <div className="min-w-0">
-          <h3 id="medicare-title" className="font-display-wide text-h3">
+          <h3
+            id="medicare-title"
+            className="font-display-wide text-body-l font-medium"
+          >
             65 or older? Your plan may cost $0.
           </h3>
-          <p className="mt-2 max-w-[64ch] text-body text-pretty text-muted-foreground">
+          <p className="mt-xs max-w-[64ch] text-body-m text-pretty text-muted-foreground">
             All 5 clubs accept Medicare Advantage fitness benefits, such as
             SilverSneakers and Renew Active. If you are eligible, Trailhead at
             your home club is $0 a month, and Ridge or Summit costs the
@@ -236,12 +248,12 @@ export function PlanNotes({ className }: { className?: string }) {
             any plan each month.
           </p>
         </div>
-        <div className="flex flex-col items-start gap-1 sm:col-start-2 lg:col-start-auto">
+        <div className="flex flex-col items-start gap-xxs sm:col-start-2 lg:col-start-auto">
           <TextLink href="/faq#medicare">How Medicare benefits work</TextLink>
           <a
             href="tel:+14805550100"
             className={cn(
-              "inline-flex min-h-11 items-center text-label tabular-nums",
+              "inline-flex min-h-11 items-center text-body-s tabular-nums font-heavy",
               quietLink
             )}
           >
@@ -249,7 +261,7 @@ export function PlanNotes({ className }: { className?: string }) {
           </a>
         </div>
       </aside>
-      <div className="mt-6 flex justify-end">
+      <div className="mt-l flex justify-end">
         <TextLink href="/trial">Not sure? Try a free 3-day pass</TextLink>
       </div>
     </div>
@@ -316,7 +328,14 @@ const reachColumns: ReachColumn[] = [
 /** A plan tag: what opens a column. The same tag heads the table column and labels the phone list. */
 function Opens({ children }: { children: string }) {
   return (
-    <span className="inline-block rounded-sm bg-muted px-1.5 py-0.5 text-caption font-semibold whitespace-nowrap text-foreground">
+    <span
+      className={cn(
+        "inline-block",
+        "corner-xs px-xs py-xxs",
+        "text-body-s font-heavy whitespace-nowrap",
+        "bg-muted text-foreground"
+      )}
+    >
       {children}
     </span>
   )
@@ -344,7 +363,7 @@ export function PlanReach({
 }) {
   return (
     <div className={className}>
-      <div className="overflow-hidden rounded-lg bg-card edge ring-border max-lg:hidden">
+      <div className="overflow-hidden corner-m bg-card hairline ring-border max-lg:hidden">
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">
             The 5 clubs, with what is at each one and the plan that opens it
@@ -353,14 +372,20 @@ export function PlanReach({
             <tr className="align-bottom">
               <th
                 scope="row"
-                className="w-[13.5rem] px-6 pt-6 pb-2 text-label font-semibold text-muted-foreground lg:w-[15rem]"
+                className={cn(
+                  "w-[13.5rem]",
+                  "px-l pt-l pb-xs",
+                  "text-body-s font-heavy",
+                  "text-muted-foreground",
+                  "lg:w-[15rem]"
+                )}
               >
                 At the club
               </th>
               {reachColumns.map((col) => (
-                <th key={col.label} scope="col" className="px-4 pt-6 pb-2">
+                <th key={col.label} scope="col" className="px-m pt-l pb-xs">
                   <GymObject id={col.icon} className="size-8" />
-                  <span className="font-display-wide mt-3 block text-h3 whitespace-nowrap">
+                  <span className="font-display-wide mt-s block text-body-l whitespace-nowrap font-medium">
                     {col.label}
                   </span>
                 </th>
@@ -369,12 +394,12 @@ export function PlanReach({
             <tr className="align-top">
               <th
                 scope="row"
-                className="px-6 pt-1 pb-5 text-label font-semibold text-muted-foreground"
+                className="px-l pt-xxs pb-l text-body-s font-heavy text-muted-foreground"
               >
                 Opens with
               </th>
               {reachColumns.map((col) => (
-                <td key={col.label} className="px-4 pt-1 pb-5">
+                <td key={col.label} className="px-m pt-xxs pb-l">
                   <Opens>{col.opens}</Opens>
                 </td>
               ))}
@@ -383,14 +408,18 @@ export function PlanReach({
           <tbody>
             {clubs.map((c) => (
               <tr key={c.slug} className="align-top [&>*]:rule-t">
-                <th scope="row" className="px-6 py-4 font-normal">
+                <th scope="row" className="px-l py-m font-regular">
                   <Link
                     href={`/clubs/${c.slug}`}
-                    className="font-display-wide block text-h3 whitespace-nowrap no-underline underline-offset-4 hover:underline"
+                    className={cn(
+                      "block",
+                      "font-display-wide text-body-l whitespace-nowrap no-underline underline-offset-4 font-medium",
+                      "hover:underline"
+                    )}
                   >
                     {c.short}
                   </Link>
-                  <span className="mt-0.5 block text-caption text-muted-foreground">
+                  <span className="mt-xxs block text-body-s text-muted-foreground">
                     {c.city}
                   </span>
                 </th>
@@ -399,7 +428,7 @@ export function PlanReach({
                   return (
                     <td
                       key={col.label}
-                      className="px-4 py-4 text-body text-pretty tabular-nums"
+                      className="px-m py-m text-body-m text-pretty tabular-nums"
                     >
                       {v ?? <span className="text-muted-foreground">No</span>}
                     </td>
@@ -412,10 +441,13 @@ export function PlanReach({
       </div>
 
       {/* Below lg: one short list for each club, with the same facts and tags. */}
-      <ul className="grid gap-4 md:grid-cols-2 lg:hidden">
+      <ul className="grid gap-m md:grid-cols-2 lg:hidden">
         {clubs.map((c) => (
-          <li key={c.slug} className="rounded-lg bg-card p-5 edge ring-border">
-            <h3 className="font-display-wide text-h3">
+          <li
+            key={c.slug}
+            className="corner-m bg-card p-l hairline ring-border"
+          >
+            <h3 className="font-display-wide text-body-l font-medium">
               <Link
                 href={`/clubs/${c.slug}`}
                 className="inline-flex min-h-11 items-center no-underline underline-offset-4 hover:underline"
@@ -423,22 +455,22 @@ export function PlanReach({
                 {c.short}
               </Link>
             </h3>
-            <p className="text-caption text-muted-foreground">{c.city}</p>
-            <dl className="mt-4 rule-t">
+            <p className="text-body-s text-muted-foreground">{c.city}</p>
+            <dl className="mt-m rule-t">
               {reachColumns.map((col) => {
                 const v = col.value(c, slots)
                 return (
                   <div
                     key={col.label}
-                    className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3 py-3 rule-b last:rule-b-0"
+                    className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-s py-s rule-b last:rule-b-0"
                   >
-                    <GymObject id={col.icon} className="mt-0.5 size-6" />
+                    <GymObject id={col.icon} className="mt-xxs size-6" />
                     <div className="min-w-0">
-                      <dt className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body-strong">
+                      <dt className="flex flex-wrap items-center gap-x-xs gap-y-xxs text-body-m font-heavy">
                         {col.label}
                         <Opens>{col.opens}</Opens>
                       </dt>
-                      <dd className="mt-0.5 text-body text-pretty text-muted-foreground">
+                      <dd className="mt-xxs text-body-m text-pretty text-muted-foreground">
                         {v ?? "No"}
                       </dd>
                     </div>
@@ -450,8 +482,8 @@ export function PlanReach({
         ))}
       </ul>
 
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-2">
-        <p className="max-w-[62ch] text-body text-pretty text-muted-foreground">
+      <div className="mt-xl flex flex-wrap items-center justify-between gap-x-xl gap-y-xs">
+        <p className="max-w-[62ch] text-body-m text-pretty text-muted-foreground">
           With Trailhead, the club you pick is your home club, and you can
           change it in the app. Ridge and Summit open every row.
         </p>
@@ -482,19 +514,29 @@ export function PlanClasses({
   const weeks = clubs.map((c) => ({ club: c, n: classesAWeek(slots, c.slug) }))
   const most = Math.max(...weeks.map((w) => w.n))
   return (
-    <div className={cn("grid gap-12 lg:grid-cols-12 lg:gap-16", className)}>
+    <div
+      className={cn(
+        "grid gap-xxl lg:grid-cols-12 lg:gap-section",
+        className
+      )}
+    >
       <div className="lg:col-span-5">
-        <p className="tabular font-data text-figure-xl">{total}</p>
-        <p className="mt-2 text-lead text-pretty">
+        <p className="tabular font-data text-figure-xl font-heavy">{total}</p>
+        <p className="mt-xs text-body-l text-pretty">
           classes a week across the {clubs.length} clubs, in {categories.length}{" "}
           types.
         </p>
-        <ul className="mt-8 grid grid-cols-2 gap-x-6 rule-t">
+        <ul className="mt-xl grid grid-cols-2 gap-x-l rule-t">
           {categories.map((cat) => (
             <li key={cat.id} className="rule-b">
               <Link
                 href={`/classes#type-${cat.id}`}
-                className="flex min-h-14 items-center gap-3 py-2 text-body no-underline hover:underline"
+                className={cn(
+                  "flex min-h-14 items-center gap-s",
+                  "py-xs",
+                  "text-body-m no-underline",
+                  "hover:underline"
+                )}
               >
                 <CategoryTile category={cat.id} className="size-8 shrink-0" />
                 {cat.name}
@@ -505,18 +547,18 @@ export function PlanClasses({
       </div>
 
       <div className="lg:col-span-7">
-        <h3 className="font-display-wide text-h3">
+        <h3 className="font-display-wide text-body-l font-medium">
           Classes a week at each club
         </h3>
-        <ul className="mt-6 rule-t rule-heavy">
+        <ul className="mt-l rule-t rule-heavy">
           {weeks.map(({ club, n }) => (
             <li
               key={club.slug}
-              className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-x-4 py-4 rule-b sm:grid-cols-[12rem_minmax(0,1fr)_3rem]"
+              className="grid grid-cols-[minmax(0,10rem)_minmax(0,1fr)_3rem] items-center gap-x-m py-m rule-b sm:grid-cols-[12rem_minmax(0,1fr)_3rem]"
             >
               <Link
                 href={`/clubs/${club.slug}#classes`}
-                className={cn("text-body", quietLink)}
+                className={cn("text-body-m", quietLink)}
               >
                 {club.short}
               </Link>
@@ -524,20 +566,20 @@ export function PlanClasses({
                   the muted colour, so the track is a mix of the text colour and shows on it. */}
               <span
                 aria-hidden="true"
-                className="h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--foreground)_12%,transparent)]"
+                className="h-2 overflow-hidden corner-full bg-[color-mix(in_oklab,var(--foreground)_12%,transparent)]"
               >
                 <span
-                  className="block h-full rounded-full bg-primary"
+                  className="block h-full corner-full bg-primary"
                   style={{ width: `${(n / most) * 100}%` }}
                 />
               </span>
-              <span className="text-right text-body-strong tabular-nums">
+              <span className="text-right text-body-m tabular-nums font-heavy">
                 {n}
               </span>
             </li>
           ))}
         </ul>
-        <dl className="mt-8 grid gap-6 sm:grid-cols-3">
+        <dl className="mt-xl grid gap-l sm:grid-cols-3">
           {[
             {
               t: "Trailhead",
@@ -549,9 +591,9 @@ export function PlanClasses({
               d: `All ${total}, and book 9 days ahead for the busy ones.`,
             },
           ].map((x) => (
-            <div key={x.t} className="pt-4 rule-t">
-              <dt className="text-body-strong">{x.t}</dt>
-              <dd className="mt-1 text-body text-pretty text-muted-foreground">
+            <div key={x.t} className="pt-m rule-t">
+              <dt className="text-body-m font-heavy">{x.t}</dt>
+              <dd className="mt-xxs text-body-m text-pretty text-muted-foreground">
                 {x.d}
               </dd>
             </div>
@@ -644,15 +686,17 @@ export function PlanCosts({
   ]
   return (
     <div className={className}>
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
         {/* What you pay, and when. */}
         <div className="lg:col-span-7">
-          <h3 className="font-display-wide text-h3">What you pay, and when</h3>
-          <ol className="mt-6">
+          <h3 className="font-display-wide text-body-l font-medium">
+            What you pay, and when
+          </h3>
+          <ol className="mt-l">
             {path.map((s, i) => (
               <li
                 key={s.when}
-                className="relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-4 pb-10 last:pb-0"
+                className="relative grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-m pb-xxl last:pb-zero"
               >
                 {/* The rail: one line from each dot down to the next dot. It sits on the stop, not in the dot's
                     column, so it runs through the stop's bottom padding and meets the next dot. */}
@@ -668,7 +712,7 @@ export function PlanCosts({
                 >
                   <span
                     className={cn(
-                      "mt-1.5 size-3.5 rounded-full",
+                      "mt-xs size-3.5 corner-full",
                       s.now
                         ? "bg-primary ring-4 ring-[color-mix(in_oklab,var(--cat-strength)_25%,transparent)]"
                         : "bg-card ring-2 ring-foreground"
@@ -677,30 +721,30 @@ export function PlanCosts({
                 </span>
                 <div className="min-w-0">
                   {/* The stop's name and line on the left, its amount large on the right, as the plan prices. */}
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-6">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-l">
                     <div className="min-w-0">
-                      <p className="text-label text-muted-foreground">
+                      <p className="text-body-s text-muted-foreground font-heavy">
                         {s.when}
                       </p>
-                      <p className="mt-1 text-body-strong">{s.title}</p>
+                      <p className="mt-xxs text-body-m font-heavy">{s.title}</p>
                       {s.note ? (
-                        <p className="mt-1 text-body text-pretty text-muted-foreground">
+                        <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                           {s.note}
                         </p>
                       ) : null}
                       {"link" in s && s.link ? (
-                        <TextLink href={s.link.href} className="mt-1">
+                        <TextLink href={s.link.href} className="mt-xxs">
                           {s.link.label}
                         </TextLink>
                       ) : null}
                     </div>
                     {s.amount !== "Your plan" ? (
                       <p className="flex flex-col items-end">
-                        <span className="tabular font-data text-figure">
+                        <span className="tabular font-data text-display-l font-heavy">
                           {s.amount}
                         </span>
                         {s.was ? (
-                          <s className="mt-1 text-body text-muted-foreground tabular-nums">
+                          <s className="mt-xxs text-body-m text-muted-foreground tabular-nums">
                             <span className="sr-only">usually </span>
                             {s.was}
                           </s>
@@ -710,19 +754,30 @@ export function PlanCosts({
                   </div>
                   {s.note ? null : (
                     // Each month is the plan price, so the stop shows the three plans, each linked to its column.
-                    <ul className="mt-3 grid grid-cols-3 overflow-hidden rounded-md bg-card edge ring-border">
+                    <ul
+                      className={cn(
+                        "grid grid-cols-3 overflow-hidden hairline",
+                        "mt-s corner-s",
+                        "bg-card ring-border"
+                      )}
+                    >
                       {plans.map((p, j) => (
                         <li key={p.slug} className={cn(j > 0 && "rule-l")}>
                           <Link
                             href={`#plan-${p.slug}`}
-                            className="flex min-h-11 flex-col px-3 py-2.5 no-underline hover:bg-muted sm:px-4"
+                            className={cn(
+                              "flex min-h-11 flex-col",
+                              "px-s py-s",
+                              "no-underline",
+                              "hover:bg-muted sm:px-m"
+                            )}
                           >
-                            <span className="text-caption text-muted-foreground">
+                            <span className="text-body-s text-muted-foreground">
                               {p.name}
                             </span>
-                            <span className="tabular font-data text-h3 font-bold">
+                            <span className="tabular font-data text-body-l font-heavy">
                               ${p.price}
-                              <span className="text-caption font-normal text-muted-foreground">
+                              <span className="text-body-s font-regular text-muted-foreground">
                                 /mo
                               </span>
                             </span>
@@ -737,48 +792,63 @@ export function PlanCosts({
           </ol>
         </div>
         <section aria-labelledby="free-title" className="lg:col-span-5">
-          <h3 id="free-title" className="font-display-wide text-h3">
+          <h3
+            id="free-title"
+            className="font-display-wide text-body-l font-medium"
+          >
             Always $0
           </h3>
-          <ul className="mt-6 rule-t rule-heavy">
+          <ul className="mt-l rule-t rule-heavy">
             {alwaysFree.map((t) => (
               <li
                 key={t}
-                className="flex items-center gap-3 py-3.5 text-body rule-b"
+                className="flex items-center gap-s py-m text-body-m rule-b"
               >
                 <Check className="size-4 shrink-0" aria-hidden="true" />
                 {t}
               </li>
             ))}
           </ul>
-          <TextLink href="/legal/membership-agreement" className="mt-4">
+          <TextLink href="/legal/membership-agreement" className="mt-m">
             Read the membership agreement
           </TextLink>
         </section>
       </div>
 
       {/* The costs that wait until you need them. */}
-      <div className="mt-16">
+      <div className="mt-section">
         <section aria-labelledby="extras-title">
-          <h3 id="extras-title" className="font-display-wide text-h3">
+          <h3
+            id="extras-title"
+            className="font-display-wide text-body-l font-medium"
+          >
             Only when you need it
           </h3>
-          <ul className="mt-6 grid overflow-hidden rounded-lg bg-card edge ring-border md:grid-cols-3">
+          <ul
+            className={cn(
+              "grid overflow-hidden hairline",
+              "mt-l corner-m",
+              "bg-card ring-border",
+              "md:grid-cols-3"
+            )}
+          >
             {extras(prices, bestPack).map((x, i) => (
               <li
                 key={x.label}
                 className={cn(
-                  "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-1 p-5 md:flex md:flex-col md:gap-3 md:p-6",
+                  "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-m gap-y-xxs",
+                  "p-l",
+                  "md:flex md:flex-col md:gap-s md:p-l",
                   i > 0 && "max-md:rule-t md:rule-l"
                 )}
               >
                 <GymObject id={x.icon} className="row-span-3 size-10" />
                 {/* The amount comes before the name, so the three amounts line up when a name wraps. */}
-                <p className="tabular font-data text-figure md:mt-2">
+                <p className="tabular font-data text-display-l md:mt-xs font-heavy">
                   {x.amount}
                 </p>
-                <p className="text-body-strong">{x.label}</p>
-                <p className="text-caption text-pretty text-muted-foreground">
+                <p className="text-body-m font-heavy">{x.label}</p>
+                <p className="text-body-s text-pretty text-muted-foreground">
                   {x.note}
                 </p>
               </li>

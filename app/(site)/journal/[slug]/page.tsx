@@ -82,32 +82,38 @@ export default async function Article({
 
       {/* A blog header: one reading column for the title, the line and the byline, then the note's picture wide. */}
       <section aria-labelledby="note-title" className="rule-b">
-        <Container className="pt-6 pb-10 lg:pt-10 lg:pb-14">
+        <Container className="pt-l pb-xxl lg:pt-xxl lg:pb-section">
           <div className="mx-auto max-w-3xl">
             <Link
               href="/journal"
-              className="mb-6 flex min-h-11 w-fit items-center gap-1.5 text-label text-link underline-offset-4 hover:underline"
+              className={cn(
+                "flex min-h-11 w-fit items-center gap-xs",
+                "mb-l",
+                "text-body-s underline-offset-4 font-heavy",
+                "text-link",
+                "hover:underline"
+              )}
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
               The Journal
             </Link>
-            <p className="inline-flex rounded-full bg-muted px-3 py-1 text-label">
+            <p className="inline-flex corner-full bg-muted px-s py-xxs text-body-s font-heavy">
               {p.cat}
             </p>
             <h1
               id="note-title"
-              className="display-lead mt-4 max-w-[20ch] text-balance"
+              className="display-lead mt-m max-w-[20ch] text-balance"
             >
               {p.title}
             </h1>
-            <p className="lede mt-5 max-w-[46ch] text-pretty text-muted-foreground lg:mt-6">
+            <p className="lede mt-l max-w-[46ch] text-pretty text-muted-foreground lg:mt-l">
               {p.dek}
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+            <div className="mt-xl flex flex-wrap items-center justify-between gap-m">
+              <div className="flex items-center gap-s">
                 <CoachAvatar slug={a.slug} name={a.name} size={44} />
                 <p>
-                  <span className="block text-body-strong">
+                  <span className="block text-body-m font-heavy">
                     {a.profile ? (
                       <Link
                         href={`/coaches/${a.slug}`}
@@ -120,18 +126,25 @@ export default async function Article({
                     )}
                   </span>
                   {a.credential ? (
-                    <span className="block text-caption text-muted-foreground">
+                    <span className="block text-body-s text-muted-foreground">
                       {a.credential}
                     </span>
                   ) : null}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-s">
                 <ShareButton label="Share" />
               </div>
             </div>
           </div>
-          <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-2xl edge ring-border lg:mt-12">
+          <div
+            className={cn(
+              "max-w-5xl overflow-hidden hairline",
+              "mx-auto mt-xxl corner-xl",
+              "ring-border",
+              "lg:mt-xxl"
+            )}
+          >
             <JournalArt
               slug={p.slug}
               ratio="21/9"
@@ -154,8 +167,8 @@ export default async function Article({
 
       <Container
         className={cn(
-          "py-12 lg:py-20",
-          longRead && "grid gap-8 lg:grid-cols-12"
+          "py-xxl lg:py-[calc(var(--space-xxl)*5/3)]",
+          longRead && "grid gap-xl lg:grid-cols-12"
         )}
       >
         {/* The outline only earns its column on a long note. A short one has the reading line's part marks. */}
@@ -165,15 +178,22 @@ export default async function Article({
             className="hidden lg:col-span-3 lg:block"
           >
             <div className="sticky top-[calc(var(--sticky-top)+1.5rem)]">
-              <p className="text-label text-muted-foreground">In this note</p>
-              <ol className="mt-4 rule-t rule-heavy">
+              <p className="text-body-s text-muted-foreground font-heavy">
+                In this note
+              </p>
+              <ol className="mt-m rule-t rule-heavy">
                 {sections.map(([h], i) => (
                   <li key={h} className="rule-b">
                     <a
-                      className="flex min-h-11 items-baseline gap-3 py-2 text-caption no-underline hover:underline"
+                      className={cn(
+                        "flex min-h-11 items-baseline gap-s",
+                        "py-xs",
+                        "text-body-s no-underline",
+                        "hover:underline"
+                      )}
                       href={`#s${i + 1}`}
                     >
-                      <span className="tabular font-data font-bold">
+                      <span className="tabular font-data font-heavy">
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       {h}
@@ -195,20 +215,20 @@ export default async function Article({
             <Fragment key={h}>
               <section
                 id={`s${i + 1}`}
-                className="scroll-mt-4 pt-5 pb-12 rule-t rule-heavy"
+                className="scroll-mt-4 pt-l pb-xxl rule-t rule-heavy"
               >
                 <span
                   aria-hidden="true"
-                  className="tabular font-data text-figure"
+                  className="tabular font-data text-display-l font-heavy"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h2 className="font-display-wide mt-4 text-h2 text-balance">
+                <h2 className="font-display-wide mt-m text-body-xxl text-balance font-heavy">
                   {h}
                 </h2>
-                <p className="mt-4 max-w-[62ch] text-lead text-pretty">{t}</p>
+                <p className="mt-m max-w-[62ch] text-body-l text-pretty">{t}</p>
                 {i === 1 && cls ? (
-                  <div className="mt-8 max-w-lg">
+                  <div className="mt-xl max-w-lg">
                     <NoteClass ct={cls} />
                   </div>
                 ) : null}
@@ -216,7 +236,7 @@ export default async function Article({
               {figures
                 .filter((f) => f.after === i)
                 .map((f) => (
-                  <div key={f.figure.name} className="-mt-4 mb-12">
+                  <div key={f.figure.name} className="-mt-m mb-xxl">
                     <f.figure />
                   </div>
                 ))}
@@ -228,13 +248,21 @@ export default async function Article({
           {/* The one trial action in the note, in the coach finder's "Not sure who fits?" form. */}
           <aside
             aria-labelledby="note-trial-title"
-            className="mt-6 grid gap-5 rounded-lg bg-[var(--cat-strength)] p-6 text-[var(--neutral-1)] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center [&_:focus-visible]:outline-[var(--neutral-1)]"
+            className={cn(
+              "grid gap-l",
+              "mt-l corner-m p-l",
+              "bg-[var(--cat-strength)] text-neutral-1",
+              "sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center [&_:focus-visible]:outline-[var(--neutral-1)]"
+            )}
           >
             <div>
-              <h2 id="note-trial-title" className="font-display-wide text-h3">
+              <h2
+                id="note-trial-title"
+                className="font-display-wide text-body-l font-medium"
+              >
                 {cls ? `Try ${cls.name} free.` : "Try a class free."}
               </h2>
-              <p className="mt-1 text-body">
+              <p className="mt-xxs text-body-m">
                 A 3-day pass. One club, any class with room. No card.
               </p>
             </div>
@@ -254,7 +282,7 @@ export default async function Article({
           title="Keep reading."
           action={<TextLink href="/journal">Every note</TextLink>}
         />
-        <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-xxl grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
           {related.map((r) => (
             <li key={r.slug}>
               <JournalCard p={r} />

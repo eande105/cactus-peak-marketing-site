@@ -41,7 +41,7 @@ function MenuLink({ item, arrow }: { item: NavItem; arrow?: boolean }) {
       closeOnClick
       render={<Link href={item.href} />}
       // On the Sand popup the theme's Sand hover fill does not show, so the row takes the next step down.
-      className="min-h-11 justify-start gap-2 px-3 py-2 group-data-[solid=true]/popup:hover:bg-muted"
+      className="min-h-11 justify-start gap-xs px-s py-xs group-data-[solid=true]/popup:hover:bg-muted"
     >
       <NavItemBody item={item} />
       {arrow ? (
@@ -60,7 +60,7 @@ function MenuLink({ item, arrow }: { item: NavItem; arrow?: boolean }) {
  */
 function MenuPanel({ group }: { group: NavGroup }) {
   return (
-    <div className="flex gap-4 p-3">
+    <div className="flex gap-m p-s">
       <div className="flex flex-col">
         <MenuLink item={group.overview} arrow />
         {group.sections.map((s) => (
@@ -70,7 +70,7 @@ function MenuPanel({ group }: { group: NavGroup }) {
             className="flex w-max min-w-52 flex-col"
           >
             {s.label ? (
-              <p className="px-3 pt-2 pb-1 text-caption text-muted-foreground">
+              <p className="px-s pt-xs pb-xxs text-body-s text-muted-foreground">
                 {s.label}
               </p>
             ) : null}
@@ -88,7 +88,7 @@ function MenuPanel({ group }: { group: NavGroup }) {
         <BaseNavigationMenu.Link
           closeOnClick
           render={<Link href={group.callout.href} />}
-          className="flex w-60 shrink-0 rounded-lg"
+          className="flex w-60 shrink-0 corner-m"
         >
           <NavCalloutBody callout={group.callout} className="w-full" />
         </BaseNavigationMenu.Link>
@@ -161,14 +161,20 @@ export function SiteHeader() {
             - 1024 to 1279: the nav fits only beside the symbol.
             - 1280 and up: the full logo comes back.
             The drawer holds the full tree, sign in and the tour, so nothing is lost at any step. */}
-        <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-2 px-4 sm:px-6 md:gap-4 lg:px-8">
+        <div
+          className={cn(
+            "flex h-16 w-full max-w-[1200px] items-center gap-xs",
+            "mx-auto px-m",
+            "sm:px-l md:gap-m lg:px-xl"
+          )}
+        >
           <Button
             variant="ghost"
             size="icon"
             aria-label="Open menu"
             aria-expanded={drawer}
             onClick={() => setDrawer(true)}
-            className="-ml-2 size-11 md:-ml-3 lg:hidden"
+            className="-ml-xs size-11 md:-ml-s lg:hidden"
           >
             <Menu className="size-4.5" aria-hidden="true" />
           </Button>
@@ -183,7 +189,7 @@ export function SiteHeader() {
             onValueChange={(v) => setMenu(v as NavGroupId | null)}
             delay={100}
             closeDelay={150}
-            className="hidden lg:block xl:ml-4"
+            className="hidden lg:block xl:ml-m"
           >
             <NavigationMenu.List>
               {tree.map((g) => (
@@ -191,7 +197,7 @@ export function SiteHeader() {
                   <NavigationMenu.Trigger
                     className={cn(
                       // Five top items, so the items sit 4px closer than the Graphical default to leave the logo its width.
-                      "gap-1 px-2",
+                      "gap-xxs px-xs",
                       // The trigger's hover and open fills are Sand, the page colour. On the bare bar they take the
                       // card colour instead, so the open menu's trigger still reads as open.
                       "group-data-[solid=false]/header:hover:bg-card group-data-[solid=false]/header:data-popup-open:bg-card",
@@ -223,7 +229,7 @@ export function SiteHeader() {
                       render={<Link href={n.href} />}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "px-2 group-data-[solid=false]/header:hover:bg-card",
+                        "px-xs group-data-[solid=false]/header:hover:bg-card",
                         active &&
                           "relative after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-primary"
                       )}
@@ -262,7 +268,7 @@ export function SiteHeader() {
               members, and the free tour for prospects. The tour is the brand's first goal and the header is the
               only part of every page that stays on screen, so it holds the one filled button. Join is one click
               away through Membership, whose plan cards start the join flow. */}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-xs">
             <Button
               variant="ghost"
               size="icon"
@@ -279,7 +285,13 @@ export function SiteHeader() {
               target="_blank"
               rel="noopener"
               aria-label="Member sign in"
-              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-label text-link underline-offset-4 hover:underline md:hidden"
+              className={cn(
+                "inline-flex min-h-11 min-w-11 items-center justify-center",
+                "corner-s px-xs",
+                "text-body-s underline-offset-4 font-heavy",
+                "text-link",
+                "hover:underline md:hidden"
+              )}
             >
               Sign in
             </a>

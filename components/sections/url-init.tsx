@@ -46,7 +46,7 @@ function ContactFromUrl() {
   return (
     <>
       {job ? (
-        <p className="mb-4 text-body-strong">
+        <p className="mb-m text-body-m font-heavy">
           Applying for: {job.title}, {job.club}
         </p>
       ) : null}

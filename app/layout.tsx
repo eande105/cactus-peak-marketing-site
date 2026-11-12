@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next"
 import "./globals.css"
+import { theme } from "@/components/graphical/theme"
 import { GraphicalThemeProvider } from "@/components/graphical-theme-provider"
 import { BookingProvider } from "@/components/site/booking"
 import { CatalogProvider } from "@/components/site/catalog-context"
 import { ClubProvider } from "@/components/site/club-context"
 import { ThemeProvider } from "@/components/theme-provider"
-import { ThemeVariables } from "@/components/theme-variables"
-import { appTheme } from "@/lib/app-theme"
+import EditorRoot from "@/graphical/editor-root"
 import { getClientCatalog } from "@/lib/catalog/server"
+import { archivo, inter } from "@/lib/fonts"
 import { azNowKey } from "@/lib/time"
 
 export const metadata: Metadata = {
@@ -41,18 +42,18 @@ export default async function RootLayout({
     <html
       lang="en-US"
       suppressHydrationWarning
-      className="antialiased"
+      className={`${inter.variable} ${archivo.variable} antialiased`}
       data-scroll-behavior="smooth"
     >
-      <head>
-        <ThemeVariables />
-      </head>
       <body>
         <ThemeProvider defaultTheme="light" enableSystem={false}>
-          <GraphicalThemeProvider document={appTheme}>
+          <GraphicalThemeProvider document={theme}>
             <CatalogProvider data={catalog} serverNowKey={azNowKey()}>
               <ClubProvider>
-                <BookingProvider>{children}</BookingProvider>
+                <BookingProvider>
+                  {/* The Graphical editor, in development only (graphical/editor-root.tsx). */}
+                  <EditorRoot>{children}</EditorRoot>
+                </BookingProvider>
               </ClubProvider>
             </CatalogProvider>
           </GraphicalThemeProvider>

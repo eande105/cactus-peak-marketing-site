@@ -33,12 +33,12 @@ export default async function Journal() {
 
       <Band tone="tint" id="notes">
         <SectionHead size="lead" title="Every note." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <JournalIndex skip={latest?.slug} />
         </div>
       </Band>
 
-      <div className="pt-12 lg:pt-16">
+      <div className="pt-xxl lg:pt-section">
         <NewsletterPanel id="email" notes={journal} />
       </div>
     </>

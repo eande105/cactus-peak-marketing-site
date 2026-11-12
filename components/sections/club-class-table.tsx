@@ -26,7 +26,7 @@ export function ClubClassTable({
   return (
     <div>
       <FilterBar
-        className="mb-4"
+        className="mb-m"
         filters={
           <SelectBox
             inline

@@ -59,7 +59,7 @@ export function FaqExplorer() {
   return (
     <div>
       <div className="max-w-lg">
-        <label htmlFor="faq-q" className="mb-1 block text-label">
+        <label htmlFor="faq-q" className="mb-xxs block text-body-s font-heavy">
           Search the questions
         </label>
         <div className="relative">
@@ -71,11 +71,11 @@ export function FaqExplorer() {
             id="faq-q"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="bg-card pl-9"
+            className="bg-card pl-xl"
           />
         </div>
       </div>
-      <div className="mt-8 grid gap-8 lg:grid-cols-12">
+      <div className="mt-xl grid gap-xl lg:grid-cols-12">
         <h2 className="sr-only">Question groups</h2>
         {/* Single choice on a Graphical ToggleGroup: a row on phones, a vertical list from lg. While a search runs,
             no group is pressed. Pressing a group clears the search; pressing the current group again keeps it. */}
@@ -94,7 +94,7 @@ export function FaqExplorer() {
             <Toggle
               key={g}
               value={g}
-              className="min-h-12 justify-between gap-6 lg:w-full"
+              className="min-h-12 justify-between gap-l lg:w-full"
             >
               {g}
               <span className="tabular text-muted-foreground">
@@ -121,11 +121,11 @@ export function FaqExplorer() {
                   id={f.id}
                   className="scroll-mt-8 rule-b"
                 >
-                  <AccordionTrigger className="font-display-wide text-h3 hover:no-underline">
+                  <AccordionTrigger className="font-display-wide text-body-l hover:no-underline font-medium">
                     {f.q}
                   </AccordionTrigger>
                   <AccordionContent>
-                    <p className="max-w-[62ch] pb-5 text-body text-muted-foreground">
+                    <p className="max-w-[62ch] pb-l text-body-m text-muted-foreground">
                       {f.a}
                     </p>
                   </AccordionContent>
@@ -134,8 +134,10 @@ export function FaqExplorer() {
             </Accordion>
           ) : (
             <div>
-              <p className="text-body">No questions match &lsquo;{q}&rsquo;.</p>
-              <LinkButton href="/contact" variant="outline" className="mt-3">
+              <p className="text-body-m">
+                No questions match &lsquo;{q}&rsquo;.
+              </p>
+              <LinkButton href="/contact" variant="outline" className="mt-s">
                 Ask a person
               </LinkButton>
             </div>

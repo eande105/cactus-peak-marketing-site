@@ -20,7 +20,7 @@ export function Skeleton({
       <span
         aria-hidden="true"
         className={cn(
-          "block rounded-sm bg-muted motion-safe:animate-pulse",
+          "block corner-xs bg-muted motion-safe:animate-pulse",
           className
         )}
       />

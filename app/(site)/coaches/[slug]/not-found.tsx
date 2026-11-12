@@ -3,11 +3,11 @@ import { Container } from "@/components/sections/common"
 
 export default function NotFound() {
   return (
-    <Container className="py-16 lg:py-24">
-      <h1 className="font-display-wide text-h1 lg:text-display">
+    <Container className="py-section lg:py-section-l">
+      <h1 className="font-display-wide text-display-m lg:text-display-xl font-heavy lg:font-heavy">
         We could not find that coach.
       </h1>
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-l flex flex-wrap gap-s">
         <LinkButton href="/coaches" size="lg">
           Meet the coaches
         </LinkButton>

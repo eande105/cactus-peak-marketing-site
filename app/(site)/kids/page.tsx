@@ -170,7 +170,7 @@ export default async function Kids() {
           }
         />
         <ProgramRows
-          className="mt-12"
+          className="mt-xxl"
           rows={PROGRAMS.map((p) => {
             const c = classBySlug(p.slug)
             return {
@@ -181,7 +181,7 @@ export default async function Kids() {
               line: p.line,
               aside: (
                 <>
-                  <span className="block text-body-strong text-foreground tabular-nums">
+                  <span className="block text-body-m text-foreground tabular-nums font-heavy">
                     {p.agesText}
                   </span>
                   {whereLine(c, clubs)}
@@ -194,14 +194,14 @@ export default async function Kids() {
 
       <Band id="hours">
         <SectionHead size="lead" title="When kids club is open." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <KidsClubHours clubs={clubs} />
         </div>
       </Band>
 
       <Band tone="tint" id="kids-club">
         <SectionHead size="lead" title="How kids club works." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <KidsClubVisit />
         </div>
       </Band>
@@ -217,7 +217,7 @@ export default async function Kids() {
             </TextLink>
           }
         />
-        <SwimSchoolGuide className="mt-12" />
+        <SwimSchoolGuide className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="teens">
@@ -226,7 +226,7 @@ export default async function Kids() {
           title="For teens, a place that is not a screen."
           lede="A coach teaches form first, and more of the club opens as they grow."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <TeensGuide
             teenClass={classBySlug("teen-strength")}
             clubs={clubs}

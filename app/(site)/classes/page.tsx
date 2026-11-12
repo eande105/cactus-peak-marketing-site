@@ -137,11 +137,11 @@ export default async function ClassesPage() {
           title="Eight kinds of class."
           lede="Each one lists its classes, with a line on what they are and how hard they get."
         />
-        <EffortKey className="mt-12" />
+        <EffortKey className="mt-xxl" />
         <ClassesByType
           categories={categories}
           classTypes={classTypes}
-          className="mt-6"
+          className="mt-l"
         />
       </Band>
 
@@ -158,7 +158,7 @@ export default async function ClassesPage() {
           classTypes={classTypes}
           clubs={clubs}
           slots={slots}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
@@ -168,7 +168,7 @@ export default async function ClassesPage() {
           title="Every class, up close."
           lede="Pick a type to see what each class is like, who it suits, what to bring and when it runs."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClassExplorer
             categories={categories}
             classTypes={classTypes}
@@ -180,7 +180,7 @@ export default async function ClassesPage() {
 
       <Band id="first-class">
         <SectionHead size="lead" title="Good for a first class." />
-        <ClassesFirstVisit picks={picks} className="mt-12" />
+        <ClassesFirstVisit picks={picks} className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="plans">
@@ -189,14 +189,14 @@ export default async function ClassesPage() {
           title="Every plan includes classes."
           lede="Start with a free pass. Join when you know which club and which classes you like."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClassAccess
             plans={plans}
             clubs={clubs}
             facilityFee={prices.facilityFee}
           />
         </div>
-        <div className="mt-8 flex justify-end">
+        <div className="mt-xl flex justify-end">
           <TextLink href="/membership#compare">Compare plans</TextLink>
         </div>
       </Band>

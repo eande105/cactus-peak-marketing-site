@@ -14,9 +14,11 @@ Data comes from the shared Supabase project. Read `../supabase/README.md` (schem
 
 ## UI and theme
 
-For UI work, follow GUI.md and use graphical-ui, graphical-convert, or graphical-audit as appropriate. The skills are in `.agents/skills/`.
+For UI work, follow GUI.md and use the current theme with graphical-ui (new or edited UI, even when the request doesn't name Graphical). Use graphical-import only for an initial conversion and editor install, and graphical-adopt for the editor's Copy for agent batches, theme changes and `@graphical/editor` updates. The skills are in `.agents/skills/`.
 
-This app already runs the Graphical theme through the bundled runtime in `components/graphical/` (from an earlier full-component install). Use its exports from `@/components/graphical`. Keep the runtime's internal `--theme-name` (`Base`). The newer guidance-only files in `gui/` show the display name there, but the runtime uses `Base` to select component behavior.
+Graphical 2.0 is installed (see GUI.md, "This project"). `graphical/themes/graphical.json` is the only source of theme values; `graphical/generated/*` is generated from it, so never edit those files or hardcode a theme value. The Base UI components in `components/graphical/` read the same theme file; use their exports from `@/components/graphical`. The development editor mounts from `graphical/editor-root.tsx` and never ships in production.
+
+Two app-owned workarounds for `@graphical/editor` 1.0.4: `lib/utils.ts` wraps shadcn's `cn` in `clsx` so Graphical's tools can follow class lists, and `graphical/install/write-merge-config.mjs` writes the merge config the installer only writes for tailwind-merge apps. Remove them once the package supports the `cn` package.
 
 The `shadcn` skill, the `shadcn` MCP server and the `next-devtools` MCP server are set up for this project (`.mcp.json`, `.claude/skills/`). Use the shadcn tools to look up docs and registry items. GUI.md wins on styling and component choice. Do not run `shadcn add` for a component that already wraps Graphical (`components/ui/button`, `accordion`, `input`, `separator`, and the overlay and control wrappers): it would overwrite the Graphical version. The app `Button` keeps its `loading` prop.
 

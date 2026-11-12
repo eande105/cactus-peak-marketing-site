@@ -23,13 +23,15 @@ export function RouteError({
     console.error(error)
   }, [error])
   return (
-    <Container className="py-16 lg:py-24">
-      <h1 className="font-display-wide text-h1 lg:text-display">{title}</h1>
-      <p className="mt-3 max-w-[52ch] text-body text-muted-foreground">
+    <Container className="py-section lg:py-section-l">
+      <h1 className="font-display-wide text-display-m lg:text-display-xl font-heavy lg:font-heavy">
+        {title}
+      </h1>
+      <p className="mt-s max-w-[52ch] text-body-m text-muted-foreground">
         We could not reach our club data. Try again, or call member services at
         (480) 555-0100.
       </p>
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-l flex flex-wrap gap-s">
         <Button onClick={() => retry()} size="lg">
           Try again
         </Button>
@@ -38,7 +40,7 @@ export function RouteError({
         </LinkButton>
       </div>
       {error.digest ? (
-        <p className="mt-6 text-caption text-muted-foreground">
+        <p className="mt-l text-body-s text-muted-foreground">
           Request ID {error.digest}
         </p>
       ) : null}

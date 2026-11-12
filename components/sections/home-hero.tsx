@@ -77,8 +77,9 @@ const facts: { icon: ObjectId; title: string; line: string }[] = [
 // The hero is the widest panel: 85% of the screen, and never narrower than the shared panel minimum, so
 // on a large screen it does not read as a strip. Its copy and facts take a wider column than the page:
 // the inset grows with the screen, so the copy sits well inside the panel and spans more than 1200 px.
-const heroFrame = "mx-auto w-full max-w-[max(85vw,1352px)] px-2 sm:px-3"
-const heroContent = "w-full px-6 sm:px-10 lg:px-12 xl:px-16 min-[100rem]:px-24"
+const heroFrame = "mx-auto w-full max-w-[max(85vw,1352px)] px-xs sm:px-s"
+const heroContent =
+  "w-full px-l sm:px-xxl lg:px-xxl xl:px-section min-[100rem]:px-section-l"
 
 /**
  * The Home hero is one inset Night panel that fills the first screen (references: the Superpower and
@@ -101,10 +102,17 @@ export function HomeHero() {
       className={cn(
         heroFrame,
         // A minimum height only: on a short laptop window the hero grows to fit its actions instead of overlapping the facts.
-        "flex min-h-[min(60rem,max(38rem,calc(100svh-4rem-3rem)))] flex-col py-2 max-lg:min-h-[max(38rem,calc(100svh-4rem-3rem))] sm:py-3"
+        "flex min-h-[min(60rem,max(38rem,calc(100svh-4rem-3rem)))] flex-col py-xs max-lg:min-h-[max(38rem,calc(100svh-4rem-3rem))] sm:py-s"
       )}
     >
-      <div className="relative flex flex-1 flex-col overflow-hidden rounded-2xl bg-night text-night-foreground lg:grid lg:grid-rows-[minmax(min-content,1fr)_auto]">
+      <div
+        className={cn(
+          "relative flex flex-1 flex-col overflow-hidden",
+          "corner-xl",
+          "bg-night text-night-foreground",
+          "lg:grid lg:grid-rows-[minmax(min-content,1fr)_auto]"
+        )}
+      >
         {/* Below lg the ascent takes the space between the copy and the facts. From lg it fills the right of
             the first grid row: the lists start low beside the actions and the headline runs over its empty
             top. Decorative: the headline names the page.
@@ -122,7 +130,9 @@ export function HomeHero() {
         <div
           className={cn(
             heroContent,
-            "relative z-10 order-1 pt-8 sm:pt-12 lg:col-start-1 lg:row-start-1 lg:self-start lg:pt-16"
+            "relative z-10 order-1",
+            "pt-xl",
+            "sm:pt-xxl lg:col-start-1 lg:row-start-1 lg:self-start lg:pt-section"
           )}
         >
           <h1 id="home-hero-title" className="display-hero max-w-[14ch]">
@@ -130,11 +140,11 @@ export function HomeHero() {
           </h1>
           {/* The line and the actions keep to the left column, clear of the lists. */}
           <div className="lg:max-w-[38%]">
-            <p className="lede mt-5 max-w-[34ch] text-pretty text-night-muted lg:mt-6">
+            <p className="lede mt-l max-w-[34ch] text-pretty text-night-muted lg:mt-l">
               Pools, courts, classes and recovery at 5 clubs. Take the first
               step with a free tour. Move up when you are ready.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-xl flex flex-wrap items-center gap-s">
               <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
                 Book a free tour
               </LinkButton>
@@ -157,7 +167,13 @@ export function HomeHero() {
           {facts.map((f) => (
             <li
               key={f.title}
-              className="flex flex-col gap-3 px-4 py-4 not-first:rule-l not-first:rule-night sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-6 lg:px-8 lg:py-7"
+              className={cn(
+                "flex flex-col gap-s",
+                "px-m py-m",
+                "not-first:rule-l not-first:rule-night",
+                "sm:flex-row sm:items-center sm:gap-m sm:px-l sm:py-l",
+                "lg:px-xl lg:py-xl"
+              )}
             >
               <GymObject
                 id={f.icon}
@@ -165,10 +181,10 @@ export function HomeHero() {
                 className="size-8 shrink-0 sm:size-12 lg:size-14"
               />
               <div className="min-w-0">
-                <p className="font-display-wide text-label sm:text-h3 xl:text-h2">
+                <p className="font-display-wide text-body-s sm:text-body-l xl:text-body-xxl font-heavy sm:font-medium xl:font-heavy">
                   {f.title}
                 </p>
-                <p className="text-body text-pretty text-night-muted max-sm:hidden xl:text-lead">
+                <p className="text-body-m text-pretty text-night-muted max-sm:hidden xl:text-body-l">
                   {f.line}
                 </p>
               </div>

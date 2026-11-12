@@ -20,12 +20,12 @@ export function SearchResults() {
   const groups = [...new Set(hits.map((h) => h.group))]
   return (
     <div>
-      <h1 className="font-display-wide text-h1 lg:text-display">
+      <h1 className="font-display-wide text-display-m lg:text-display-xl font-heavy lg:font-heavy">
         {q ? `Results for “${q}”` : "Search"}
       </h1>
       {/* A plain GET form, so the page can search without the header dialog and without JavaScript. */}
       <search>
-        <form action="/search" className="mt-4 flex max-w-xl gap-2">
+        <form action="/search" className="mt-m flex max-w-xl gap-xs">
           <label htmlFor="search-page-q" className="sr-only">
             Search clubs, classes, coaches
           </label>
@@ -42,14 +42,14 @@ export function SearchResults() {
       </search>
       {/* No count before a search: "0 results" would read as a failed search. */}
       <p
-        className="tabular mt-2 text-caption text-muted-foreground"
+        className="tabular mt-xs text-body-s text-muted-foreground"
         aria-live="polite"
       >
         {q ? (hits.length === 1 ? "1 result" : `${hits.length} results`) : ""}
       </p>
       {q && !hits.length ? (
         <EmptyState
-          className="mt-6"
+          className="mt-l"
           title={`We found nothing for “${q}”.`}
           text="Try “cycle”, “pool” or “kids club”."
         >
@@ -62,8 +62,8 @@ export function SearchResults() {
         </EmptyState>
       ) : null}
       {groups.map((g) => (
-        <section key={g} className="mt-8">
-          <h2 className="eyebrow mb-2">{g}</h2>
+        <section key={g} className="mt-xl">
+          <h2 className="eyebrow mb-xs">{g}</h2>
           <ul className="rule-t">
             {hits
               .filter((h) => h.group === g)
@@ -71,12 +71,14 @@ export function SearchResults() {
                 <li key={h.href + h.title} className="rule-b">
                   <Link
                     href={h.href}
-                    className="flex min-h-14 items-center gap-3 py-2 hover:underline"
+                    className="flex min-h-14 items-center gap-s py-xs hover:underline"
                   >
                     <span className="flex w-10 justify-center">{h.lead}</span>
                     <span>
-                      <span className="block text-label">{h.title}</span>
-                      <span className="block text-caption text-muted-foreground">
+                      <span className="block text-body-s font-heavy">
+                        {h.title}
+                      </span>
+                      <span className="block text-body-s text-muted-foreground">
                         {h.sub}
                       </span>
                     </span>

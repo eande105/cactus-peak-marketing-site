@@ -28,7 +28,10 @@ export function ClubStrip({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 rounded-lg bg-card p-6 edge ring-border lg:flex-row lg:items-center lg:gap-6",
+        "flex flex-col gap-m hairline",
+        "corner-m p-l",
+        "bg-card ring-border",
+        "lg:flex-row lg:items-center lg:gap-l",
         className
       )}
     >
@@ -37,13 +40,13 @@ export function ClubStrip({ className }: { className?: string }) {
       ) : null}
       <div className="min-w-0 flex-1">
         <p className="eyebrow">Your club</p>
-        <p className="font-display-wide text-h3">{club.name}</p>
-        <div className="flex flex-wrap items-center gap-x-4">
+        <p className="font-display-wide text-body-l font-medium">{club.name}</p>
+        <div className="flex flex-wrap items-center gap-x-m">
           <StatusLine />
           <BusynessMeter level={club.busyness} />
         </div>
         {next ? (
-          <p className="tabular mt-1 text-caption">
+          <p className="tabular mt-xxs text-body-s">
             Next: {next.className}, {fmtTime(next.start)}
             {next.left <= 5 && next.left > 0
               ? `, ${next.left} ${next.unit === "bikes" ? "bikes" : "spots"} left`
@@ -51,7 +54,7 @@ export function ClubStrip({ className }: { className?: string }) {
           </p>
         ) : null}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-m">
         <LinkButton href={`/tour?club=${club.slug}`}>Tour this club</LinkButton>
         <ClubChange />
       </div>
@@ -64,7 +67,7 @@ function ClubChange() {
     <button
       type="button"
       onClick={clear}
-      className="min-h-11 text-label text-link underline-offset-4 hover:underline"
+      className="min-h-11 text-body-s text-link underline-offset-4 hover:underline font-heavy"
     >
       Change
     </button>
@@ -86,7 +89,7 @@ const sectionIds: ObjectId[] = [
 // The club name is the card's one link. Its ::after covers the card, so the whole card is one target and
 // one tab stop.
 const cardLink =
-  "inline-flex min-h-11 items-center no-underline underline-offset-4 group-hover:underline after:absolute after:inset-0 after:rounded-lg"
+  "inline-flex min-h-11 items-center no-underline underline-offset-4 group-hover:underline after:absolute after:inset-0 after:corner-m"
 
 /**
  * Home clubs (spec 03-pages, section 1.3): from lg, the flagship on the left over two rows and the other
@@ -100,9 +103,9 @@ export function ClubCards() {
   const [feature, ...rest] = clubs
   const byNewest = [...rest].sort((a, b) => b.opened - a.opened)
   return (
-    <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+    <div className="grid gap-m sm:gap-l lg:grid-cols-2">
       <HomeClubCard club={feature} feature />
-      <ul className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+      <ul className="grid gap-m sm:grid-cols-2 sm:gap-l">
         {byNewest.map((c) => (
           <HomeClubCard key={c.slug} club={c} as="li" />
         ))}
@@ -121,7 +124,13 @@ function HomeClubCard({
   as?: "article" | "li"
 }) {
   return (
-    <T className="group relative flex flex-col overflow-hidden rounded-lg bg-card edge ring-border">
+    <T
+      className={cn(
+        "group relative flex flex-col overflow-hidden hairline",
+        "corner-m",
+        "bg-card ring-border"
+      )}
+    >
       {/* Decorative: the card names the club. The flagship card has the section's one picture. */}
       {feature ? (
         <div className="relative aspect-[16/10] rule-b">
@@ -137,27 +146,32 @@ function HomeClubCard({
           </div>
         </div>
       ) : null}
-      <div className="px-6 py-5">
+      <div className="px-l py-l">
         <h3
           className={cn(
             "font-display-wide text-balance",
-            feature ? "text-h2" : "text-h3"
+            feature ? "text-body-xxl font-heavy" : "text-body-l font-medium"
           )}
         >
           <Link href={`/clubs/${c.slug}`} className={cardLink}>
             {c.name}
           </Link>
         </h3>
-        <p className="mt-1 text-caption text-muted-foreground tabular-nums">
+        <p className="mt-xxs text-body-s text-muted-foreground tabular-nums">
           {c.city} · {c.type} · Opened in {c.opened}
         </p>
-        <p className="mt-3 text-body text-pretty">{c.personality}</p>
+        <p className="mt-s text-body-m text-pretty">{c.personality}</p>
       </div>
       {/* The footer points to the club page, where the facilities, hours and address are. The name link above
           is the card's one target, so the footer is a label for it, not a second link. */}
       <div
         aria-hidden="true"
-        className="mt-auto flex items-center justify-between gap-4 px-6 py-4 text-label text-link rule-t"
+        className={cn(
+          "flex items-center justify-between gap-m rule-t",
+          "mt-auto px-l py-m",
+          "text-body-s font-heavy",
+          "text-link"
+        )}
       >
         <span className="group-hover:underline group-hover:underline-offset-4">
           See the club

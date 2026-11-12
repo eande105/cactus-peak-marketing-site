@@ -140,7 +140,7 @@ export default async function Aquatics() {
           }
         />
         {/* A table from lg, one block for each club below it, so nothing scrolls sideways. */}
-        <div className="mt-12">
+        <div className="mt-xxl">
           <FactTable
             caption="Pools at each club"
             corner="Club"
@@ -173,7 +173,7 @@ export default async function Aquatics() {
             }))}
           />
         </div>
-        <p className="mt-6 max-w-[62ch] text-body text-pretty text-muted-foreground">
+        <p className="mt-l max-w-[62ch] text-body-m text-pretty text-muted-foreground">
           No pool at {noPool.join(" or ")}. Ridge and Summit members swim at the
           other three.
         </p>
@@ -181,7 +181,7 @@ export default async function Aquatics() {
 
       {warm ? (
         <Band id="warm-pool">
-          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="grid items-center gap-xxl lg:grid-cols-12 lg:gap-section">
             <div className="lg:col-span-6">
               {/* A hub around warm water: what the therapy pool is for. */}
               <ObjectRack
@@ -190,15 +190,17 @@ export default async function Aquatics() {
                 scheme="sand"
                 focus={spaceObjects["warm-pool"].lead}
                 ids={spaceObjects["warm-pool"].around}
-                className="rounded-lg edge ring-border"
+                className="corner-m hairline ring-border"
               />
             </div>
             <div className="lg:col-span-6">
-              <p className="tabular font-data text-figure-xl">{WARM.top}°F</p>
-              <h2 className="display-lead mt-4 max-w-[16ch] text-balance">
+              <p className="tabular font-data text-figure-xl font-heavy">
+                {WARM.top}°F
+              </p>
+              <h2 className="display-lead mt-m max-w-[16ch] text-balance">
                 A warm pool for stiff joints.
               </h2>
-              <p className="mt-5 max-w-[48ch] text-lead text-pretty text-muted-foreground">
+              <p className="mt-l max-w-[48ch] text-body-l text-pretty text-muted-foreground">
                 The therapy pool at {warm.short} stays at 90 to 92°F. The water
                 holds you up, so many members use it after surgery or on sore
                 days. Ask your doctor first. A coach can help you plan your
@@ -206,7 +208,7 @@ export default async function Aquatics() {
               </p>
               <LinkButton
                 href={`/tour?club=${warm.slug}&note=warm-pool`}
-                className="mt-8"
+                className="mt-xl"
               >
                 Ask about the warm pool
               </LinkButton>
@@ -221,7 +223,7 @@ export default async function Aquatics() {
           title="Four ways into the water."
           lede="From open lanes to a coached workout. Pick your club to see its times."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubClassTable
             items={["lap-swim", "aqua-fit", "swim-school", "masters-swim"]
               .map((x) => classBySlug(x))
@@ -237,7 +239,7 @@ export default async function Aquatics() {
           title="Swim school, ages 3 to 12."
           lede="Five levels, taught by Red Cross-certified coaches."
         />
-        <SwimSchoolGuide className="mt-12" />
+        <SwimSchoolGuide className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="lanes">
@@ -246,18 +248,18 @@ export default async function Aquatics() {
           title="Your lane, 45 minutes at a time."
           lede="Members book a lane in the app. Up to 2 swimmers share a lane."
         />
-        <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mt-xxl grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <div className="lg:col-span-7">
-            <h3 className="font-display-wide text-h3">
+            <h3 className="font-display-wide text-body-l font-medium">
               Open lanes this morning
             </h3>
-            <p className="mt-1 text-body text-muted-foreground">
+            <p className="mt-xxs text-body-m text-muted-foreground">
               A sample at {SWIM.clubName}.
             </p>
-            <div className="mt-6">
+            <div className="mt-l">
               <LaneGrid />
             </div>
-            <div className="mt-6">
+            <div className="mt-l">
               <HandoffButton
                 label="Book a lane"
                 classSlug="lap-swim"
@@ -267,11 +269,13 @@ export default async function Aquatics() {
               />
             </div>
           </div>
-          <div className="flex flex-col gap-10 lg:col-span-5">
+          <div className="flex flex-col gap-xxl lg:col-span-5">
             <section>
-              <h3 className="font-display-wide mb-4 text-h3">Pool hours</h3>
+              <h3 className="font-display-wide mb-m text-body-l font-medium">
+                Pool hours
+              </h3>
               <HoursTable pool />
-              <p className="mt-2 text-body text-muted-foreground">
+              <p className="mt-xs text-body-m text-muted-foreground">
                 Pools close 30 minutes before the club.
               </p>
             </section>

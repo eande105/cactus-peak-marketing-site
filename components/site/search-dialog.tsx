@@ -72,7 +72,7 @@ export function buildIndex(
           slug={c.slug}
           ratio="4/3"
           detail="simple"
-          className="w-10 shrink-0 overflow-hidden rounded-sm"
+          className="w-10 shrink-0 overflow-hidden corner-xs"
         />
       ),
       at: [c.slug],
@@ -111,7 +111,12 @@ export function buildIndex(
         lead: (
           <span
             aria-hidden="true"
-            className="inline-flex size-8 items-center justify-center rounded-full bg-night text-caption text-night-foreground"
+            className={cn(
+              "inline-flex size-8 items-center justify-center",
+              "corner-full",
+              "text-body-s",
+              "bg-night text-night-foreground"
+            )}
           >
             {initials(c.name)}
           </span>
@@ -261,11 +266,11 @@ export function SearchDialog({
       }}
     >
       {/* No padding or gap: the search row and the result list run to the popup edges. */}
-      <OverlayPopup placement="top" hideClose className="gap-0 p-0">
+      <OverlayPopup placement="top" hideClose className="gap-zero p-zero">
         <OverlayTitle className="sr-only">
           Search clubs, classes and coaches
         </OverlayTitle>
-        <div className="flex items-center gap-3 px-4 rule-b focus-within:-outline-offset-2 focus-within:outline-(length:--border-l) focus-within:outline-ring focus-within:outline-solid">
+        <div className="flex items-center gap-s px-m rule-b focus-within:-outline-offset-2 focus-within:outline-(length:--border-l) focus-within:outline-ring focus-within:outline-solid">
           <Search className="size-5 text-muted-foreground" aria-hidden="true" />
           <label htmlFor="site-search" className="sr-only">
             Search clubs, classes, coaches
@@ -301,9 +306,17 @@ export function SearchDialog({
               }
             }}
             placeholder="Search clubs, classes, coaches…"
-            className="h-14 flex-1 bg-transparent text-body outline-none placeholder:text-muted-foreground"
+            className="h-14 flex-1 bg-transparent text-body-m outline-none placeholder:text-muted-foreground"
           />
-          <kbd className="hidden rounded-sm bg-muted px-1.5 py-0.5 text-caption text-muted-foreground sm:block">
+          <kbd
+            className={cn(
+              "hidden",
+              "corner-xs px-xs py-xxs",
+              "text-body-s",
+              "bg-muted text-muted-foreground",
+              "sm:block"
+            )}
+          >
             Esc
           </kbd>
         </div>
@@ -317,7 +330,7 @@ export function SearchDialog({
         </p>
         {q.trim() && !flat.length ? (
           // Outside the listbox: a listbox may hold only options, and these are buttons.
-          <div className="min-h-0 flex-1 overflow-y-auto p-2">
+          <div className="min-h-0 flex-1 overflow-y-auto p-xs">
             <EmptyState
               title={`We found nothing for “${q}”.`}
               text="Try “cycle”, “pool” or “kids club”."
@@ -343,13 +356,13 @@ export function SearchDialog({
             id="search-list"
             role="listbox"
             aria-label="Results"
-            className="min-h-0 flex-1 overflow-y-auto p-2"
+            className="min-h-0 flex-1 overflow-y-auto p-xs"
           >
             {(q.trim() ? groups : [{ name: "Popular", items: popular }]).map(
               (g) => (
                 // biome-ignore lint/a11y/useSemanticElements: role=group on a non-form control group; fieldset adds default min-inline-size and a legend that would change the layout
                 <div key={g.name} role="group" aria-label={g.name}>
-                  <p className="eyebrow px-3 pt-3 pb-1 text-muted-foreground">
+                  <p className="eyebrow px-s pt-s pb-xxs text-muted-foreground">
                     {g.name}
                   </p>
                   {g.items.map((h) => {
@@ -365,7 +378,7 @@ export function SearchDialog({
                         onClick={() => onOpenChange(false)}
                         onMouseMove={() => setActive(i)}
                         className={cn(
-                          "flex min-h-14 items-center gap-3 rounded-lg px-3 py-2",
+                          "flex min-h-14 items-center gap-s corner-m px-s py-xs",
                           i === active && "bg-muted ring-2 ring-ring"
                         )}
                       >
@@ -373,10 +386,10 @@ export function SearchDialog({
                           {h.lead}
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-label">
+                          <span className="block truncate text-body-s font-heavy">
                             {h.title}
                           </span>
-                          <span className="block truncate text-caption text-muted-foreground">
+                          <span className="block truncate text-body-s text-muted-foreground">
                             {h.sub}
                           </span>
                         </span>
@@ -395,7 +408,12 @@ export function SearchDialog({
           <Link
             href={`/search?q=${encodeURIComponent(q)}`}
             onClick={() => onOpenChange(false)}
-            className="flex min-h-12 items-center justify-between px-4 text-label text-link rule-t"
+            className={cn(
+              "flex min-h-12 items-center justify-between rule-t",
+              "px-m",
+              "text-body-s font-heavy",
+              "text-link"
+            )}
           >
             See all results for &ldquo;{q}&rdquo;
             <span aria-hidden="true">→</span>

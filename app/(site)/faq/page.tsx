@@ -64,7 +64,7 @@ export default async function FaqPage() {
 
       <Band tone="tint" id="questions">
         <SectionHead size="lead" title="Find your answer." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <FaqExplorer />
         </div>
       </Band>
@@ -73,24 +73,27 @@ export default async function FaqPage() {
         {/* The one contact action on the page, in the coach finder's "Not sure who fits?" form. */}
         <aside
           aria-labelledby="faq-ask-title"
-          className="grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+          className="grid gap-l corner-m bg-card p-l hairline ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
         >
           <span
             aria-hidden="true"
-            className="grid size-14 place-items-center rounded-md bg-night"
+            className="grid size-14 place-items-center corner-s bg-night"
           >
             <GymObject id="envelope" scheme="night" className="size-9" />
           </span>
           <div className="min-w-0">
-            <h2 id="faq-ask-title" className="font-display-wide text-h3">
+            <h2
+              id="faq-ask-title"
+              className="font-display-wide text-body-l font-medium"
+            >
               Still have a question?
             </h2>
-            <p className="mt-2 max-w-[60ch] text-body text-pretty text-muted-foreground">
+            <p className="mt-xs max-w-[60ch] text-body-m text-pretty text-muted-foreground">
               Call your club or send us a message. We answer within 1 business
               day.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-start-2 lg:col-start-auto">
+          <div className="flex flex-wrap items-center gap-x-l gap-y-s sm:col-start-2 lg:col-start-auto">
             <LinkButton href="tel:+14805550100">Call (480) 555-0100</LinkButton>
             <TextLink href="/contact#message">Send a message</TextLink>
           </div>

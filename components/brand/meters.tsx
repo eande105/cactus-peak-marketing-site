@@ -143,7 +143,7 @@ export function IntensityRibs({
       : `Intensity, ${LEVEL_WORD[lo]} to ${LEVEL_WORD[hi].toLowerCase()}, ${lo} to ${hi} of 5`
   return (
     <span
-      className={cn("inline-flex items-center gap-2", className)}
+      className={cn("inline-flex items-center gap-xs", className)}
       title="Intensity: 1 Easy, 2 Light, 3 Moderate, 4 Hard, 5 All-out"
     >
       <RibMeter
@@ -158,7 +158,7 @@ export function IntensityRibs({
         decorative={showLabel}
       />
       {showLabel ? (
-        <span className="text-caption font-medium text-foreground">
+        <span className="text-body-s font-medium text-foreground">
           {word}
           <span className="sr-only">. {name}</span>
         </span>
@@ -200,7 +200,7 @@ export function BusynessMeter({
       />
     )
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+    <span className={cn("inline-flex items-center gap-xs", className)}>
       <RibMeter
         value={level}
         tone={busyTone[level]}
@@ -209,7 +209,7 @@ export function BusynessMeter({
         valueText={text}
         decorative
       />
-      <span className="text-caption font-medium text-foreground">
+      <span className="text-body-s font-medium text-foreground">
         {variant === "card" ? `Right now: ${word}` : word}
         <span className="sr-only"> busyness, {level} of 5</span>
       </span>
@@ -231,15 +231,13 @@ export function CapacityIndicator({
 }) {
   if (left === 0)
     return (
-      <span
-        className={cn("text-caption font-semibold text-foreground", className)}
-      >
+      <span className={cn("text-body-s font-heavy text-foreground", className)}>
         Full
       </span>
     )
   if (left > 5)
     return (
-      <span className={cn("text-caption text-muted-foreground", className)}>
+      <span className={cn("text-body-s text-muted-foreground", className)}>
         Open
       </span>
     )
@@ -247,7 +245,7 @@ export function CapacityIndicator({
   return (
     <span
       className={cn(
-        "tabular inline-flex items-center gap-2 text-caption font-semibold text-foreground",
+        "tabular inline-flex items-center gap-xs text-body-s font-heavy text-foreground",
         className
       )}
     >

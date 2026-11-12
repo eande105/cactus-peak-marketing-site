@@ -105,7 +105,7 @@ function ShareClass({ c }: { c: ClassType }) {
     }
   }
   return (
-    <div className="flex flex-wrap items-center gap-x-3">
+    <div className="flex flex-wrap items-center gap-x-s">
       <button
         type="button"
         onClick={share}
@@ -113,7 +113,7 @@ function ShareClass({ c }: { c: ClassType }) {
       >
         Share this class
       </button>
-      <p aria-live="polite" className="text-caption text-muted-foreground">
+      <p aria-live="polite" className="text-body-s text-muted-foreground">
         {said}
       </p>
     </div>
@@ -193,27 +193,37 @@ function ClassRow({
         onToggle={(e) => onToggle((e.currentTarget as HTMLDetailsElement).open)}
         className="group/row"
       >
-        <summary className="grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-4 py-5 hover:bg-muted/60 sm:gap-x-6 [&::-webkit-details-marker]:hidden">
+        <summary
+          className={cn(
+            "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-m",
+            "py-l",
+            "list-none",
+            "cursor-pointer",
+            "hover:bg-muted/60 sm:gap-x-l [&::-webkit-details-marker]:hidden"
+          )}
+        >
           <GymObject id={classObject(c)} cut className="size-12 sm:size-14" />
           <div className="min-w-0">
-            <h4 className="font-display-wide text-h3">{c.name}</h4>
-            <p className="mt-1 text-body text-pretty text-muted-foreground">
+            <h4 className="font-display-wide text-body-l font-medium">
+              {c.name}
+            </h4>
+            <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
               {c.blurb}
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-caption">
+            <div className="mt-xs flex flex-wrap items-center gap-x-m gap-y-xxs text-body-s">
               <span className="tabular-nums">{c.duration} min</span>
               {noEffort(c) ? null : (
                 <IntensityRibs level={c.intensity} categoryId={c.category} />
               )}
               {c.firstTimer && c.bookable ? (
-                <span className="rounded-sm bg-muted px-2 py-0.5 font-semibold group-hover/row:bg-background">
+                <span className="corner-xs bg-muted px-xs py-xxs font-heavy group-hover/row:bg-background">
                   Good first class
                 </span>
               ) : null}
               <NextUp c={c} />
             </div>
           </div>
-          <span className="grid size-11 place-items-center rounded-full">
+          <span className="grid size-11 place-items-center corner-full">
             <ChevronDown
               aria-hidden="true"
               className="size-5 transition-transform group-open/row:rotate-180 motion-reduce:transition-none"
@@ -224,16 +234,18 @@ function ClassRow({
           </span>
         </summary>
 
-        <div className="grid gap-6 pb-8 sm:pl-20">
-          <p className="max-w-[60ch] text-lead text-pretty">{c.description}</p>
+        <div className="grid gap-l pb-xl sm:pl-[calc(var(--space-xxl)*5/3)]">
+          <p className="max-w-[60ch] text-body-l text-pretty">
+            {c.description}
+          </p>
           {c.pick ? (
-            <p className="max-w-[60ch] text-body-strong text-pretty">
+            <p className="max-w-[60ch] text-body-m text-pretty font-heavy">
               {c.pick}
             </p>
           ) : null}
-          <dl className="grid gap-x-8 gap-y-2 text-body sm:grid-cols-2">
+          <dl className="grid gap-x-xl gap-y-xs text-body-m sm:grid-cols-2">
             {facts.map(([k, v]) => (
-              <div key={k} className="flex gap-2">
+              <div key={k} className="flex gap-xs">
                 <dt className="w-14 shrink-0 text-muted-foreground">{k}</dt>
                 <dd className="min-w-0 text-pretty">{v}</dd>
               </div>
@@ -241,17 +253,19 @@ function ClassRow({
           </dl>
           {when.length ? (
             <div>
-              <h5 className="text-caption text-muted-foreground">
+              <h5 className="text-body-s text-muted-foreground">
                 When it runs
               </h5>
-              <ul className="mt-2 rule-t">
+              <ul className="mt-xs rule-t">
                 {when.map((p) => (
                   <li
                     key={p.club.slug}
-                    className="grid gap-x-6 py-2 rule-b sm:grid-cols-[12rem_minmax(0,1fr)]"
+                    className="grid gap-x-l py-xs rule-b sm:grid-cols-[12rem_minmax(0,1fr)]"
                   >
-                    <span className="text-label">{p.club.name}</span>
-                    <span className="text-body text-pretty text-muted-foreground tabular-nums">
+                    <span className="text-body-s font-heavy">
+                      {p.club.name}
+                    </span>
+                    <span className="text-body-m text-pretty text-muted-foreground tabular-nums">
                       {p.text}
                     </span>
                   </li>
@@ -261,10 +275,10 @@ function ClassRow({
           ) : null}
           {coaches.length ? (
             <div>
-              <h5 className="text-caption text-muted-foreground">
+              <h5 className="text-body-s text-muted-foreground">
                 Who leads it
               </h5>
-              <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-body">
+              <ul className="mt-xs flex flex-wrap gap-x-l gap-y-xxs text-body-m">
                 {coaches.map((co) => (
                   <li key={co.id}>
                     {co.profile ? (
@@ -291,18 +305,18 @@ function ClassRow({
                 categoryId={c.category}
                 size="md"
               />
-              <p className="mt-2 max-w-[48ch] text-caption text-pretty text-muted-foreground">
+              <p className="mt-xs max-w-[48ch] text-body-s text-pretty text-muted-foreground">
                 {effortLine(c.intensity)}
               </p>
             </div>
           )}
           {c.slug === "swim-school" ? (
-            <div className="grid gap-6 pt-6 rule-t">
+            <div className="grid gap-l pt-l rule-t">
               <SwimFacts />
               <SwimLevels />
             </div>
           ) : null}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-s">
             {c.bookable ? (
               <ScheduleLink
                 filter={{
@@ -377,8 +391,8 @@ function TypeHead({
     },
   ]
   return (
-    <div className="grid gap-6">
-      <div className="flex items-start gap-4 sm:gap-5">
+    <div className="grid gap-l">
+      <div className="flex items-start gap-m sm:gap-l">
         <CategoryTile
           category={cat.id}
           cut
@@ -386,7 +400,7 @@ function TypeHead({
         />
         <div className="min-w-0">
           <h3 className="display-lead">{cat.name}</h3>
-          <p className="mt-2 max-w-[56ch] text-lead text-pretty text-muted-foreground">
+          <p className="mt-xs max-w-[56ch] text-body-l text-pretty text-muted-foreground">
             {cat.lede}
           </p>
         </div>
@@ -396,16 +410,20 @@ function TypeHead({
         {facts.map((f) => (
           <div
             key={f.k}
-            className="flex min-w-0 flex-col gap-1 py-4 max-sm:not-first:rule-t sm:not-first:pl-5 sm:not-first:rule-l"
+            className={cn(
+              "flex min-w-0 flex-col gap-xxs",
+              "py-m",
+              "max-sm:not-first:rule-t sm:not-first:pl-l sm:not-first:rule-l"
+            )}
           >
-            <dt className="text-caption text-muted-foreground">{f.k}</dt>
-            <dd className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-strong text-pretty">
+            <dt className="text-body-s text-muted-foreground">{f.k}</dt>
+            <dd className="flex flex-wrap items-center gap-x-s gap-y-xxs text-body-m text-pretty font-heavy">
               {f.v}
             </dd>
           </div>
         ))}
       </dl>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-s">
         {n ? (
           <ScheduleLink
             filter={{ category: cat.id }}
@@ -565,24 +583,28 @@ export function ClassExplorer({
       value={type}
       onValueChange={(v) => setType(String(v))}
       orientation={wide ? "vertical" : "horizontal"}
-      className="grid gap-8 lg:grid-cols-12 lg:gap-16"
+      className="grid gap-xl lg:grid-cols-12 lg:gap-section"
     >
       <div className="lg:col-span-3">
         <div className="lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)]">
           {/* Below lg the rail is one scrolling row, so the eight types never wrap or overflow the page. */}
           <div
             ref={railRef}
-            className="-mx-4 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:overflow-visible lg:px-0"
+            className={cn(
+              "overflow-x-auto",
+              "-mx-m px-m",
+              "sm:-mx-l sm:px-l lg:mx-zero lg:overflow-visible lg:px-zero"
+            )}
           >
             <Tabs.List
               aria-label="Class types"
-              className="flex w-max gap-1 lg:w-full lg:flex-col lg:items-stretch"
+              className="flex w-max gap-xxs lg:w-full lg:flex-col lg:items-stretch"
             >
               {categories.map((c) => (
                 <Tabs.Tab
                   key={c.id}
                   value={c.id}
-                  className="flex min-h-12 items-center gap-3 whitespace-nowrap lg:justify-start"
+                  className="flex min-h-12 items-center gap-s whitespace-nowrap lg:justify-start"
                 >
                   <CategoryTile category={c.id} className="size-7 shrink-0" />
                   <span>{c.name}</span>
@@ -602,7 +624,7 @@ export function ClassExplorer({
           const list = byType.get(cat.id) ?? []
           return (
             <Tabs.Panel key={cat.id} value={cat.id} keepMounted>
-              <div id={typeAnchor(cat.id)} className="grid scroll-mt-4 gap-8">
+              <div id={typeAnchor(cat.id)} className="grid scroll-mt-4 gap-xl">
                 <TypeHead cat={cat} list={list} clubs={clubs} slots={slots} />
                 <ol className="rule-t rule-heavy">
                   {list.map((c) => (

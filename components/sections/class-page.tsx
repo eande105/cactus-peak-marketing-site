@@ -144,7 +144,7 @@ export function ClassAccess({
     // between cells side by side.
     <ul
       className={cn(
-        "grid overflow-hidden rounded-lg bg-card edge ring-border",
+        "grid overflow-hidden corner-m bg-card hairline ring-border",
         cells.length === 2 ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-4"
       )}
     >
@@ -152,7 +152,7 @@ export function ClassAccess({
         <li
           key={c.name}
           className={cn(
-            "relative flex flex-col gap-3 p-6 lg:py-8",
+            "relative flex flex-col gap-s p-l lg:py-xl",
             i > 0 && "max-md:rule-t",
             cells.length === 2
               ? i > 0 && "md:rule-l"
@@ -165,30 +165,32 @@ export function ClassAccess({
               "bg-[color-mix(in_oklab,var(--cat-strength)_5%,var(--card))] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-primary"
           )}
         >
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-display-wide text-h3">{c.name}</h3>
+          <div className="flex flex-wrap items-center justify-between gap-xs">
+            <h3 className="font-display-wide text-body-l font-medium">
+              {c.name}
+            </h3>
             {"badge" in c && c.badge ? (
               // The Copper tint shows on the card; the muted fill matched the tint band and vanished.
-              <span className="rounded-sm bg-accent px-2 py-0.5 text-caption font-semibold text-foreground">
+              <span className="corner-xs bg-accent px-xs py-xxs text-body-s font-heavy text-foreground">
                 {c.badge}
               </span>
             ) : null}
           </div>
-          <p className="flex items-baseline gap-1">
-            <span className="tabular font-data text-h1 leading-none font-bold">
+          <p className="flex items-baseline gap-xxs">
+            <span className="tabular font-data text-display-m leading-none font-heavy">
               {c.price}
             </span>
             {i > 0 ? (
-              <span className="text-body text-muted-foreground">/mo</span>
+              <span className="text-body-m text-muted-foreground">/mo</span>
             ) : null}
           </p>
           {i > 0 ? (
-            <p className="-mt-1 text-caption text-muted-foreground tabular-nums">
+            <p className="-mt-xxs text-body-s text-muted-foreground tabular-nums">
               + ${facilityFee} facility fee each March
             </p>
           ) : null}
-          <p className="flex gap-2 text-body text-pretty">
-            <Check className="mt-1 size-4 shrink-0" aria-hidden="true" />
+          <p className="flex gap-xs text-body-m text-pretty">
+            <Check className="mt-xxs size-4 shrink-0" aria-hidden="true" />
             {c.line}
           </p>
           <LinkButton

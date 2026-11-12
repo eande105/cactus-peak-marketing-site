@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 // Graphical Button has no sizes. md is the variant's own padding. sm and icon use the xs / m padding for every
 // variant, lg adds m / xl padding.
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-label whitespace-nowrap edge ring-transparent transition-[background-color,color,box-shadow,translate] select-none focus-visible:ring-accent active:translate-y-(--motion-press-distance) disabled:pointer-events-none disabled:bg-muted disabled:text-disabled-foreground disabled:shadow-none disabled:ring-border/20 disabled:hover:bg-muted aria-busy:pointer-events-none motion-reduce:transition-none motion-reduce:active:translate-y-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center gap-xs corner-s text-body-s whitespace-nowrap hairline ring-transparent transition-[background-color,color,box-shadow,translate] select-none focus-visible:ring-accent active:translate-y-(--motion-press-distance) disabled:pointer-events-none disabled:bg-muted disabled:text-disabled-foreground disabled:shadow-none disabled:ring-border/20 disabled:hover:bg-muted aria-busy:pointer-events-none motion-reduce:transition-none motion-reduce:active:translate-y-0 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 font-heavy",
   {
     variants: {
       variant: {
@@ -34,13 +34,13 @@ const buttonVariants = cva(
           "bg-transparent text-foreground hover:bg-secondary-hover disabled:bg-transparent disabled:ring-transparent disabled:hover:bg-transparent",
         destructive:
           "bg-destructive text-primary-foreground ring-destructive/20 hover:bg-destructive-hover hover:shadow-(--shadow-s)",
-        link: "min-h-0 rounded-sm bg-transparent px-0 text-primary underline underline-offset-4 shadow-none hover:decoration-2 active:translate-y-0",
+        link: "min-h-0 corner-xs bg-transparent px-zero text-primary underline underline-offset-4 shadow-none hover:decoration-2 active:translate-y-0",
       },
       size: {
         md: "",
-        lg: "px-8 py-4",
+        lg: "px-xl py-m",
         // Small buttons are 36px tall. A touch-only overlay (TouchTarget) lifts the hit area to 44px.
-        sm: "relative min-h-11 px-4 py-2 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        sm: "relative min-h-11 px-m py-xs has-data-[icon=inline-end]:pr-s has-data-[icon=inline-start]:pl-s",
         icon: "relative size-11",
       },
     },
@@ -49,15 +49,19 @@ const buttonVariants = cva(
         variant: "primary",
         size: "md",
         className:
-          "px-6 py-3 has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5",
+          "px-l py-s has-data-[icon=inline-end]:pr-l has-data-[icon=inline-start]:pl-l",
       },
       {
         variant: ["secondary", "outline", "ghost", "destructive"],
         size: "md",
         className:
-          "px-4 py-3 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+          "px-m py-s has-data-[icon=inline-end]:pr-s has-data-[icon=inline-start]:pl-s",
       },
-      { variant: "link", size: ["md", "lg", "sm"], className: "px-0 py-0" },
+      {
+        variant: "link",
+        size: ["md", "lg", "sm"],
+        className: "px-zero py-zero",
+      },
       // A text ghost button with no fill reads as a label. A soft fill marks it as a control; icon ghosts keep none.
       { variant: "ghost", size: ["md", "lg", "sm"], className: "bg-muted" },
     ],
@@ -105,7 +109,7 @@ function Button({
     >
       {loading ? (
         <span className="relative inline-flex items-center justify-center">
-          <span className="inline-flex items-center gap-2 opacity-0">
+          <span className="inline-flex items-center gap-xs opacity-0">
             {children}
           </span>
           <Loader2Icon

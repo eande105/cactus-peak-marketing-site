@@ -137,10 +137,10 @@ export function ClubsPlanCards({
   return (
     <div>
       {facilityKey ? (
-        <ClubFacilityKey clubs={clubs} current={home?.slug} className="mb-8" />
+        <ClubFacilityKey clubs={clubs} current={home?.slug} className="mb-xl" />
       ) : null}
 
-      <ul className="grid overflow-hidden rounded-lg bg-card edge ring-border lg:grid-cols-3">
+      <ul className="grid overflow-hidden corner-m bg-card hairline ring-border lg:grid-cols-3">
         {plans.map((p, i) => {
           const o = planClubs[p.slug]
           return (
@@ -149,48 +149,58 @@ export function ClubsPlanCards({
               // The membership page's hero and costs link to each plan by this anchor.
               id={`plan-${p.slug}`}
               className={cn(
-                "relative flex scroll-mt-4 flex-col gap-5 p-6 lg:p-8",
+                "relative flex scroll-mt-4 flex-col gap-l p-l lg:p-xl",
                 i > 0 && "max-lg:rule-t lg:rule-l",
                 p.badge &&
                   "bg-[color-mix(in_oklab,var(--cat-strength)_5%,var(--card))] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-primary"
               )}
             >
               <div>
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-display-wide text-h2">{p.name}</h3>
+                <div className="flex items-baseline justify-between gap-s">
+                  <h3 className="font-display-wide text-body-xxl font-heavy">
+                    {p.name}
+                  </h3>
                   {p.badge ? (
-                    <span className="rounded-sm bg-accent px-2 py-0.5 text-label whitespace-nowrap text-foreground">
+                    <span
+                      className={cn(
+                        "corner-xs px-xs py-xxs",
+                        "text-body-s whitespace-nowrap font-heavy",
+                        "bg-accent text-foreground"
+                      )}
+                    >
                       {p.badge}
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1 flex items-baseline gap-1">
-                  <span className="tabular font-data text-figure">
+                <p className="mt-xxs flex items-baseline gap-xxs">
+                  <span className="tabular font-data text-display-l font-heavy">
                     ${p.price}
                   </span>
-                  <span className="text-body text-muted-foreground">/mo</span>
+                  <span className="text-body-m text-muted-foreground">/mo</span>
                 </p>
                 {/* The one fee every plan adds, as a small label under the price. */}
-                <p className="text-caption text-muted-foreground tabular-nums">
+                <p className="text-body-s text-muted-foreground tabular-nums">
                   + ${facilityFee} facility fee each March
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-s">
                 {/* Where the plan works leads the list, in the same form as the features. It is the line
                     the plans differ on most here, so it is the one strong line. */}
-                <p className="flex items-center gap-3 text-body-strong">
+                <p className="flex items-center gap-s text-body-m font-heavy">
                   <GymObject id="location" className="size-7 shrink-0" />
                   {o.where(home)}
                 </p>
-                {o.lead ? <p className="text-body-strong">{o.lead}</p> : null}
-                <ul className="flex flex-col gap-3">
+                {o.lead ? (
+                  <p className="text-body-m font-heavy">{o.lead}</p>
+                ) : null}
+                <ul className="flex flex-col gap-s">
                   {o.features.map((f) => {
                     const text = f.text(clubs, home)
                     return text ? (
                       <li
                         key={f.object}
-                        className="flex items-center gap-3 text-body"
+                        className="flex items-center gap-s text-body-m"
                       >
                         <GymObject id={f.object} className="size-7 shrink-0" />
                         {text}
@@ -221,23 +231,23 @@ export function ClubsPlanCards({
       <section
         aria-labelledby="every-plan"
         className={cn(
-          "mt-8 rounded-lg px-5 py-4 lg:px-6",
+          "mt-xl corner-m px-l py-m lg:px-l",
           band === "tint" ? "bg-background" : "bg-muted"
         )}
       >
         <h3 id="every-plan" className="eyebrow">
           On every plan
         </h3>
-        <ul className="mt-3 grid gap-x-8 gap-y-3 lg:grid-cols-3">
+        <ul className="mt-s grid gap-x-xl gap-y-s lg:grid-cols-3">
           {atEvery.map((r) => (
-            <li key={r.title} className="flex items-start gap-3">
+            <li key={r.title} className="flex items-start gap-s">
               <GymObject
                 id={r.object}
                 scheme="mono"
-                className="mt-0.5 size-5 shrink-0 text-muted-foreground"
+                className="mt-xxs size-5 shrink-0 text-muted-foreground"
               />
-              <span className="min-w-0 text-caption">
-                <span className="block font-semibold">{r.title}</span>
+              <span className="min-w-0 text-body-s">
+                <span className="block font-heavy">{r.title}</span>
                 <span className="tabular block text-muted-foreground">
                   {r.detail}
                 </span>

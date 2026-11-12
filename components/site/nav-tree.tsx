@@ -132,10 +132,10 @@ export function useNavTree(): NavGroup[] {
 /** The text of one list row. The parent link owns the row padding and the hover fill. */
 export function NavItemBody({ item }: { item: NavItem }) {
   return (
-    <span className="flex min-w-0 items-center gap-2 text-label">
+    <span className="flex min-w-0 items-center gap-xs text-body-s font-heavy">
       {item.title}
       {item.badge ? (
-        <span className="rounded-sm bg-accent px-1.5 text-caption text-foreground">
+        <span className="corner-xs bg-accent px-xs text-body-s text-foreground">
           {item.badge}
         </span>
       ) : null}
@@ -157,7 +157,9 @@ export function NavCalloutBody({
   return (
     <span
       className={cn(
-        "relative flex min-h-64 flex-col justify-end overflow-hidden rounded-lg bg-night p-5 pt-28 text-night-foreground",
+        "relative flex min-h-64 flex-col justify-end overflow-hidden",
+        "corner-m p-l pt-[calc(var(--space-xxl)*7/3)]",
+        "bg-night text-night-foreground",
         className
       )}
     >
@@ -172,17 +174,17 @@ export function NavCalloutBody({
       </span>
       <span className="relative">
         {callout.tag ? (
-          <span className="mb-2 inline-block rounded-sm bg-night-fill px-1.5 text-caption">
+          <span className="mb-xs inline-block corner-xs bg-night-fill px-xs text-body-s">
             {callout.tag}
           </span>
         ) : null}
-        <span className="font-display-wide block text-h3 text-balance">
+        <span className="font-display-wide block text-body-l text-balance font-medium">
           {callout.title}
         </span>
-        <span className="mt-1 block text-caption text-night-muted">
+        <span className="mt-xxs block text-body-s text-night-muted">
           {callout.line}
         </span>
-        <span className="mt-3 inline-flex items-center gap-1 text-label font-semibold text-[color-mix(in_oklab,var(--cat-strength)_60%,var(--neutral-1))]">
+        <span className="mt-s inline-flex items-center gap-xxs text-body-s font-heavy text-[color-mix(in_oklab,var(--cat-strength)_60%,var(--neutral-1))]">
           {callout.action}
           <span aria-hidden="true">→</span>
         </span>

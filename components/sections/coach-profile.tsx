@@ -101,7 +101,12 @@ function CoachCover({ coach }: { coach: Coach }) {
   return (
     <div
       aria-hidden="true"
-      className="relative isolate aspect-[2/1] overflow-hidden rounded-2xl bg-night sm:aspect-[3/1] lg:aspect-[4/1]"
+      className={cn(
+        "relative isolate aspect-[2/1] overflow-hidden",
+        "corner-xl",
+        "bg-night",
+        "sm:aspect-[3/1] lg:aspect-[4/1]"
+      )}
     >
       {/* Dimmed, so the oversized object reads first. */}
       {SHAPES.map((shape) => (
@@ -148,23 +153,29 @@ export function CoachProfileHeader({
   return (
     <section
       aria-labelledby="coach-name"
-      className="pt-4 pb-12 lg:pt-6 lg:pb-16"
+      className="pt-m pb-xxl lg:pt-l lg:pb-section"
     >
-      <div className="mx-auto w-full max-w-[1240px] px-2 sm:px-3">
+      <div className="mx-auto w-full max-w-[1240px] px-xs sm:px-s">
         <CoachCover coach={coach} />
       </div>
-      <div className="mx-auto grid w-full max-w-[1200px] gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:items-end lg:gap-12 lg:px-8">
+      <div
+        className={cn(
+          "grid w-full max-w-[1200px] gap-xl",
+          "mx-auto px-m",
+          "sm:px-l lg:grid-cols-12 lg:items-end lg:gap-xxl lg:px-xl"
+        )}
+      >
         <div className="lg:col-span-8">
           <span
             aria-hidden="true"
-            className="font-display-wide relative -mt-14 grid size-28 place-items-center rounded-full bg-[var(--cat-strength)] text-h1 text-[var(--neutral-1)] ring-8 ring-background sm:-mt-20 sm:size-40 sm:text-display"
+            className="font-display-wide relative -mt-section grid size-28 place-items-center corner-full bg-[var(--cat-strength)] text-display-m text-neutral-1 ring-8 ring-background sm:-mt-[calc(var(--space-xxl)*5/3)] sm:size-40 sm:text-display-xl font-heavy sm:font-heavy"
           >
             {initials(coach.name)}
           </span>
-          <h1 id="coach-name" className="display-hero mt-6 text-balance">
+          <h1 id="coach-name" className="display-hero mt-l text-balance">
             {coach.name}
           </h1>
-          <p className="lede mt-3 text-pretty text-muted-foreground">
+          <p className="lede mt-s text-pretty text-muted-foreground">
             {[
               coach.credential,
               coach.years ? `${coach.years} years coaching` : null,
@@ -174,12 +185,12 @@ export function CoachProfileHeader({
           </p>
           <ul
             aria-label="Trains at"
-            className="mt-5 flex flex-wrap gap-x-5 gap-y-2"
+            className="mt-l flex flex-wrap gap-x-l gap-y-xs"
           >
             {at.map((k) => (
               <li
                 key={k.slug}
-                className="flex items-center gap-2 text-body whitespace-nowrap"
+                className="flex items-center gap-xs text-body-m whitespace-nowrap"
               >
                 <ClubPin n={k.n} />
                 <Link
@@ -192,7 +203,7 @@ export function CoachProfileHeader({
             ))}
           </ul>
         </div>
-        <div className="flex flex-col gap-3 lg:col-span-4">{actions}</div>
+        <div className="flex flex-col gap-s lg:col-span-4">{actions}</div>
       </div>
     </section>
   )
@@ -224,15 +235,15 @@ export function CoachClasses({
         return (
           <li
             key={c.slug}
-            className="grid gap-x-12 gap-y-3 py-6 rule-t lg:grid-cols-12 lg:items-center"
+            className="grid gap-x-xxl gap-y-s py-l rule-t lg:grid-cols-12 lg:items-center"
           >
-            <div className="flex items-center gap-4 lg:col-span-4">
+            <div className="flex items-center gap-m lg:col-span-4">
               <GymObject
                 id={classObjects[c.slug] ?? categoryObject[c.category]}
                 className="size-9 shrink-0"
               />
               <div className="min-w-0">
-                <h3 className="font-display-wide text-h3 text-balance">
+                <h3 className="font-display-wide text-body-l text-balance font-medium">
                   <Link
                     href={classHref(c)}
                     className="inline-flex min-h-11 items-center no-underline underline-offset-4 hover:underline"
@@ -241,15 +252,15 @@ export function CoachClasses({
                   </Link>
                 </h3>
                 {fav ? (
-                  <span className="rounded-sm bg-accent px-2 py-0.5 text-label">
+                  <span className="corner-xs bg-accent px-xs py-xxs text-body-s font-heavy">
                     Favorite to teach
                   </span>
                 ) : null}
               </div>
             </div>
-            <p className="text-body text-pretty lg:col-span-5">{c.blurb}</p>
-            <div className="text-body text-pretty text-muted-foreground lg:col-span-3">
-              <span className="block text-body-strong text-foreground">
+            <p className="text-body-m text-pretty lg:col-span-5">{c.blurb}</p>
+            <div className="text-body-m text-pretty text-muted-foreground lg:col-span-3">
+              <span className="block text-body-m text-foreground font-heavy">
                 {c.duration} minutes
               </span>
               {when.length
@@ -274,18 +285,22 @@ export function CoachClasses({
  */
 export function CoachClubs({ coach, clubs }: { coach: Coach; clubs: Club[] }) {
   return (
-    <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-m md:grid-cols-2 lg:grid-cols-3">
       {clubs.map((k) => (
         <li
           key={k.slug}
-          className="flex flex-col gap-4 rounded-lg bg-card p-6 edge ring-border"
+          className={cn(
+            "flex flex-col gap-m hairline",
+            "corner-m p-l",
+            "bg-card ring-border"
+          )}
         >
-          <div className="flex items-start gap-3">
-            <span className="mt-1 [&>svg]:h-8">
+          <div className="flex items-start gap-s">
+            <span className="mt-xxs [&>svg]:h-8">
               <ClubPin n={k.n} />
             </span>
             <div className="min-w-0">
-              <h3 className="font-display-wide text-h3">
+              <h3 className="font-display-wide text-body-l font-medium">
                 <Link
                   href={`/clubs/${k.slug}`}
                   className="no-underline underline-offset-4 hover:underline"
@@ -293,11 +308,11 @@ export function CoachClubs({ coach, clubs }: { coach: Coach; clubs: Club[] }) {
                   {k.short}
                 </Link>
               </h3>
-              <p className="text-body text-muted-foreground">{k.city}</p>
+              <p className="text-body-m text-muted-foreground">{k.city}</p>
             </div>
           </div>
-          <p className="text-body text-pretty">{k.personality}</p>
-          <div className="mt-auto pt-4 rule-t">
+          <p className="text-body-m text-pretty">{k.personality}</p>
+          <div className="mt-auto pt-m rule-t">
             <TextLink href={`/tour?coach=${coach.slug}&club=${k.slug}`}>
               Book a tour at {k.short}
             </TextLink>
@@ -340,12 +355,12 @@ export function CoachSpecialties({ coach }: { coach: Coach }) {
   return (
     <ul className="rule-t rule-heavy">
       {coach.specialties.map((s) => (
-        <li key={s} className="flex items-start gap-4 py-4 rule-b">
+        <li key={s} className="flex items-start gap-m py-m rule-b">
           <SpecialtyMark name={s} className="size-11" />
           <div className="min-w-0">
-            <h4 className="font-display-wide text-h3">{s}</h4>
+            <h4 className="font-display-wide text-body-l font-medium">{s}</h4>
             {SPECIALTY_LINES[s] ? (
-              <p className="mt-1 text-body text-pretty text-muted-foreground">
+              <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                 {SPECIALTY_LINES[s]}
               </p>
             ) : null}

@@ -75,10 +75,10 @@ export function MobileDrawer({
         <Drawer.Backdrop className="z-[70]" />
         <Drawer.Viewport className="site-menu-viewport z-[70]">
           {/* No padding or gap: the bars and the scroll area run to the edges. */}
-          <Drawer.Popup className="site-menu gap-0 overflow-hidden p-0 outline-none">
-            <Drawer.Content className="flex h-full flex-col gap-0">
+          <Drawer.Popup className="site-menu gap-zero overflow-hidden p-zero outline-none">
+            <Drawer.Content className="flex h-full flex-col gap-zero">
               {level === "root" ? (
-                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-2 rule-b">
+                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-xs rule-b">
                   <Drawer.Close
                     aria-label="Close menu"
                     className="min-h-11 min-w-11"
@@ -98,7 +98,7 @@ export function MobileDrawer({
                   </Button>
                 </div>
               ) : (
-                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-2 rule-b">
+                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-xs rule-b">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -110,7 +110,7 @@ export function MobileDrawer({
                   <h2
                     ref={title}
                     tabIndex={-1}
-                    className="font-display-wide text-center text-h3 outline-none"
+                    className="font-display-wide text-center text-body-l outline-none font-medium"
                   >
                     {group?.label}
                   </h2>
@@ -126,17 +126,17 @@ export function MobileDrawer({
               <div className="min-h-0 flex-1 overflow-y-auto">
                 {level === "root" || !group ? (
                   <div>
-                    <div className="p-4">
+                    <div className="p-m">
                       <ClubSwitcher placement="block" />
                     </div>
-                    <ul className="flex flex-col px-4">
+                    <ul className="flex flex-col px-m">
                       {tree.map((g) => (
                         <li key={g.id}>
                           <button
                             type="button"
                             data-menu-group={g.id}
                             onClick={() => setLevel(g.id)}
-                            className="font-display-wide flex min-h-14 w-full items-center justify-between text-h3 rule-b"
+                            className="font-display-wide flex min-h-14 w-full items-center justify-between text-body-l rule-b font-medium"
                           >
                             {g.label}
                             <ChevronRight
@@ -151,7 +151,7 @@ export function MobileDrawer({
                           <Link
                             href={n.href}
                             onClick={nav}
-                            className="font-display-wide flex min-h-14 items-center text-h3 rule-b"
+                            className="font-display-wide flex min-h-14 items-center text-body-l rule-b font-medium"
                           >
                             {n.label}
                           </Link>
@@ -159,13 +159,13 @@ export function MobileDrawer({
                       ))}
                     </ul>
                     {/* Pages people look for less often: one quiet row of links, not more headings. */}
-                    <ul className="flex flex-wrap gap-x-5 px-4 pt-2">
+                    <ul className="flex flex-wrap gap-x-l px-m pt-xs">
                       {moreLinks.map((n) => (
                         <li key={n.href}>
                           <Link
                             href={n.href}
                             onClick={nav}
-                            className="flex min-h-11 items-center text-label text-muted-foreground"
+                            className="flex min-h-11 items-center text-body-s text-muted-foreground font-heavy"
                           >
                             {n.label}
                           </Link>
@@ -176,19 +176,19 @@ export function MobileDrawer({
                     <Link
                       href={offerCallout.href}
                       onClick={nav}
-                      className="mx-4 mt-4 mb-6 block rounded-lg"
+                      className="mx-m mt-m mb-l block corner-m"
                     >
                       <NavCalloutBody callout={offerCallout} />
                     </Link>
                   </div>
                 ) : (
-                  <div className="p-2">
+                  <div className="p-xs">
                     {/* The overview page first, the same as the desktop menu. */}
-                    <div className="mb-2">
+                    <div className="mb-xs">
                       <Link
                         href={group.overview.href}
                         onClick={nav}
-                        className="flex min-h-12 items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+                        className="flex min-h-12 items-center gap-xs corner-s px-s py-xs hover:bg-muted"
                       >
                         <NavItemBody item={group.overview} />
                         <span
@@ -200,9 +200,9 @@ export function MobileDrawer({
                       </Link>
                     </div>
                     {group.sections.map((sec) => (
-                      <div key={sec.label ?? group.id} className="mb-2">
+                      <div key={sec.label ?? group.id} className="mb-xs">
                         {sec.label ? (
-                          <p className="px-3 pt-3 pb-1 text-caption text-muted-foreground">
+                          <p className="px-s pt-s pb-xxs text-body-s text-muted-foreground">
                             {sec.label}
                           </p>
                         ) : null}
@@ -212,7 +212,7 @@ export function MobileDrawer({
                               <Link
                                 href={i.href}
                                 onClick={nav}
-                                className="flex min-h-12 items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+                                className="flex min-h-12 items-center gap-xs corner-s px-s py-xs hover:bg-muted"
                               >
                                 <NavItemBody item={i} />
                               </Link>
@@ -225,7 +225,7 @@ export function MobileDrawer({
                       <Link
                         href={group.callout.href}
                         onClick={nav}
-                        className="mx-2 mt-2 mb-4 block rounded-lg"
+                        className="mx-xs mt-xs mb-m block corner-m"
                       >
                         <NavCalloutBody callout={group.callout} />
                       </Link>
@@ -235,7 +235,7 @@ export function MobileDrawer({
               </div>
               {/* The same button set as the desktop header, in the same order and styles: search in the top bar,
                 then sign in (soft) and the free tour (filled). Join is one tap away through Membership. */}
-              <div className="flex shrink-0 gap-3 bg-card p-4 rule-t">
+              <div className="flex shrink-0 gap-s bg-card p-m rule-t">
                 <LinkButton
                   href={MEMBER_SIGN_IN_URL}
                   external

@@ -43,7 +43,7 @@ const OTHER = [
 
 /** The quiet, underlined link style the cards use for directions. */
 const cardLink =
-  "inline-flex min-h-11 items-center text-label text-link underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4 hover:decoration-current"
+  "inline-flex min-h-11 items-center text-body-s text-link underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4 hover:decoration-current font-heavy"
 
 /**
  * Contact. The hero's picture answers the question this page gets most: when a person picks up. Then each club's
@@ -85,7 +85,7 @@ export default async function Contact() {
           title="When a person answers."
           lede="The club stays open longer than the desk. After hours, send a message."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <DeskDay
             rows={[
               {
@@ -109,14 +109,18 @@ export default async function Contact() {
           title="Visit a club."
           action={<TextLink href="/clubs">See every club</TextLink>}
         />
-        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-xxl grid gap-s sm:grid-cols-2 lg:grid-cols-5">
           {clubs.map((c) => (
             <li
               key={c.slug}
-              className="flex flex-col gap-3 rounded-lg bg-card p-5 edge ring-border"
+              className={cn(
+                "flex flex-col gap-s hairline",
+                "corner-m p-l",
+                "bg-card ring-border"
+              )}
             >
               <ClubPin n={c.n} />
-              <h3 className="font-display-wide text-body-strong">
+              <h3 className="font-display-wide text-body-m font-heavy">
                 <Link
                   href={`/clubs/${c.slug}`}
                   className="no-underline underline-offset-4 hover:underline"
@@ -124,7 +128,7 @@ export default async function Contact() {
                   {c.name}
                 </Link>
               </h3>
-              <p className="text-caption text-pretty text-muted-foreground">
+              <p className="text-body-s text-pretty text-muted-foreground">
                 {c.cross}, {c.city}, AZ {c.zip}
               </p>
               <a
@@ -139,23 +143,23 @@ export default async function Contact() {
             </li>
           ))}
         </ul>
-        <ClubMap className="mt-6 h-[360px] overflow-hidden rounded-lg lg:h-[440px]" />
+        <ClubMap className="mt-l h-[360px] overflow-hidden corner-m lg:h-[440px]" />
       </Band>
 
       <Band tone="tint" id="message">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <div className="lg:col-span-5">
             <SectionHead
               size="lead"
               title="Send a message."
               lede="We reply within 1 business day."
             />
-            <ul className="mt-10 rule-t rule-heavy">
+            <ul className="mt-xxl rule-t rule-heavy">
               {OTHER.map(({ href, label, Icon }) => (
                 <li key={href} className="rule-b">
                   <Link
                     href={href}
-                    className="flex min-h-14 items-center gap-3 text-body no-underline hover:underline"
+                    className="flex min-h-14 items-center gap-s text-body-m no-underline hover:underline"
                   >
                     <Icon className="size-5 shrink-0" aria-hidden="true" />
                     {label}

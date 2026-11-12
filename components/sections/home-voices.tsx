@@ -26,7 +26,10 @@ export function Mark({ who, className }: { who: string; className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        "grid size-11 shrink-0 place-items-center rounded-full bg-night text-label text-night-foreground",
+        "grid size-11 shrink-0 place-items-center",
+        "corner-full",
+        "text-body-s font-heavy",
+        "bg-night text-night-foreground",
         className
       )}
     >
@@ -65,17 +68,22 @@ export function HomeVoices({
   if (!lead) return null
 
   return (
-    <div className={cn("grid gap-12 lg:grid-cols-12 lg:gap-16", className)}>
+    <div
+      className={cn(
+        "grid gap-xxl lg:grid-cols-12 lg:gap-section",
+        className
+      )}
+    >
       <figure className="lg:col-span-5">
         <GymObject id={voiceIcon(lead.quote)} className="size-12" />
-        <blockquote className="font-display-wide mt-6 text-h2 text-balance lg:text-h1">
+        <blockquote className="font-display-wide mt-l text-body-xxl text-balance lg:text-display-m font-heavy lg:font-heavy">
           “{lead.quote}”
         </blockquote>
-        <figcaption className="mt-8 flex items-center gap-4">
+        <figcaption className="mt-xl flex items-center gap-m">
           <Mark who={lead.who} />
           <span>
-            <span className="block text-body-strong">{lead.who}</span>
-            <span className="block text-caption text-muted-foreground">
+            <span className="block text-body-m font-heavy">{lead.who}</span>
+            <span className="block text-body-s text-muted-foreground">
               {lead.detail}
             </span>
           </span>
@@ -83,19 +91,19 @@ export function HomeVoices({
       </figure>
 
       {/* The wall: two columns that fill top to bottom, each quote under a rule. */}
-      <ul className="gap-x-10 sm:columns-2 lg:col-span-7">
+      <ul className="gap-x-xxl sm:columns-2 lg:col-span-7">
         {rest.map((v) => (
-          <li key={v.who} className="mb-8 break-inside-avoid pt-5 rule-t">
+          <li key={v.who} className="mb-xl break-inside-avoid pt-l rule-t">
             <figure>
               <GymObject id={voiceIcon(v.quote)} className="size-7" />
-              <blockquote className="mt-4 text-lead text-pretty">
+              <blockquote className="mt-m text-body-l text-pretty">
                 “{v.quote}”
               </blockquote>
-              <figcaption className="mt-4 flex items-center gap-3">
-                <Mark who={v.who} className="size-9 text-caption" />
+              <figcaption className="mt-m flex items-center gap-s">
+                <Mark who={v.who} className="size-9 text-body-s" />
                 <span>
-                  <span className="block text-label">{v.who}</span>
-                  <span className="block text-caption text-muted-foreground">
+                  <span className="block text-body-s font-heavy">{v.who}</span>
+                  <span className="block text-body-s text-muted-foreground">
                     {v.detail}
                   </span>
                 </span>

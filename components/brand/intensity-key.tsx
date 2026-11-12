@@ -7,8 +7,8 @@ export function IntensityKey({ className }: { className?: string }) {
   return (
     <ol className={cn("rule-t", className)}>
       {([1, 2, 3, 4, 5] as Level[]).map((n) => (
-        <li key={n} className="py-2 text-caption rule-b">
-          <span className="font-semibold">
+        <li key={n} className="py-xs text-body-s rule-b">
+          <span className="font-heavy">
             {n}, {LEVEL_WORD[n]}.
           </span>{" "}
           {EFFORT[n]}
@@ -21,11 +21,18 @@ export function IntensityKey({ className }: { className?: string }) {
 /** The key behind a "What the numbers mean" disclosure. */
 export function IntensityKeyDetails({ className }: { className?: string }) {
   return (
-    <details className={cn("text-body", className)}>
-      <summary className="inline-flex min-h-11 cursor-pointer items-center text-label text-link underline-offset-4 hover:underline">
+    <details className={cn("text-body-m", className)}>
+      <summary
+        className={cn(
+          "inline-flex min-h-11 items-center",
+          "text-body-s underline-offset-4 font-heavy",
+          "cursor-pointer text-link",
+          "hover:underline"
+        )}
+      >
         What the numbers mean
       </summary>
-      <IntensityKey className="mt-2" />
+      <IntensityKey className="mt-xs" />
     </details>
   )
 }

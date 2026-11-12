@@ -1,10 +1,9 @@
 import Link from "next/link"
-
+import { ClubPin } from "@/components/brand/club-pin"
 import { facility, varyingFacilities } from "@/components/brand/facilities"
 import { GymObject, type ObjectId } from "@/components/brand/graphics"
 import type { AmenityKey, Club } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { ClubPin } from "@/components/brand/club-pin"
 
 /**
  * The club key: each club as its map pin and name, with every facility object, struck through where the
@@ -31,12 +30,21 @@ export function ClubFacilityKey({
     <div className={className}>
       <FacilityLegend keys={keys} />
 
-      <ul className="mt-3 grid overflow-hidden rounded-lg bg-card edge ring-border md:grid-cols-5">
+      <ul
+        className={cn(
+          "grid overflow-hidden hairline",
+          "mt-s corner-m",
+          "bg-card ring-border",
+          "md:grid-cols-5"
+        )}
+      >
         {clubs.map((c, i) => (
           <li
             key={c.slug}
             className={cn(
-              "relative flex items-center justify-between gap-3 px-4 py-3 md:flex-col md:items-start md:justify-between md:py-4",
+              "relative flex items-center justify-between gap-s",
+              "px-m py-s",
+              "md:flex-col md:items-start md:justify-between md:py-m",
               i > 0 && "max-md:rule-t md:rule-l",
               // The page's own club: the Copper bar the featured plan card uses, along its top edge.
               c.slug === current &&
@@ -46,18 +54,26 @@ export function ClubFacilityKey({
             {c.slug === current ? (
               <span
                 aria-current="page"
-                className="flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 text-label md:min-h-0"
+                className={cn(
+                  "flex min-h-11 flex-wrap items-center gap-x-xs gap-y-xxs",
+                  "text-body-s font-heavy",
+                  "md:min-h-0"
+                )}
               >
                 <ClubPin n={c.n} />
                 {c.short}
-                <span className="rounded-sm bg-accent px-1.5 text-caption font-semibold whitespace-nowrap">
+                <span className="corner-xs bg-accent px-xs text-body-s font-heavy whitespace-nowrap">
                   This club
                 </span>
               </span>
             ) : (
               <Link
                 href={`/clubs/${c.slug}`}
-                className="flex min-h-11 items-center gap-2 text-label no-underline underline-offset-4 hover:underline md:min-h-0"
+                className={cn(
+                  "flex min-h-11 items-center gap-xs",
+                  "text-body-s no-underline underline-offset-4 font-heavy",
+                  "hover:underline md:min-h-0"
+                )}
               >
                 <ClubPin n={c.n} />
                 {c.short}
@@ -83,18 +99,18 @@ export function FacilityLegend({
     <ul
       aria-label="Facilities"
       className={cn(
-        "flex flex-wrap gap-x-5 gap-y-2 text-caption text-muted-foreground",
+        "flex flex-wrap gap-x-l gap-y-xs text-body-s text-muted-foreground",
         className
       )}
     >
       {keys.map((k) => (
-        <li key={k} className="flex items-center gap-1.5">
+        <li key={k} className="flex items-center gap-xs">
           <GymObject id={facility[k].object} className="size-5 shrink-0" />
           {facility[k].label}
         </li>
       ))}
       {keys[0] ? (
-        <li className="flex items-center gap-1.5">
+        <li className="flex items-center gap-xs">
           {/* The legend sits on whatever band or panel holds it, so its slash goes without the ring. */}
           <MissingFacility
             id={facility[keys[0]].object}
@@ -126,7 +142,7 @@ export function FacilityIcons({
   className?: string
 }) {
   return (
-    <span className={cn("flex gap-2", className)}>
+    <span className={cn("flex gap-xs", className)}>
       {keys.map((k) =>
         club.has[k] ? (
           <GymObject
@@ -182,7 +198,9 @@ export function MissingFacility({
       />
       <span
         className={cn(
-          "absolute top-1/2 left-1/2 h-0.5 w-[130%] -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full bg-muted-foreground",
+          "absolute top-1/2 left-1/2 h-0.5 w-[130%]",
+          "corner-full",
+          "-translate-x-1/2 -translate-y-1/2 -rotate-45 bg-muted-foreground",
           !ringless && "ring-2 ring-card"
         )}
       />

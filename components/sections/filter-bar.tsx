@@ -26,12 +26,12 @@ export function FilterBar({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center justify-between gap-x-8 gap-y-4 py-3 rule-y",
+        "flex flex-wrap items-center justify-between gap-x-xl gap-y-m py-s rule-y",
         className
       )}
     >
       {filters ? (
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="flex flex-wrap items-center gap-x-l gap-y-s">
           <ListFilter
             className="size-5 text-muted-foreground max-sm:hidden"
             aria-hidden="true"
@@ -42,7 +42,7 @@ export function FilterBar({
       {results ? (
         <div
           className={cn(
-            "flex flex-wrap items-center gap-x-5 gap-y-3",
+            "flex flex-wrap items-center gap-x-l gap-y-s",
             !filters && "w-full justify-between"
           )}
         >
@@ -66,9 +66,9 @@ export function ResultCount({
 }) {
   const word = (total ?? shown) === 1 ? noun[0] : noun[1]
   return (
-    <p aria-live="polite" className="tabular text-label">
+    <p aria-live="polite" className="tabular text-body-s font-heavy">
       {shown}
-      <span className="font-normal text-muted-foreground">
+      <span className="font-regular text-muted-foreground">
         {total === undefined ? ` ${word}` : ` of ${total} ${word}`}
       </span>
     </p>
@@ -132,7 +132,7 @@ export function ActiveFilters({
     <ul
       ref={list}
       aria-label="Active filters"
-      className={cn("mt-4 flex flex-wrap gap-2", className)}
+      className={cn("mt-m flex flex-wrap gap-xs", className)}
     >
       {on.map((f, i) => (
         <li key={f.key}>
@@ -143,7 +143,13 @@ export function ActiveFilters({
               f.clear()
               refocus(i)
             }}
-            className="flex min-h-9 items-center gap-1.5 rounded-full bg-card py-1 pr-2.5 pl-3.5 text-label edge ring-border hover:bg-muted"
+            className={cn(
+              "flex min-h-9 items-center gap-xs hairline",
+              "corner-full py-xxs pr-s pl-m",
+              "text-body-s font-heavy",
+              "bg-card ring-border",
+              "hover:bg-muted"
+            )}
           >
             {f.label}
             <X className="size-4" aria-hidden="true" />
@@ -158,7 +164,13 @@ export function ActiveFilters({
             onClearAll()
             refocus(0)
           }}
-          className="flex min-h-9 items-center px-2 text-label text-link underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4 hover:decoration-current"
+          className={cn(
+            "flex min-h-9 items-center",
+            "px-xs",
+            "text-body-s underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4 font-heavy",
+            "text-link",
+            "hover:decoration-current"
+          )}
         >
           Clear filters
         </button>

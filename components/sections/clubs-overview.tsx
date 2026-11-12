@@ -104,7 +104,7 @@ function Pull({ field, className }: { field: Field; className?: string }) {
         {field.rings.map((r) => (
           <span
             key={r}
-            className="absolute -translate-1/2 rounded-full border-[1.5px] border-border"
+            className="absolute -translate-1/2 corner-full border-[1.5px] border-border"
             style={{
               left: "50%",
               top: `calc(100% - ${field.key}px)`,
@@ -118,7 +118,9 @@ function Pull({ field, className }: { field: Field; className?: string }) {
         <span
           key={o.id}
           className={cn(
-            "absolute grid -translate-1/2 place-items-center rounded-full bg-night ring-4 ring-background",
+            "absolute grid place-items-center",
+            "corner-full",
+            "-translate-1/2 bg-night ring-4 ring-background",
             discSize[o.size]
           )}
           style={place(o, field)}
@@ -128,7 +130,7 @@ function Pull({ field, className }: { field: Field; className?: string }) {
       ))}
       {/* The lit mark: Copper, with the Rib Peak mark in Sand (VISUAL-IDENTITY.md, section 4). The bottom
           rule cuts its lower quarter, so the mark reads as the way into the next section. */}
-      <span className="absolute top-full left-1/2 grid size-24 -translate-x-1/2 -translate-y-3/4 place-items-center rounded-full bg-[var(--cat-strength)] lg:size-36">
+      <span className="absolute top-full left-1/2 grid size-24 -translate-x-1/2 -translate-y-3/4 place-items-center corner-full bg-[var(--cat-strength)] lg:size-36">
         <BrandMark scheme="copper" className="size-[52%]" />
       </span>
     </div>
@@ -151,15 +153,15 @@ export function ClubsOverviewHero() {
         field={wide}
         className="absolute inset-x-0 top-0 bottom-0 mx-auto max-w-[1440px] max-lg:hidden"
       />
-      <Container className="relative flex flex-col items-center pt-8 text-center lg:pt-14">
+      <Container className="relative flex flex-col items-center pt-xl text-center lg:pt-section">
         <h1 id="clubs-hero-title" className="display-hero max-w-[12ch]">
           Your club, and four more.
         </h1>
-        <p className="lede mt-5 max-w-[40ch] text-pretty text-muted-foreground lg:mt-6">
+        <p className="lede mt-l max-w-[40ch] text-pretty text-muted-foreground lg:mt-l">
           Join at the club near home. With Ridge or Summit, the same membership
           opens every pool, court and studio in Mesa and Gilbert.
         </p>
-        <div className="mt-8 flex w-full flex-wrap justify-center gap-3">
+        <div className="mt-xl flex w-full flex-wrap justify-center gap-s">
           <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
             Book a free tour
           </LinkButton>
@@ -175,7 +177,7 @@ export function ClubsOverviewHero() {
       </Container>
       <Pull
         field={narrow}
-        className="relative mx-auto mt-10 aspect-1/1 w-full max-w-lg lg:hidden"
+        className="relative mx-auto mt-xxl aspect-1/1 w-full max-w-lg lg:hidden"
       />
     </section>
   )
@@ -197,30 +199,30 @@ export function ClubsGoals({
   return (
     <ul
       className={cn(
-        "grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4",
+        "grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-4",
         className
       )}
     >
       {testimonials.map((t) => {
         const club = clubs.find((c) => c.name === t.club)
         return (
-          <li key={t.who} className="pt-5 rule-t rule-heavy">
+          <li key={t.who} className="pt-l rule-t rule-heavy">
             <figure className="flex h-full flex-col">
               <GymObject id={voiceIcon(t.quote)} className="size-8" />
-              <h3 className="font-display-wide mt-5 text-h3 text-balance">
+              <h3 className="font-display-wide mt-l text-body-l text-balance font-medium">
                 {t.goal}
               </h3>
-              <blockquote className="mt-3 text-body text-pretty">
+              <blockquote className="mt-s text-body-m text-pretty">
                 “{t.quote}”
               </blockquote>
               {/* The member's initials, then their name over their club, as one tight block at the foot of the
                   story. The club link keeps a 44px touch area drawn outside its line (the after box), so it
                   does not push the club name away from the member's name. */}
-              <figcaption className="mt-auto flex items-center gap-3 pt-6">
-                <Mark who={t.who} className="size-10 shrink-0 text-caption" />
+              <figcaption className="mt-auto flex items-center gap-s pt-l">
+                <Mark who={t.who} className="size-10 shrink-0 text-body-s" />
                 <span className="min-w-0">
-                  <span className="block text-label">{t.who}</span>
-                  <span className="mt-0.5 block text-caption text-muted-foreground">
+                  <span className="block text-body-s font-heavy">{t.who}</span>
+                  <span className="mt-xxs block text-body-s text-muted-foreground">
                     {club ? (
                       <Link
                         href={`/clubs/${club.slug}`}

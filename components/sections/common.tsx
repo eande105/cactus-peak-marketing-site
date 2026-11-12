@@ -27,8 +27,9 @@ import { PassEmailRow } from "./pass-email"
  * in a panel lines up with text in the bands. Below lg the panel nearly fills the screen, so the content
  * takes a comfortable inset instead.
  */
-export const panelFrame = "mx-auto w-full max-w-[max(78vw,1352px)] px-2 sm:px-3"
-export const panelContent = "mx-auto w-full max-w-[1176px] px-4 sm:px-6 lg:px-5"
+export const panelFrame =
+  "mx-auto w-full max-w-[max(78vw,1352px)] px-xs sm:px-s"
+export const panelContent = "mx-auto w-full max-w-[1176px] px-m sm:px-l lg:px-l"
 
 export function Container({
   children,
@@ -45,7 +46,7 @@ export function Container({
     <T
       id={id}
       className={cn(
-        "mx-auto w-full max-w-[1200px] scroll-mt-8 px-4 sm:px-6 lg:px-8",
+        "mx-auto w-full max-w-[1200px] scroll-mt-8 px-m sm:px-l lg:px-xl",
         className
       )}
     >
@@ -72,7 +73,7 @@ export function Band({
       id={id}
       aria-label={label}
       className={cn(
-        "py-12 lg:py-24",
+        "py-xxl lg:py-section-l",
         tone === "muted" && "rule-t",
         tone === "tint" && "bg-muted",
         tone === "night" && "bg-night text-night-foreground",
@@ -147,19 +148,24 @@ export function TourCTABand({
     return (
       <section
         aria-labelledby="tour-band-title"
-        className={cn(panelFrame, "pt-2 sm:pt-3")}
+        className={cn(panelFrame, "pt-xs sm:pt-s")}
       >
         {/* The theme's blue focus ring is 1.07:1 on Copper, so focus inside the band uses the band's white text
             colour (4.95:1). */}
-        <div className="rounded-2xl bg-[var(--cat-strength)] text-[var(--neutral-1)] [&_:focus-visible]:outline-[var(--neutral-1)]">
-          <div className={cn(panelContent, "py-12 lg:py-20")}>
-            <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+        <div className="corner-xl bg-[var(--cat-strength)] text-neutral-1 [&_:focus-visible]:outline-[var(--neutral-1)]">
+          <div
+            className={cn(
+              panelContent,
+              "py-xxl lg:py-[calc(var(--space-xxl)*5/3)]"
+            )}
+          >
+            <div className="grid items-center gap-xxl lg:grid-cols-12 lg:gap-xxl">
               <div className="lg:col-span-7">
                 <h2 id="tour-band-title" className="display-lead">
                   {title}
                 </h2>
-                <p className="mt-4 max-w-[44ch] text-lead">{support}</p>
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                <p className="mt-m max-w-[44ch] text-body-l">{support}</p>
+                <div className="mt-xl flex flex-wrap items-center gap-x-l gap-y-s">
                   <LinkButton
                     href={tour}
                     size="lg"
@@ -167,10 +173,10 @@ export function TourCTABand({
                   >
                     {primary}
                   </LinkButton>
-                  <p className="text-body">
+                  <p className="text-body-m">
                     Or call {club ? "the club" : "us"}:{" "}
                     <a
-                      className="tabular inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+                      className="tabular inline-flex min-h-11 items-center font-heavy underline underline-offset-4"
                       href={`tel:${tel}`}
                     >
                       {phone}
@@ -185,31 +191,50 @@ export function TourCTABand({
                 focus="gym-bag"
                 scheme="copper"
                 ids={tourIds(club)}
-                className="hidden rounded-lg lg:col-span-5 lg:block"
+                className="hidden corner-m lg:col-span-5 lg:block"
               />
             </div>
 
-            <ol className="mt-12 grid gap-8 pt-10 rule-t rule-night md:grid-cols-3 lg:mt-16">
+            <ol
+              className={cn(
+                "grid gap-xl rule-t rule-night",
+                "mt-xxl pt-xxl",
+                "md:grid-cols-3 lg:mt-section"
+              )}
+            >
               {TOUR_STEPS.map((s, i) => (
-                <li key={s.title} className="flex gap-4">
+                <li key={s.title} className="flex gap-m">
                   <span
                     aria-hidden="true"
-                    className="grid size-8 shrink-0 place-items-center rounded-full text-label tabular-nums edge ring-night-rule"
+                    className={cn(
+                      "grid size-8 shrink-0 place-items-center hairline",
+                      "corner-full",
+                      "text-body-s tabular-nums font-heavy",
+                      "ring-night-rule"
+                    )}
                   >
                     {i + 1}
                   </span>
                   <div>
-                    <p className="text-body-strong">{s.title}</p>
-                    <p className="mt-1 text-body text-pretty">{s.text}</p>
+                    <p className="text-body-m font-heavy">{s.title}</p>
+                    <p className="mt-xxs text-body-m text-pretty">{s.text}</p>
                   </div>
                 </li>
               ))}
             </ol>
 
-            <div className="mt-10 grid gap-6 pt-10 rule-t rule-night lg:grid-cols-12 lg:items-end lg:gap-12">
+            <div
+              className={cn(
+                "grid gap-l rule-t rule-night",
+                "mt-xxl pt-xxl",
+                "lg:grid-cols-12 lg:items-end lg:gap-xxl"
+              )}
+            >
               <div className="lg:col-span-6">
-                <p className="font-display-wide text-h3">Not ready to visit?</p>
-                <p className="mt-1 text-body">
+                <p className="font-display-wide text-body-l font-medium">
+                  Not ready to visit?
+                </p>
+                <p className="mt-xxs text-body-m">
                   Try any class for 3 days first. One club, any class with room.
                 </p>
               </div>
@@ -221,7 +246,7 @@ export function TourCTABand({
                     href="/trial"
                     variant="outline"
                     size="lg"
-                    className="text-[var(--neutral-1)] ring-[var(--neutral-1)] hover:bg-night/15"
+                    className="text-neutral-1 ring-[var(--neutral-1)] hover:bg-night/15"
                   >
                     Try a free 3-day pass
                   </LinkButton>
@@ -236,25 +261,25 @@ export function TourCTABand({
   // Sand closing block: Night appears once per site flow (the footer), and on Home.
   return (
     <section aria-labelledby="tour-band-title">
-      <Container className="py-12 lg:py-16">
-        <div className="grid gap-6 pt-6 rule-t rule-heavy lg:grid-cols-12">
+      <Container className="py-xxl lg:py-section">
+        <div className="grid gap-l pt-l rule-t rule-heavy lg:grid-cols-12">
           <div className="lg:col-span-7">
             <ObjectRow
               ids={tourIds(club).slice(0, 3)}
-              className="mb-4 h-8 w-auto"
+              className="mb-m h-8 w-auto"
             />
             <h2
               id="tour-band-title"
-              className="font-display-wide text-h2 lg:text-h1"
+              className="font-display-wide text-body-xxl lg:text-display-m font-heavy lg:font-heavy"
             >
               {title}
             </h2>
-            <p className="mt-2 max-w-[52ch] text-body text-muted-foreground">
+            <p className="mt-xs max-w-[52ch] text-body-m text-muted-foreground">
               {support}
             </p>
           </div>
-          <div className="flex flex-col gap-3 lg:col-span-5 lg:items-end">
-            <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-s lg:col-span-5 lg:items-end">
+            <div className="flex flex-wrap gap-s">
               <LinkButton href={tour} size="lg">
                 {primary}
               </LinkButton>
@@ -262,10 +287,14 @@ export function TourCTABand({
                 3-day pass
               </LinkButton>
             </div>
-            <p className="text-body text-muted-foreground">
+            <p className="text-body-m text-muted-foreground">
               Or call {club ? "the club" : "your club"}:{" "}
               <a
-                className="tabular inline-flex min-h-11 items-center font-semibold text-link underline underline-offset-4"
+                className={cn(
+                  "tabular inline-flex min-h-11 items-center",
+                  "font-heavy underline underline-offset-4",
+                  "text-link"
+                )}
                 href={`tel:${tel}`}
               >
                 {phone}
@@ -288,11 +317,11 @@ export function TourTimeline({
   className?: string
 }) {
   return (
-    <ol className={cn("relative flex flex-col gap-8", className)}>
+    <ol className={cn("relative flex flex-col gap-xl", className)}>
       {steps.map((s, i) => (
         <li
           key={s.title}
-          className="relative grid grid-cols-[2rem_1fr] gap-x-4"
+          className="relative grid grid-cols-[2rem_1fr] gap-x-m"
         >
           {i < steps.length - 1 ? (
             <span
@@ -302,15 +331,22 @@ export function TourTimeline({
           ) : null}
           <span
             aria-hidden="true"
-            className="tabular z-10 inline-flex size-8 items-center justify-center rounded-full bg-night text-caption font-semibold text-night-foreground"
+            className={cn(
+              "tabular z-10 inline-flex size-8 items-center justify-center",
+              "corner-full",
+              "text-body-s font-heavy",
+              "bg-night text-night-foreground"
+            )}
           >
             {labels ? "" : i + 1}
             {labels ? <Check className="size-4" /> : null}
           </span>
           <div>
             {labels ? <p className="eyebrow">{labels[i]}</p> : null}
-            <h3 className="font-display-wide text-h3">{s.title}</h3>
-            <p className="mt-1 max-w-[56ch] text-body text-muted-foreground">
+            <h3 className="font-display-wide text-body-l font-medium">
+              {s.title}
+            </h3>
+            <p className="mt-xxs max-w-[56ch] text-body-m text-muted-foreground">
               {s.text}
             </p>
           </div>
@@ -341,11 +377,11 @@ export function FaqList({
           id={f.id}
           className="scroll-mt-4 rule-b"
         >
-          <AccordionTrigger className="font-display-wide text-h3 hover:no-underline">
+          <AccordionTrigger className="font-display-wide text-body-l hover:no-underline font-medium">
             {f.q}
           </AccordionTrigger>
           <AccordionContent>
-            <p className="max-w-[62ch] pb-5 text-body text-muted-foreground">
+            <p className="max-w-[62ch] pb-l text-body-m text-muted-foreground">
               {f.a}
             </p>
           </AccordionContent>
@@ -371,13 +407,18 @@ export function FaqSection({
 }) {
   return (
     <Band id={id} tone={tone}>
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div className="grid gap-xl lg:grid-cols-12">
         <div className="lg:col-span-4">
           <SectionHead title={title} />
-          <div className="mt-6 flex flex-wrap gap-x-6">
+          <div className="mt-l flex flex-wrap gap-x-l">
             <TextLink href="/faq">All questions</TextLink>
             <a
-              className="inline-flex min-h-11 items-center text-label text-link underline-offset-4 hover:underline"
+              className={cn(
+                "inline-flex min-h-11 items-center",
+                "text-body-s underline-offset-4 font-heavy",
+                "text-link",
+                "hover:underline"
+              )}
               href={`tel:${tel}`}
             >
               Call {phone}
@@ -411,16 +452,16 @@ export function StatTile({
     // phoneRow: below sm, the value and label sit side by side, because a value like "6 mo–12 yr" cannot fit a third of a phone.
     <div
       className={cn(
-        "flex flex-col-reverse justify-end gap-1 pt-3 rule-t rule-heavy",
+        "flex flex-col-reverse justify-end gap-xxs pt-s rule-t rule-heavy",
         phoneRow &&
-          "max-sm:flex-row-reverse max-sm:items-baseline max-sm:gap-3",
+          "max-sm:flex-row-reverse max-sm:items-baseline max-sm:gap-s",
         className
       )}
     >
-      <dt className="text-caption text-muted-foreground">{label}</dt>
-      <dd className="tabular font-data text-h1 leading-none font-bold">
+      <dt className="text-body-s text-muted-foreground">{label}</dt>
+      <dd className="tabular font-data text-display-m leading-none font-heavy">
         {icon ? (
-          <GymObject id={icon} className="mb-3 size-10 max-sm:hidden" />
+          <GymObject id={icon} className="mb-s size-10 max-sm:hidden" />
         ) : null}
         {value}
       </dd>
@@ -445,18 +486,20 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-lg border border-dashed border-border-strong bg-card/60 p-8",
+        "corner-m edge-m border-dashed border-border-strong bg-card/60 p-xl",
         className
       )}
     >
-      <Heading className="font-display-wide text-h3">{title}</Heading>
+      <Heading className="font-display-wide text-body-l font-medium">
+        {title}
+      </Heading>
       {text ? (
-        <p className="mt-2 max-w-[56ch] text-body text-muted-foreground">
+        <p className="mt-xs max-w-[56ch] text-body-m text-muted-foreground">
           {text}
         </p>
       ) : null}
       {children ? (
-        <div className="mt-4 flex flex-wrap gap-3">{children}</div>
+        <div className="mt-m flex flex-wrap gap-s">{children}</div>
       ) : null}
     </div>
   )

@@ -13,15 +13,15 @@ export default function ErrorPage({
   return (
     <main
       id="main"
-      className="mx-auto w-full max-w-[1200px] px-4 py-16 sm:px-6 lg:px-8"
+      className="mx-auto w-full max-w-[1200px] px-m py-section sm:px-l lg:px-xl"
     >
-      <h1 className="font-display-wide text-h1 lg:text-display">
+      <h1 className="font-display-wide text-display-m lg:text-display-xl font-heavy lg:font-heavy">
         Something broke on our side.
       </h1>
-      <p className="mt-3 max-w-[52ch] text-body text-muted-foreground">
+      <p className="mt-s max-w-[52ch] text-body-m text-muted-foreground">
         Try again in a minute, or call member services at (480) 555-0100.
       </p>
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-l flex flex-wrap gap-s">
         <Button onClick={() => retry()} size="lg">
           Try again
         </Button>
@@ -30,7 +30,7 @@ export default function ErrorPage({
         </LinkButton>
       </div>
       {error.digest ? (
-        <p className="mt-6 text-caption text-muted-foreground">
+        <p className="mt-l text-body-s text-muted-foreground">
           Request ID {error.digest}
         </p>
       ) : null}

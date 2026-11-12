@@ -41,11 +41,11 @@ const DAYS = [
 
 /** One size and type for a day tile and a block, so the week and the day read as one set. */
 const TILE =
-  "flex h-14 flex-col items-center justify-center rounded-md px-2 text-center text-label font-semibold leading-tight tabular-nums whitespace-nowrap"
+  "flex h-14 flex-col items-center justify-center corner-s px-xs text-center text-body-s font-heavy tabular-nums whitespace-nowrap"
 const OPEN = "bg-night text-night-foreground"
 const CLOSED =
-  "border border-dashed border-border-strong font-normal text-muted-foreground"
-const GAP = "gap-1.5 sm:gap-2"
+  "edge-m border-dashed border-border-strong font-regular text-muted-foreground"
+const GAP = "gap-xs sm:gap-xs"
 
 /** A part's header: its object, then its name. */
 function PartHead({
@@ -60,8 +60,11 @@ function PartHead({
   aside?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
-      <h3 id={id} className="font-display-wide flex items-center gap-3 text-h3">
+    <div className="flex flex-wrap items-center justify-between gap-x-l gap-y-xs">
+      <h3
+        id={id}
+        className="font-display-wide flex items-center gap-s text-body-l font-medium"
+      >
         <GymObject id={icon} className="size-8 shrink-0" />
         {children}
       </h3>
@@ -73,14 +76,14 @@ function PartHead({
 export function KidsClubHours({ clubs }: { clubs: Club[] }) {
   const kidsClubs = clubs.filter((c) => c.has.kids)
   return (
-    <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
-      <div className="rounded-lg bg-card p-6 edge ring-border lg:col-span-8 lg:p-8">
+    <div className="grid gap-xl lg:grid-cols-12 lg:gap-xxl">
+      <div className="corner-m bg-card p-l hairline ring-border lg:col-span-8 lg:p-xl">
         {/* The week: six open days, Sunday dimmed and dashed. */}
         <section aria-labelledby="kids-days">
           <PartHead id="kids-days" icon="playground">
             Monday to Saturday
           </PartHead>
-          <ul className={cn("mt-5 grid grid-cols-7", GAP)}>
+          <ul className={cn("mt-l grid grid-cols-7", GAP)}>
             {DAYS.map((d) => (
               <li key={d.short} className={cn(TILE, d.open ? OPEN : CLOSED)}>
                 <span aria-hidden="true">{d.short}</span>
@@ -91,7 +94,7 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
                   // A phone's day tile is too narrow for the word; the dashed outline and the header carry it there.
                   <span
                     aria-hidden="true"
-                    className="text-caption max-sm:hidden"
+                    className="text-body-s max-sm:hidden"
                   >
                     Closed
                   </span>
@@ -103,12 +106,12 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
 
         {/* The day: the four blocks in order, with the break between the morning and the evening. The limit per
             child heads the line beside the block length, because both are about the blocks. */}
-        <section aria-labelledby="kids-blocks" className="mt-10">
+        <section aria-labelledby="kids-blocks" className="mt-xxl">
           <PartHead
             id="kids-blocks"
             icon="stopwatch"
             aside={
-              <p className="flex items-center gap-2 text-label text-muted-foreground">
+              <p className="flex items-center gap-xs text-body-s text-muted-foreground font-heavy">
                 <GymObject id="schedule" className="size-6 shrink-0" />
                 Up to 2 per child a day
               </p>
@@ -118,7 +121,7 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
           </PartHead>
           {/* From sm, a day line. The break is drawn narrower than its four hours, so each block has room for its
               time on one line. */}
-          <div className="mt-5 max-sm:hidden">
+          <div className="mt-l max-sm:hidden">
             <ol className={cn("grid grid-cols-[1fr_1fr_0.85fr_1fr_1fr]", GAP)}>
               {BLOCKS.slice(0, 2).map((b) => (
                 <li key={b.label} className={cn(TILE, OPEN)}>
@@ -146,7 +149,7 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
             <div
               aria-hidden="true"
               className={cn(
-                "mt-2 grid grid-cols-[1fr_1fr_0.85fr_1fr_1fr] text-caption text-muted-foreground tabular-nums",
+                "mt-xs grid grid-cols-[1fr_1fr_0.85fr_1fr_1fr] text-body-s text-muted-foreground tabular-nums",
                 GAP
               )}
             >
@@ -161,7 +164,7 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
             </div>
           </div>
           {/* On a phone, the same blocks as two rows, with the break between them. */}
-          <div className="mt-5 sm:hidden">
+          <div className="mt-l sm:hidden">
             <ol className={cn("grid grid-cols-2", GAP)}>
               {BLOCKS.slice(0, 2).map((b) => (
                 <li key={b.label} className={cn(TILE, OPEN)}>
@@ -171,7 +174,12 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
             </ol>
             <p
               aria-hidden="true"
-              className="my-1.5 grid h-10 place-items-center rounded-md border border-dashed border-border-strong text-caption text-muted-foreground"
+              className={cn(
+                "grid h-10 place-items-center",
+                "my-xs corner-s edge-m border-dashed",
+                "text-body-s",
+                "border-border-strong text-muted-foreground"
+              )}
             >
               {BREAK.label}
             </p>
@@ -189,22 +197,25 @@ export function KidsClubHours({ clubs }: { clubs: Club[] }) {
 
       {/* Where: only the clubs with a kids club, as the club map's pins. */}
       <section aria-labelledby="kids-clubs" className="lg:col-span-4">
-        <h3 id="kids-clubs" className="font-display-wide text-h3">
+        <h3
+          id="kids-clubs"
+          className="font-display-wide text-body-l font-medium"
+        >
           At {kidsClubs.length} clubs
         </h3>
-        <ul className="mt-5 rule-t rule-heavy">
+        <ul className="mt-l rule-t rule-heavy">
           {kidsClubs.map((c) => (
             <li key={c.slug} className="rule-b">
               <Link
                 href={`/clubs/${c.slug}`}
-                className="group flex min-h-14 items-center gap-3 py-2 no-underline"
+                className="group flex min-h-14 items-center gap-s py-xs no-underline"
               >
                 <ClubPin n={c.n} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-body-strong group-hover:underline">
+                  <span className="block text-body-m group-hover:underline font-heavy">
                     {c.short}
                   </span>
-                  <span className="block text-caption text-muted-foreground">
+                  <span className="block text-body-s text-muted-foreground">
                     {c.city}
                   </span>
                 </span>
@@ -271,29 +282,29 @@ const CARE: { icon: IconComponent; text: string }[] = [
  */
 export function KidsClubVisit() {
   return (
-    <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+    <div className="grid gap-xl lg:grid-cols-12 lg:gap-xxl">
       <section
         aria-labelledby="kids-visit"
-        className="rounded-lg bg-card p-6 edge ring-border lg:col-span-8 lg:p-8"
+        className="corner-m bg-card p-l hairline ring-border lg:col-span-8 lg:p-xl"
       >
         <PartHead id="kids-visit" icon="schedule">
           A {VISIT.block} block
         </PartHead>
         {/* The block as a line: the check-in and pick-up windows are each 15 minutes of the 2 hours. */}
-        <div aria-hidden="true" className="mt-6">
+        <div aria-hidden="true" className="mt-l">
           <div className={cn("grid grid-cols-8", GAP)}>
             {VISIT.phases.map((p) => (
               <span
                 key={p.key}
                 className={cn(
-                  "h-4 rounded-full",
+                  "h-4 corner-full",
                   p.key === "play" ? "bg-night" : "bg-[var(--cat-strength)]"
                 )}
                 style={{ gridColumn: `span ${p.span} / span ${p.span}` }}
               />
             ))}
           </div>
-          <div className="relative mt-2 h-5 text-caption text-muted-foreground tabular-nums">
+          <div className="relative mt-xs h-5 text-body-s text-muted-foreground tabular-nums">
             {VISIT.ticks.map((t, i) => (
               <span
                 key={t}
@@ -320,14 +331,14 @@ export function KidsClubVisit() {
           </div>
         </div>
         {/* The three phases, in order. The two windows are the rules; the play time is what happens. */}
-        <ol className="mt-8 grid gap-6 pt-6 rule-t md:grid-cols-3">
+        <ol className="mt-xl grid gap-l pt-l rule-t md:grid-cols-3">
           {VISIT.phases.map((p) => (
-            <li key={p.key} className="flex flex-col gap-2">
-              <span className="flex items-center gap-3">
+            <li key={p.key} className="flex flex-col gap-xs">
+              <span className="flex items-center gap-s">
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "grid size-10 shrink-0 place-items-center rounded-md",
+                    "grid size-10 shrink-0 place-items-center corner-s",
                     p.key === "play" ? "bg-night" : "bg-[var(--cat-strength)]"
                   )}
                 >
@@ -338,13 +349,15 @@ export function KidsClubVisit() {
                   />
                 </span>
                 <span>
-                  <span className="block text-caption text-muted-foreground tabular-nums">
+                  <span className="block text-body-s text-muted-foreground tabular-nums">
                     {p.when}
                   </span>
-                  <span className="block text-body-strong">{p.title}</span>
+                  <span className="block text-body-m font-heavy">
+                    {p.title}
+                  </span>
                 </span>
               </span>
-              <p className="text-body text-pretty text-muted-foreground">
+              <p className="text-body-m text-pretty text-muted-foreground">
                 {p.text}
               </p>
             </li>
@@ -357,17 +370,19 @@ export function KidsClubVisit() {
           Who is with your child
         </h3>
         {/* Last-baseline alignment: the label wraps to two lines, and its last line sits on the figure's baseline. */}
-        <p className="flex [align-items:last_baseline] gap-3">
-          <span className="tabular font-data text-figure-xl">1:8</span>
-          <span className="text-body-strong">
+        <p className="flex [align-items:last_baseline] gap-s">
+          <span className="tabular font-data text-figure-xl font-heavy">
+            1:8
+          </span>
+          <span className="text-body-m font-heavy">
             One adult for every 8 children
           </span>
         </p>
-        <ul className="mt-6 rule-t rule-heavy">
+        <ul className="mt-l rule-t rule-heavy">
           {CARE.map(({ icon: Icon, text }) => (
             <li
               key={text}
-              className="flex items-center gap-3 py-3.5 text-body rule-b"
+              className="flex items-center gap-s py-m text-body-m rule-b"
             >
               <Icon className="size-5 shrink-0" aria-hidden="true" />
               {text}

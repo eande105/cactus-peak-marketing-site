@@ -33,7 +33,7 @@ export function Logo({
     <Link
       href="/"
       aria-label="Cactus Peak Athletic, home"
-      className={cn("inline-flex min-h-11 items-center rounded-sm", className)}
+      className={cn("inline-flex min-h-11 items-center corner-xs", className)}
     >
       <Image
         src={src}

@@ -111,12 +111,17 @@ function ActionBar({
       <div className="h-24 lg:hidden" aria-hidden="true" />
       <div
         data-action-bar
-        className="fixed inset-x-0 bottom-0 z-40 flex flex-col-reverse gap-2 bg-card px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t lg:static lg:z-auto lg:mt-8 lg:flex-row lg:items-center lg:gap-4 lg:bg-transparent lg:p-0 lg:rule-none"
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-40 flex flex-col-reverse gap-xs rule-t",
+          "px-m pt-s pb-[max(12px,env(safe-area-inset-bottom))]",
+          "bg-card",
+          "lg:static lg:z-auto lg:mt-xl lg:flex-row lg:items-center lg:gap-m lg:bg-transparent lg:p-zero lg:rule-none"
+        )}
       >
-        <div className="flex gap-3">{children}</div>
+        <div className="flex gap-s">{children}</div>
         <p
           id="tour-hint"
-          className="text-caption text-muted-foreground empty:hidden"
+          className="text-body-s text-muted-foreground empty:hidden"
           aria-live="polite"
         >
           {hint}
@@ -253,7 +258,7 @@ export function TourFlow() {
         </div>
       </MinimalCheckoutHeader>
       <main id="main" tabIndex={-1} className="flex-1 outline-none">
-        <Container className="grid gap-8 py-8 lg:grid-cols-12 lg:py-12">
+        <Container className="grid gap-xl py-xl lg:grid-cols-12 lg:py-xxl">
           <div className="md:hidden lg:col-span-12">
             <StepBar
               step={step}
@@ -268,16 +273,22 @@ export function TourFlow() {
                   id="t1"
                   ref={head}
                   tabIndex={-1}
-                  className="font-display-wide text-h1 outline-none"
+                  className="font-display-wide text-display-m outline-none font-heavy"
                 >
                   Book a free tour.
                 </h1>
-                <p className="mt-2 text-body text-muted-foreground">
+                <p className="mt-xs text-body-m text-muted-foreground">
                   30 minutes. A coach, not a salesperson. No card.
                 </p>
                 {coach ? (
-                  <div className="mt-6 flex items-center justify-between gap-4 rounded-lg bg-card p-4 edge ring-border">
-                    <p className="text-body">
+                  <div
+                    className={cn(
+                      "flex items-center justify-between gap-m hairline",
+                      "mt-l corner-m p-m",
+                      "bg-card ring-border"
+                    )}
+                  >
+                    <p className="text-body-m">
                       You asked to meet {coach.name}. We will try to have{" "}
                       {coach.first} join.
                     </p>
@@ -286,9 +297,9 @@ export function TourFlow() {
                     </CheckRow>
                   </div>
                 ) : null}
-                <fieldset className="mt-8">
-                  <legend className="text-label">Club</legend>
-                  <RadioGroupBox className="mt-2 flex flex-col gap-2">
+                <fieldset className="mt-xl">
+                  <legend className="text-body-s font-heavy">Club</legend>
+                  <RadioGroupBox className="mt-xs flex flex-col gap-xs">
                     {clubs.map((x) => {
                       const on = club === x.slug
                       return (
@@ -302,7 +313,9 @@ export function TourFlow() {
                             setT((p) => ({ ...p, club: x.slug, time: null }))
                           }
                           className={cn(
-                            "flex min-h-16 items-center gap-3 rounded-lg px-3 py-2 text-left edge",
+                            "flex min-h-16 items-center gap-s hairline",
+                            "corner-m px-s py-xs",
+                            "text-left",
                             on
                               ? "bg-accent ring-2 ring-primary"
                               : "bg-card ring-border hover:ring-border-strong"
@@ -312,13 +325,13 @@ export function TourFlow() {
                             slug={x.slug}
                             ratio="4/3"
                             detail="simple"
-                            className="w-14 shrink-0 overflow-hidden rounded-sm"
+                            className="w-14 shrink-0 overflow-hidden corner-xs"
                           />
                           <span className="flex-1">
-                            <span className="block text-body-strong">
+                            <span className="block text-body-m font-heavy">
                               {x.name}
                             </span>
-                            <span className="block text-body text-muted-foreground">
+                            <span className="block text-body-m text-muted-foreground">
                               {x.city}
                             </span>
                           </span>
@@ -333,10 +346,14 @@ export function TourFlow() {
                     })}
                   </RadioGroupBox>
                 </fieldset>
-                <fieldset className="mt-8">
-                  <legend className="text-label">Day</legend>
+                <fieldset className="mt-xl">
+                  <legend className="text-body-s font-heavy">Day</legend>
                   <RadioGroupBox
-                    className="-mx-4 mt-2 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+                    className={cn(
+                      "flex gap-xs overflow-x-auto",
+                      "-mx-m mt-xs px-m",
+                      "sm:mx-zero sm:px-zero"
+                    )}
                     aria-label="Pick a day"
                     tabIndex={club ? undefined : 0}
                   >
@@ -358,7 +375,9 @@ export function TourFlow() {
                             }
                             aria-label={`${dateLabel(i, true)}${has ? "" : ", no tours"}`}
                             className={cn(
-                              "tabular flex min-h-16 min-w-[76px] shrink-0 flex-col items-start justify-center rounded-lg px-3 text-left edge",
+                              "tabular flex min-h-16 min-w-[76px] shrink-0 flex-col items-start justify-center hairline",
+                              "corner-m px-s",
+                              "text-left",
                               on
                                 ? "bg-night text-night-foreground ring-night"
                                 : has
@@ -366,7 +385,7 @@ export function TourFlow() {
                                   : "bg-muted text-disabled-foreground ring-border"
                             )}
                           >
-                            <span className="text-label">
+                            <span className="text-body-s font-heavy">
                               {i === now.dayNum
                                 ? "Today"
                                 : d.toLocaleDateString("en-US", {
@@ -376,7 +395,7 @@ export function TourFlow() {
                             </span>
                             <span
                               className={cn(
-                                "text-caption",
+                                "text-body-s",
                                 on
                                   ? "text-night-muted"
                                   : "text-muted-foreground"
@@ -393,7 +412,7 @@ export function TourFlow() {
                       }
                     )}
                   </RadioGroupBox>
-                  <p className="mt-2 text-caption text-muted-foreground">
+                  <p className="mt-xs text-body-s text-muted-foreground">
                     {club
                       ? "Tours run every 30 minutes. All times are Arizona time."
                       : "Pick a club first. All times are Arizona time."}
@@ -429,16 +448,16 @@ export function TourFlow() {
                   id="t2"
                   ref={head}
                   tabIndex={-1}
-                  className="font-display-wide text-h1 outline-none"
+                  className="font-display-wide text-display-m outline-none font-heavy"
                 >
                   Pick a time on {dateLabel(t.day, true)}.
                 </h1>
                 {slots.length ? (
                   groups.map(([g, list]) =>
                     list.length ? (
-                      <fieldset key={g} className="mt-6">
-                        <legend className="eyebrow mb-2">{g}</legend>
-                        <RadioGroupBox className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+                      <fieldset key={g} className="mt-l">
+                        <legend className="eyebrow mb-xs">{g}</legend>
+                        <RadioGroupBox className="grid grid-cols-2 gap-xs lg:grid-cols-3">
                           {list.map((m) => {
                             const on = t.time === m
                             return (
@@ -450,7 +469,9 @@ export function TourFlow() {
                                 aria-checked={on}
                                 onClick={() => setT((p) => ({ ...p, time: m }))}
                                 className={cn(
-                                  "tabular inline-flex min-h-11 items-center justify-center gap-1.5 rounded-md text-label edge",
+                                  "tabular inline-flex min-h-11 items-center justify-center gap-xs hairline",
+                                  "corner-s",
+                                  "text-body-s font-heavy",
                                   on
                                     ? "bg-accent ring-2 ring-primary"
                                     : "bg-card ring-border hover:ring-border-strong"
@@ -472,7 +493,7 @@ export function TourFlow() {
                   )
                 ) : (
                   <EmptyState
-                    className="mt-6"
+                    className="mt-l"
                     title={`No times left on ${dateLabel(t.day, true).split(",")[0]}.`}
                   >
                     <Button variant="outline" onClick={() => go(1)}>
@@ -508,26 +529,32 @@ export function TourFlow() {
                   id="t3"
                   ref={head}
                   tabIndex={-1}
-                  className="font-display-wide text-h1 outline-none"
+                  className="font-display-wide text-display-m outline-none font-heavy"
                 >
                   Confirm your tour.
                 </h1>
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card p-4 edge ring-border">
-                  <p className="tabular text-body">
-                    <span className="font-semibold">{c.name}</span> ·{" "}
+                <div
+                  className={cn(
+                    "flex flex-wrap items-center justify-between gap-s hairline",
+                    "mt-m corner-m p-m",
+                    "bg-card ring-border"
+                  )}
+                >
+                  <p className="tabular text-body-m">
+                    <span className="font-heavy">{c.name}</span> ·{" "}
                     {dateLabel(t.day, true)} · {fmtTime(t.time)} · 30 minutes
                   </p>
                   <button
                     type="button"
                     onClick={() => go(1)}
-                    className="min-h-11 text-label text-link underline-offset-4 hover:underline"
+                    className="min-h-11 text-body-s text-link underline-offset-4 hover:underline font-heavy"
                   >
                     Edit
                   </button>
                 </div>
                 <form
                   noValidate
-                  className="relative mt-6 flex flex-col gap-5"
+                  className="relative mt-l flex flex-col gap-l"
                   onSubmit={(e) => {
                     e.preventDefault()
                     submit(e.currentTarget)
@@ -535,7 +562,7 @@ export function TourFlow() {
                 >
                   <ErrorSummary errors={errors} show={tried} />
                   <Honeypot />
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-l sm:grid-cols-2">
                     <TextField
                       label="First name"
                       required
@@ -585,7 +612,11 @@ export function TourFlow() {
                   ) : (
                     <button
                       type="button"
-                      className="inline-flex min-h-11 items-center gap-1.5 self-start text-label text-link"
+                      className={cn(
+                        "inline-flex min-h-11 items-center gap-xs self-start",
+                        "text-body-s font-heavy",
+                        "text-link"
+                      )}
                       onClick={() => setNoteOpen(true)}
                     >
                       <Plus className="size-4" aria-hidden="true" />
@@ -625,7 +656,7 @@ export function TourFlow() {
                       Book my tour
                     </Button>
                   </ActionBar>
-                  <p className="text-caption text-muted-foreground">
+                  <p className="text-body-s text-muted-foreground">
                     Free. No card. We use your details only to book this tour.{" "}
                     <Link href="/legal/privacy" className="underline">
                       Privacy policy
@@ -638,9 +669,9 @@ export function TourFlow() {
           </div>
           {c ? (
             <aside className="hidden lg:col-span-5 lg:block">
-              <div className="sticky top-8 rounded-lg bg-muted p-4 text-body">
-                <h2 className="text-body-strong">Your tour</h2>
-                <p className="mt-2 font-semibold">{c.name}</p>
+              <div className="sticky top-8 corner-m bg-muted p-m text-body-m">
+                <h2 className="text-body-m font-heavy">Your tour</h2>
+                <p className="mt-xs font-heavy">{c.name}</p>
                 {t.day !== null ? (
                   <p className="tabular">{dateLabel(t.day, true)}</p>
                 ) : (
@@ -665,7 +696,7 @@ export function TourConfirmed() {
   if (!ready) return null
   if (!c || t.day === null || t.time === null || !t.id)
     return (
-      <Container className="py-16">
+      <Container className="py-section">
         <EmptyState
           as="h1"
           title="We could not find a booking."
@@ -685,41 +716,41 @@ export function TourConfirmed() {
     ["Club details", `/clubs/${c.slug}`],
   ]
   return (
-    <Container className="grid gap-8 py-10 lg:grid-cols-12 lg:py-16">
+    <Container className="grid gap-xl py-xxl lg:grid-cols-12 lg:py-section">
       <div className="lg:col-span-7">
         <CircleCheck className="size-12 text-success" aria-hidden="true" />
         <h1
-          className="font-display-wide mt-3 text-h1 lg:text-display"
+          className="font-display-wide mt-s text-display-m lg:text-display-xl font-heavy lg:font-heavy"
           tabIndex={-1}
           id="confirmed-title"
         >
           You&apos;re booked{t.first ? `, ${t.first}` : ""}.
         </h1>
-        <p className="tabular mt-2 text-body">
+        <p className="tabular mt-xs text-body-m">
           {dateLabel(t.day, true)} at {fmtTime(t.time)} · {c.name}
         </p>
         <ClubMap
           only={c.slug}
           interactive={false}
-          className="mt-6 aspect-[16/9] w-full"
+          className="mt-l aspect-[16/9] w-full"
         />
-        <div className="mt-4 rounded-lg bg-card p-5 text-body edge ring-border">
+        <div className="mt-m corner-m bg-card p-l text-body-m hairline ring-border">
           <p>
             {c.cross}, {c.city}, AZ {c.zip}
           </p>
-          <p className="mt-1 text-muted-foreground">
+          <p className="mt-xxs text-muted-foreground">
             {c.parking} Ask for a coach at the front desk.
           </p>
-          <p className="mt-1">
+          <p className="mt-xxs">
             <a
-              className="font-semibold text-link underline-offset-4 hover:underline"
+              className="font-heavy text-link underline-offset-4 hover:underline"
               href={`tel:${c.tel}`}
             >
               {c.phone}
             </a>
           </p>
         </div>
-        <div className="mt-6 flex flex-wrap items-center gap-4">
+        <div className="mt-l flex flex-wrap items-center gap-m">
           <LinkButton
             href="/tour/confirmed#cal"
             onClick={(e) => {
@@ -745,12 +776,16 @@ export function TourConfirmed() {
             Add to calendar
           </LinkButton>
         </div>
-        <ul className="mt-6 rule-t">
+        <ul className="mt-l rule-t">
           {rows.map(([l, h]) => (
             <li key={l}>
               <a
                 href={h}
-                className="flex min-h-12 items-center justify-between text-label rule-b hover:underline"
+                className={cn(
+                  "flex min-h-12 items-center justify-between rule-b",
+                  "text-body-s font-heavy",
+                  "hover:underline"
+                )}
               >
                 <span>{l}</span>
                 <span aria-hidden="true">→</span>
@@ -758,22 +793,24 @@ export function TourConfirmed() {
             </li>
           ))}
         </ul>
-        <h2 className="font-display-wide mt-10 text-h3">What to bring</h2>
-        <p className="mt-2 text-body">
+        <h2 className="font-display-wide mt-xxl text-body-l font-medium">
+          What to bring
+        </h2>
+        <p className="mt-xs text-body-m">
           Photo ID if you want a 3-day pass. Workout clothes if you want to try
           a class. Your questions for the coach.
         </p>
-        <p className="mt-6 text-body">
+        <p className="mt-l text-body-m">
           Want to try a class too?{" "}
           <TextLink href="/trial" className="inline-flex">
             Try a free 3-day pass
           </TextLink>
         </p>
-        <LinkButton href="/" variant="outline" className="mt-4">
+        <LinkButton href="/" variant="outline" className="mt-m">
           Done
         </LinkButton>
         {t.remind ? (
-          <p className="mt-4 text-caption text-muted-foreground">
+          <p className="mt-m text-body-s text-muted-foreground">
             We will text you 24 hours and 2 hours before.
           </p>
         ) : null}

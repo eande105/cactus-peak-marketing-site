@@ -47,13 +47,13 @@ export default async function Home() {
           Sand, so each panel sits on the same field as its gutter and no thin strip of another colour
           shows between a band and a panel. */}
       <Band>
-        <ClubStrip className="mb-12 lg:mb-16" />
+        <ClubStrip className="mb-xxl lg:mb-section" />
         <SectionHead
           size="lead"
           title="Find the club that fits your week."
           action={<TextLink href="/clubs#compare">Compare the clubs</TextLink>}
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubCards />
         </div>
       </Band>
@@ -64,7 +64,7 @@ export default async function Home() {
           title="Eight ways to move."
           action={<TextLink href="/classes#types">All 28 classes</TextLink>}
         />
-        <HomeClasses className="mt-12" />
+        <HomeClasses className="mt-xxl" />
         <HomeCoachLine coaches={coaches} />
       </Band>
 
@@ -74,7 +74,7 @@ export default async function Home() {
           clubs={clubs}
           coaches={coaches}
           packs={packs}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
@@ -86,7 +86,7 @@ export default async function Home() {
             <TextLink href="/membership#compare">Compare the plans</TextLink>
           }
         />
-        <HomeMembership className="mt-12" />
+        <HomeMembership className="mt-xxl" />
       </Band>
 
       <Band>
@@ -94,7 +94,7 @@ export default async function Home() {
         <HomeVoices
           testimonials={testimonials}
           clubQuotes={clubQuotes}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
@@ -106,7 +106,7 @@ export default async function Home() {
           title={`Built for the East Valley since ${since}.`}
           action={<TextLink href="/about">Our story</TextLink>}
         />
-        <HomeStory journal={journal} jobs={jobs} className="mt-12" />
+        <HomeStory journal={journal} jobs={jobs} className="mt-xxl" />
       </Band>
 
       <TourCTABand passEmail night />

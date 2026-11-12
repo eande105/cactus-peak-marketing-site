@@ -40,22 +40,22 @@ export function PostingLine({
   items: [string, string, string?][]
 }) {
   return (
-    <dl className="grid grid-cols-2 gap-x-5 gap-y-4 sm:flex sm:flex-nowrap sm:gap-x-0">
+    <dl className="grid grid-cols-2 gap-x-l gap-y-m sm:flex sm:flex-nowrap sm:gap-x-zero">
       {items.map(([label, value, sub], i) => (
         <div
           key={label}
           className={cn(
-            "min-w-0 sm:px-5 sm:first:pl-0",
+            "min-w-0 sm:px-l sm:first:pl-zero",
             i > 0 && "sm:rule-l",
             // A long value (a schedule) takes the whole row on a phone and the spare width on a wider screen.
             value.length > 24 && "max-sm:col-span-2 sm:flex-1"
           )}
         >
-          <dt className="text-caption text-muted-foreground">{label}</dt>
-          <dd className="text-label text-pretty">
+          <dt className="text-body-s text-muted-foreground">{label}</dt>
+          <dd className="text-body-s text-pretty font-heavy">
             {value}
             {sub ? (
-              <span className="block text-caption font-normal text-muted-foreground">
+              <span className="block text-body-s font-regular text-muted-foreground">
                 {sub}
               </span>
             ) : null}
@@ -87,7 +87,7 @@ export function RolePay({
       role="img"
       aria-label={`${job.title}: ${job.pay}. Open roles pay from $${low} to $${high} an hour.`}
       className={cn(
-        "overflow-hidden rounded-2xl lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center",
+        "overflow-hidden corner-xl lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center",
         nightFill
       )}
     >
@@ -101,24 +101,24 @@ export function RolePay({
         className="block w-full"
       />
       {ends ? (
-        <div aria-hidden="true" className="p-5 sm:p-8 lg:p-10">
-          <p className="text-caption text-night-muted">Pay</p>
-          <p className="mt-1 flex items-baseline gap-2">
-            <span className="tabular font-data text-h2 font-bold sm:text-h1">
+        <div aria-hidden="true" className="p-l sm:p-xl lg:p-xxl">
+          <p className="text-body-s text-night-muted">Pay</p>
+          <p className="mt-xxs flex items-baseline gap-xs">
+            <span className="tabular font-data text-body-xxl font-heavy sm:text-display-m">
               ${ends[0]}–${ends[1]}
             </span>
-            <span className="text-body text-night-muted">an hour</span>
+            <span className="text-body-m text-night-muted">an hour</span>
           </p>
-          <div className="relative mt-5 h-3 rounded-full fill-quiet">
+          <div className="relative mt-l h-3 corner-full fill-quiet">
             <div
-              className="absolute inset-y-0 rounded-full bg-[var(--cat-strength)]"
+              className="absolute inset-y-0 corner-full bg-[var(--cat-strength)]"
               style={{
                 left: at(ends[0]),
                 right: `calc(100% - ${at(ends[1])})`,
               }}
             />
           </div>
-          <div className="tabular mt-2 flex justify-between gap-4 text-caption text-night-muted">
+          <div className="tabular mt-xs flex justify-between gap-m text-body-s text-night-muted">
             <span>${low}</span>
             <span>Pay across open roles</span>
             <span>${high}</span>
@@ -146,7 +146,14 @@ export function ReadingLine({
   parts: string[]
 }) {
   return (
-    <div className="mx-auto mt-5 flex max-w-5xl flex-wrap items-center gap-x-5 gap-y-2 text-caption text-muted-foreground">
+    <div
+      className={cn(
+        "flex max-w-5xl flex-wrap items-center gap-x-l gap-y-xs",
+        "mx-auto mt-l",
+        "text-body-s",
+        "text-muted-foreground"
+      )}
+    >
       <p>
         Published <time dateTime={iso}>{date}</time>
       </p>
@@ -157,18 +164,18 @@ export function ReadingLine({
             key={h}
             href={`#s${i + 1}`}
             title={h}
-            className="group flex min-h-11 w-7 flex-col items-center justify-center gap-1 no-underline"
+            className="group flex min-h-11 w-7 flex-col items-center justify-center gap-xxs no-underline"
           >
             <span className="sr-only">
               Part {i + 1}: {h}
             </span>
             <span
               aria-hidden="true"
-              className="h-4 w-1.5 rounded-full bg-foreground transition-colors group-hover:bg-[var(--cat-strength)]"
+              className="h-4 w-1.5 corner-full bg-foreground transition-colors group-hover:bg-[var(--cat-strength)]"
             />
             <span
               aria-hidden="true"
-              className="tabular text-caption leading-none text-muted-foreground group-hover:text-foreground"
+              className="tabular text-body-s leading-none text-muted-foreground group-hover:text-foreground"
             >
               {i + 1}
             </span>
@@ -194,7 +201,7 @@ export function NoteClass({ ct }: { ct: ClassType }) {
   return (
     <Link
       href={classHref(ct)}
-      className="group flex items-center gap-4 rounded-lg bg-card p-3 pr-5 no-underline edge ring-border transition-[box-shadow] hover:ring-border-strong sm:gap-5"
+      className="group flex items-center gap-m corner-m bg-card p-s pr-l no-underline hairline ring-border transition-[box-shadow] hover:ring-border-strong sm:gap-l"
     >
       <div className="w-20 shrink-0 sm:w-24">
         <ObjectCrop
@@ -203,17 +210,24 @@ export function NoteClass({ ct }: { ct: ClassType }) {
           scale={0.62}
           x={0.42}
           y={0.22}
-          className="rounded-sm"
+          className="corner-xs"
         />
       </div>
       <span className="min-w-0 flex-1">
-        <span className="block text-caption text-muted-foreground">
+        <span className="block text-body-s text-muted-foreground">
           The class in this note
         </span>
-        <span className="font-display-wide mt-0.5 block text-h3 text-balance">
+        <span className="font-display-wide mt-xxs block text-body-l text-balance font-medium">
           {ct.name}
         </span>
-        <span className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-muted-foreground">
+        <span
+          className={cn(
+            "flex flex-wrap items-center gap-x-s gap-y-xxs",
+            "mt-xs",
+            "text-body-s",
+            "text-muted-foreground"
+          )}
+        >
           <span className="tabular">
             {ct.categoryName} · {ct.duration} min
           </span>
@@ -239,10 +253,15 @@ export function NoteAuthor({
   author: { name: string; slug: string; credential: string; profile: boolean }
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-lg bg-card p-3 pr-5 edge ring-border sm:gap-5">
+    <div className="flex items-center gap-m corner-m bg-card p-s pr-l hairline ring-border sm:gap-l">
       <span
         aria-hidden="true"
-        className="grid aspect-square w-20 shrink-0 place-items-center rounded-sm bg-night sm:w-24"
+        className={cn(
+          "grid aspect-square w-20 shrink-0 place-items-center",
+          "corner-xs",
+          "bg-night",
+          "sm:w-24"
+        )}
       >
         <GymObject
           id={coachObjects[author.slug] ?? "whistle"}
@@ -251,15 +270,17 @@ export function NoteAuthor({
         />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-caption text-muted-foreground">Written by</p>
-        <p className="font-display-wide mt-0.5 text-h3">{author.name}</p>
+        <p className="text-body-s text-muted-foreground">Written by</p>
+        <p className="font-display-wide mt-xxs text-body-l font-medium">
+          {author.name}
+        </p>
         {author.credential ? (
-          <p className="mt-0.5 text-caption text-muted-foreground">
+          <p className="mt-xxs text-body-s text-muted-foreground">
             {author.credential}
           </p>
         ) : null}
         {author.profile ? (
-          <TextLink href={`/coaches/${author.slug}`} className="-mb-2">
+          <TextLink href={`/coaches/${author.slug}`} className="-mb-xs">
             Coach profile
           </TextLink>
         ) : null}

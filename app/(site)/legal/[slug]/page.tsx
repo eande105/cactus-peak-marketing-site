@@ -64,11 +64,11 @@ export default async function Legal({
   const p = (await getCatalog()).legalPages.find((x) => x.slug === slug)
   if (!p) notFound()
   return (
-    <Container className="pt-8 pb-16 lg:pt-14 print:py-0">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <Container className="pt-xl pb-section lg:pt-section print:py-zero">
+      <div className="flex flex-wrap items-end justify-between gap-m">
         <div>
           <h1 className="display-lead">{p.title}</h1>
-          <p className="mt-2 text-body text-muted-foreground">
+          <p className="mt-xs text-body-m text-muted-foreground">
             Last updated Oct 1, 2026 · Version 3
           </p>
         </div>
@@ -76,24 +76,24 @@ export default async function Legal({
       </div>
       <p
         role="note"
-        className="mt-6 max-w-[680px] rounded-md bg-muted p-3 text-caption"
+        className="mt-l max-w-[680px] corner-s bg-muted p-s text-body-s"
       >
         Sample text for a fictional brand made for a university project. A
         lawyer must write the real page before launch.
       </p>
       {short[slug] ? (
-        <div className="mt-8 max-w-[680px] rounded-lg bg-muted p-5">
-          <h2 className="eyebrow mb-2">The short version</h2>
-          <ul className="list-disc pl-5 text-caption">
+        <div className="mt-xl max-w-[680px] corner-m bg-muted p-l">
+          <h2 className="eyebrow mb-xs">The short version</h2>
+          <ul className="list-disc pl-l text-body-s">
             {short[slug].map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>
         </div>
       ) : null}
-      <div className="mt-10 grid gap-8 lg:grid-cols-12">
+      <div className="mt-xxl grid gap-xl lg:grid-cols-12">
         <nav aria-label="Contents" className="hidden lg:col-span-3 lg:block">
-          <ol className="sticky top-[calc(var(--sticky-top)+1.5rem)] flex flex-col gap-2 text-caption">
+          <ol className="sticky top-[calc(var(--sticky-top)+1.5rem)] flex flex-col gap-xs text-body-s">
             {sections.map((s, i) => (
               <li key={s}>
                 <a className="hover:underline" href={`#l${i + 1}`}>
@@ -105,17 +105,17 @@ export default async function Legal({
         </nav>
         <div className="max-w-[680px] lg:col-span-7 lg:col-start-5">
           {sections.map((s, i) => (
-            <section key={s} id={`l${i + 1}`} className="scroll-mt-8 pb-8">
-              <h2 className="font-display-wide mb-2 text-h3">
+            <section key={s} id={`l${i + 1}`} className="scroll-mt-8 pb-xl">
+              <h2 className="font-display-wide mb-xs text-body-l font-medium">
                 {i + 1}. {s}
               </h2>
               {i === 0 ? (
-                <p className="text-body">
+                <p className="text-body-m">
                   It states in plain words what we do, what you can choose, and
                   who to ask.
                 </p>
               ) : (
-                <p className="text-body text-muted-foreground">
+                <p className="text-body-m text-muted-foreground">
                   Sample section.
                 </p>
               )}
@@ -124,9 +124,9 @@ export default async function Legal({
                   aria-label="Fees. Scroll sideways if the table does not fit."
                   // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region needs a tab stop so keyboard users can scroll it
                   tabIndex={0}
-                  className="mt-4 overflow-x-auto rounded-lg bg-card edge ring-border"
+                  className="mt-m overflow-x-auto corner-m bg-card hairline ring-border"
                 >
-                  <table className="w-full text-caption">
+                  <table className="w-full text-body-s">
                     <caption className="sr-only">Fees</caption>
                     <tbody>
                       {[
@@ -145,13 +145,10 @@ export default async function Legal({
                           key={a}
                           className="[&>*]:rule-t first:[&>*]:rule-t-0"
                         >
-                          <th
-                            scope="row"
-                            className="p-3 text-left font-semibold"
-                          >
+                          <th scope="row" className="p-s text-left font-heavy">
                             {a}
                           </th>
-                          <td className="tabular p-3">{b}</td>
+                          <td className="tabular p-s">{b}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -161,7 +158,7 @@ export default async function Legal({
               {slug === "cookies" && i === 2 ? <CookiePrefs /> : null}
             </section>
           ))}
-          <p className="text-body text-muted-foreground">
+          <p className="text-body-m text-muted-foreground">
             Questions about this page? Email privacy@cactuspeakathletic.com
             (placeholder).
           </p>

@@ -48,7 +48,7 @@ export default async function Careers() {
       <Band tone="tint" id="why">
         <SectionHead size="lead" title="Why work here." />
         <ObjectTiles
-          className="mt-12"
+          className="mt-xxl"
           tiles={[
             {
               title: "Free membership for you and your family",
@@ -65,7 +65,7 @@ export default async function Careers() {
 
       <Band id="roles">
         <SectionHead size="lead" title="Open roles." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <JobList />
         </div>
       </Band>
@@ -76,28 +76,31 @@ export default async function Careers() {
           title="How we hire."
           lede="Four steps, and an answer at each one."
         />
-        <NumberedSteps className="mt-12" steps={HIRE_STEPS} />
+        <NumberedSteps className="mt-xxl" steps={HIRE_STEPS} />
         {/* The one contact action on the page, in the coach finder's "Not sure who fits?" form. */}
         <aside
           aria-labelledby="careers-ask-title"
-          className="mt-16 grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+          className="mt-section grid gap-l corner-m bg-card p-l hairline ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
         >
           <span
             aria-hidden="true"
-            className="grid size-14 place-items-center rounded-md bg-night"
+            className="grid size-14 place-items-center corner-s bg-night"
           >
             <GymObject id="whistle" scheme="night" className="size-9" />
           </span>
           <div className="min-w-0">
-            <h3 id="careers-ask-title" className="font-display-wide text-h3">
+            <h3
+              id="careers-ask-title"
+              className="font-display-wide text-body-l font-medium"
+            >
               Questions about a role?
             </h3>
-            <p className="mt-2 max-w-[60ch] text-body text-pretty text-muted-foreground">
+            <p className="mt-xs max-w-[60ch] text-body-m text-pretty text-muted-foreground">
               Cactus Peak is an equal opportunity employer. To ask for an
               accommodation, call (480) 555-0100.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-start-2 lg:col-start-auto">
+          <div className="flex flex-wrap items-center gap-x-l gap-y-s sm:col-start-2 lg:col-start-auto">
             <LinkButton href="/contact?topic=careers#message" variant="outline">
               Send a message
             </LinkButton>

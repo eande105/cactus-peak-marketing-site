@@ -26,10 +26,10 @@ export function PassEmailRow() {
         router.push("/trial")
       }}
     >
-      <label htmlFor={id} className="mb-1 block text-caption">
+      <label htmlFor={id} className="mb-xxs block text-body-s">
         Email
       </label>
-      <div className="flex gap-2">
+      <div className="flex gap-xs">
         <Input
           id={id}
           type="email"
@@ -53,9 +53,7 @@ export function PassEmailRow() {
       </div>
       <p
         id={`${id}-m`}
-        className={
-          err ? "mt-1 text-caption font-semibold" : "mt-1 text-caption"
-        }
+        className={err ? "mt-xxs text-body-s font-heavy" : "mt-xxs text-body-s"}
         role={err ? "alert" : undefined}
       >
         {err || "No credit card required."}

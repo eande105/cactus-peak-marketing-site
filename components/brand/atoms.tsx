@@ -61,7 +61,9 @@ export function TextLink({
     <Link
       href={href}
       className={cn(
-        "group/link inline-flex min-h-11 items-center gap-1.5 text-label text-link no-underline",
+        "group/link inline-flex min-h-11 items-center gap-xs",
+        "text-body-s no-underline font-heavy",
+        "text-link",
         className
       )}
     >
@@ -96,7 +98,9 @@ export function CategoryBadge({
   return (
     <span
       className={cn(
-        "inline-flex w-fit items-center gap-1.5 rounded-sm px-2 py-1 text-caption font-semibold whitespace-nowrap",
+        "inline-flex w-fit items-center gap-xs",
+        "corner-xs px-xs py-xxs",
+        "text-body-s font-heavy whitespace-nowrap",
         className
       )}
       style={
@@ -125,8 +129,11 @@ export function AmenityChip({
   return (
     <span
       className={cn(
-        "inline-flex min-h-7 w-fit items-center gap-1.5 rounded-sm px-2 text-caption font-medium whitespace-nowrap text-foreground",
-        tone === "default" ? "bg-card edge ring-border" : "bg-muted",
+        "inline-flex min-h-7 w-fit items-center gap-xs",
+        "corner-xs px-xs",
+        "text-body-s font-medium whitespace-nowrap",
+        "text-foreground",
+        tone === "default" ? "bg-card hairline ring-border" : "bg-muted",
         className
       )}
     >
@@ -159,18 +166,18 @@ export function SectionHead({
       ? "display-lead"
       : size === "quiet"
         ? "display-quiet"
-        : "font-display-wide text-h2 lg:text-h1"
+        : "font-display-wide text-body-xxl lg:text-display-m font-heavy lg:font-heavy"
   return (
     <div
       className={cn(
-        "flex flex-wrap items-end justify-between gap-x-8 gap-y-3",
+        "flex flex-wrap items-end justify-between gap-x-xl gap-y-s",
         className
       )}
     >
       <div className="min-w-0 flex-1 basis-[28rem]">
         <H className={cn("max-w-[24ch] text-balance", cls)}>{title}</H>
         {lede ? (
-          <p className="mt-4 max-w-[48ch] text-lead text-pretty text-muted-foreground">
+          <p className="mt-m max-w-[48ch] text-body-l text-pretty text-muted-foreground">
             {lede}
           </p>
         ) : null}

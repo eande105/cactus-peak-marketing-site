@@ -33,18 +33,18 @@ function listOf(items: string[]) {
 function Figure({ kind }: { kind: "you" | "adult" | "child" }) {
   const Icon = kind === "child" ? ChildHead : User
   return (
-    <span className="flex w-14 shrink-0 flex-col items-center gap-1">
+    <span className="flex w-14 shrink-0 flex-col items-center gap-xxs">
       <span
         className={cn(
-          "grid size-14 place-items-center rounded-full",
+          "grid size-14 place-items-center corner-full",
           kind === "you"
             ? "bg-night text-night-foreground"
-            : "bg-card text-foreground edge ring-border-strong"
+            : "bg-card text-foreground hairline ring-border-strong"
         )}
       >
         <Icon className="size-6" />
       </span>
-      <span className="text-caption text-muted-foreground">
+      <span className="text-body-s text-muted-foreground">
         {kind === "you" ? "You" : kind === "adult" ? "Adult" : "Child"}
       </span>
     </span>
@@ -67,26 +67,31 @@ function MemberRow({
   step: (by: 1 | -1) => void
 }) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 py-4 rule-b">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-m py-m rule-b">
       <div>
-        <p className="text-body-strong">{label}</p>
-        <p className="text-caption text-muted-foreground tabular-nums">
+        <p className="text-body-m font-heavy">{label}</p>
+        <p className="text-body-s text-muted-foreground tabular-nums">
           +${each} a month each
           {count >= max ? ". Need more? Call us." : ""}
         </p>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-xxs">
         <button
           type="button"
           onClick={() => count > 0 && step(-1)}
           aria-disabled={count === 0 || undefined}
           aria-label={`Remove one: ${label}`}
-          className="grid size-11 place-items-center rounded-md bg-card edge ring-border hover:ring-border-strong aria-disabled:opacity-40"
+          className={cn(
+            "grid size-11 place-items-center hairline",
+            "corner-s",
+            "bg-card ring-border",
+            "hover:ring-border-strong aria-disabled:opacity-40"
+          )}
         >
           <Minus className="size-4" aria-hidden="true" />
         </button>
         {/* The count is read out with its label when it changes, through the total's live region. */}
-        <span className="w-8 text-center text-h3 font-semibold tabular-nums">
+        <span className="w-8 text-center text-body-l font-heavy tabular-nums">
           {count}
         </span>
         <button
@@ -94,7 +99,12 @@ function MemberRow({
           onClick={() => count < max && step(1)}
           aria-disabled={count >= max || undefined}
           aria-label={`Add one: ${label}`}
-          className="grid size-11 place-items-center rounded-md bg-card edge ring-border hover:ring-border-strong aria-disabled:opacity-40"
+          className={cn(
+            "grid size-11 place-items-center hairline",
+            "corner-s",
+            "bg-card ring-border",
+            "hover:ring-border-strong aria-disabled:opacity-40"
+          )}
         >
           <Plus className="size-4" aria-hidden="true" />
         </button>
@@ -141,14 +151,14 @@ export function FamilyCalculator({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-16",
+        "grid gap-xxl lg:grid-cols-12 lg:items-start lg:gap-section",
         className
       )}
     >
       <div className="lg:col-span-7">
         <fieldset>
-          <legend className="text-label">Plan for everyone</legend>
-          <RadioGroupBox className="mt-3 grid grid-cols-3 gap-2">
+          <legend className="text-body-s font-heavy">Plan for everyone</legend>
+          <RadioGroupBox className="mt-s grid grid-cols-3 gap-xs">
             {plans.map((x) => (
               // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
               <button
@@ -158,14 +168,16 @@ export function FamilyCalculator({ className }: { className?: string }) {
                 aria-checked={plan === x.slug}
                 onClick={() => setPlan(x.slug)}
                 className={cn(
-                  "flex min-h-14 flex-col items-start justify-center rounded-md px-4 py-2 text-left edge",
+                  "flex min-h-14 flex-col items-start justify-center hairline",
+                  "corner-s px-m py-xs",
+                  "text-left",
                   plan === x.slug
                     ? "bg-card ring-2 ring-primary"
                     : "bg-card ring-border hover:ring-border-strong"
                 )}
               >
-                <span className="text-label">{x.name}</span>
-                <span className="text-caption text-muted-foreground tabular-nums">
+                <span className="text-body-s font-heavy">{x.name}</span>
+                <span className="text-body-s text-muted-foreground tabular-nums">
                   ${x.price}/mo
                 </span>
               </button>
@@ -173,17 +185,21 @@ export function FamilyCalculator({ className }: { className?: string }) {
           </RadioGroupBox>
         </fieldset>
 
-        <div className="mt-8">
-          <p className="text-label">
+        <div className="mt-xl">
+          <p className="text-body-s font-heavy">
             On the account{" "}
-            <span className="font-normal text-muted-foreground tabular-nums">
+            <span className="font-regular text-muted-foreground tabular-nums">
               {people} {people === 1 ? "person" : "people"}
             </span>
           </p>
           {/* The family row: you, then each adult, then each child. */}
           <div
             aria-hidden="true"
-            className="mt-3 flex min-h-24 flex-wrap items-start gap-x-2 gap-y-3 rounded-lg bg-muted p-3"
+            className={cn(
+              "flex min-h-24 flex-wrap items-start gap-x-xs gap-y-s",
+              "mt-s corner-m p-s",
+              "bg-muted"
+            )}
           >
             <Figure kind="you" />
             {Array.from({ length: adults }, (_, i) => (
@@ -195,7 +211,7 @@ export function FamilyCalculator({ className }: { className?: string }) {
               <Figure key={`k${i}`} kind="child" />
             ))}
           </div>
-          <div className="mt-2">
+          <div className="mt-xs">
             <MemberRow
               label="Adults (besides you)"
               each={ADULT}
@@ -217,12 +233,12 @@ export function FamilyCalculator({ className }: { className?: string }) {
           </div>
         </div>
 
-        <ul className="mt-6 grid gap-2">
+        <ul className="mt-l grid gap-xs">
           {notes.map((n) => (
-            <li key={n} className="flex gap-3 text-body text-pretty">
+            <li key={n} className="flex gap-s text-body-m text-pretty">
               <span
                 aria-hidden="true"
-                className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary"
+                className="mt-s size-1.5 shrink-0 corner-full bg-primary"
               />
               {n}
             </li>
@@ -234,16 +250,16 @@ export function FamilyCalculator({ className }: { className?: string }) {
       <div className="lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)] lg:col-span-5">
         <section
           aria-label="Your family's monthly cost"
-          className="rounded-lg bg-card p-6 edge ring-border lg:p-8"
+          className="corner-m bg-card p-l hairline ring-border lg:p-xl"
         >
-          <dl className="text-body tabular-nums">
-            <div className="flex items-baseline justify-between gap-4 pb-3 rule-b">
+          <dl className="text-body-m tabular-nums">
+            <div className="flex items-baseline justify-between gap-m pb-s rule-b">
               <dt>{p.name}, you</dt>
               <dd>${p.price}</dd>
             </div>
             <div
               className={cn(
-                "flex items-baseline justify-between gap-4 py-3 rule-b",
+                "flex items-baseline justify-between gap-m py-s rule-b",
                 !adults && "text-muted-foreground"
               )}
             >
@@ -254,7 +270,7 @@ export function FamilyCalculator({ className }: { className?: string }) {
             </div>
             <div
               className={cn(
-                "flex items-baseline justify-between gap-4 py-3 rule-b",
+                "flex items-baseline justify-between gap-m py-s rule-b",
                 !kids && "text-muted-foreground"
               )}
             >
@@ -265,18 +281,20 @@ export function FamilyCalculator({ className }: { className?: string }) {
             </div>
           </dl>
           {/* Announced when it changes, so a screen reader hears the new total after each tap. */}
-          <div aria-live="polite" className="mt-5">
-            <p className="text-label text-muted-foreground">
+          <div aria-live="polite" className="mt-l">
+            <p className="text-body-s text-muted-foreground font-heavy">
               Each month for {people} {people === 1 ? "person" : "people"}
             </p>
-            <p className="tabular font-data text-figure-lg">${total}</p>
-            <p className="mt-2 text-caption text-muted-foreground tabular-nums">
+            <p className="tabular font-data text-display-xxl font-heavy">
+              ${total}
+            </p>
+            <p className="mt-xs text-body-s text-muted-foreground tabular-nums">
               + ${FEE} facility fee each March
             </p>
           </div>
           <LinkButton
             href={`/join/plan?plan=${plan}&adults=${adults}&children=${kids}`}
-            className="mt-6 w-full"
+            className="mt-l w-full"
           >
             Join with this family
           </LinkButton>

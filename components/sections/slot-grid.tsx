@@ -10,13 +10,16 @@ import { cn } from "@/lib/utils"
 export function LaneGrid() {
   const slots = [360, 405, 450, 495, 540, 585, 630, 675]
   return (
-    <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <ul className="grid grid-cols-2 gap-xs sm:grid-cols-4">
       {slots.map((m, i) => {
         const left = [2, 0, 3, 5, 6, 4, 1, 8][i]
         return (
-          <li key={m} className="rounded-md bg-card px-3 py-2 edge ring-border">
-            <p className="tabular text-label">{fmtTime(m)}</p>
-            <p className="text-caption text-muted-foreground">
+          <li
+            key={m}
+            className="corner-s bg-card px-s py-xs hairline ring-border"
+          >
+            <p className="tabular text-body-s font-heavy">{fmtTime(m)}</p>
+            <p className="text-body-s text-muted-foreground">
               {left === 0
                 ? "Full"
                 : left <= 5
@@ -42,7 +45,7 @@ export function CourtGrid() {
         onValueChange={(v) => {
           if (v[0]) setDur(Number(v[0]) as 60 | 90)
         }}
-        className="mb-4"
+        className="mb-m"
       >
         {([60, 90] as const).map((d) => (
           <Toggle key={d} value={String(d)} className="min-h-11">
@@ -51,22 +54,22 @@ export function CourtGrid() {
         ))}
       </ToggleGroup>
       <section
-        className="relative overflow-x-auto rounded-lg bg-card edge ring-border"
+        className="relative overflow-x-auto corner-m bg-card hairline ring-border"
         aria-label="Courts open today"
         // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region needs a tab stop so keyboard users can scroll it
         tabIndex={0}
       >
-        <table className="w-full min-w-[560px] text-caption">
+        <table className="w-full min-w-[560px] text-body-s">
           <thead>
             <tr>
-              <th className="p-3 text-left" scope="col">
+              <th className="p-s text-left" scope="col">
                 <span className="sr-only">Time</span>
               </th>
               {courts.map((c) => (
                 <th
                   key={c}
                   scope="col"
-                  className="p-3 text-left text-caption font-semibold text-muted-foreground"
+                  className="p-s text-left text-body-s font-heavy text-muted-foreground"
                 >
                   Court {c}
                 </th>
@@ -76,16 +79,16 @@ export function CourtGrid() {
           <tbody>
             {times.map((t, r) => (
               <tr key={t} className="[&>*]:rule-t">
-                <th scope="row" className="tabular p-3 text-left">
+                <th scope="row" className="tabular p-s text-left">
                   {fmtTime(t)}
                 </th>
                 {courts.map((c, i) => {
                   const open = (r * 7 + i * 3 + (dur === 90 ? 2 : 0)) % 5 > 1
                   return (
-                    <td key={c} className="p-3">
+                    <td key={c} className="p-s">
                       <span
                         className={cn(
-                          "inline-flex items-center gap-1.5",
+                          "inline-flex items-center gap-xs",
                           !open && "text-muted-foreground"
                         )}
                       >

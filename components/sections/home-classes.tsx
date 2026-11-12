@@ -25,21 +25,21 @@ export function HomeClasses({ className }: { className?: string }) {
   return (
     <div className={className}>
       <nav aria-label="Class types">
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 sm:gap-y-6 lg:grid-cols-8">
+        <ul className="grid grid-cols-2 gap-x-l gap-y-m sm:grid-cols-4 sm:gap-y-l lg:grid-cols-8">
           {categories.map((c) => (
             <li key={c.id}>
               <Link
                 href={typeHref(c.id)}
-                className="group flex min-h-11 items-center gap-3 no-underline sm:flex-col sm:items-start"
+                className="group flex min-h-11 items-center gap-s no-underline sm:flex-col sm:items-start"
               >
                 <CategoryTile
                   category={c.id as CategoryId}
                   cut
                   className="size-10 shrink-0 sm:size-12"
                 />
-                <span className="text-body-strong group-hover:underline">
+                <span className="text-body-m group-hover:underline font-heavy">
                   {c.name}
-                  <span className="ml-1.5 font-normal text-muted-foreground tabular-nums">
+                  <span className="ml-xs font-regular text-muted-foreground tabular-nums">
                     {c.count}
                     <span className="sr-only"> classes</span>
                   </span>
@@ -50,25 +50,27 @@ export function HomeClasses({ className }: { className?: string }) {
         </ul>
       </nav>
 
-      <h3 className="font-display-wide mt-16 text-h2 lg:mt-20">Popular now</h3>
-      <ul className="mt-6 grid rule-y max-lg:rule-rows lg:grid-cols-3 lg:rule-cols">
+      <h3 className="font-display-wide mt-section text-body-xxl lg:mt-[calc(var(--space-xxl)*5/3)] font-heavy">
+        Popular now
+      </h3>
+      <ul className="mt-l grid rule-y max-lg:rule-rows lg:grid-cols-3 lg:rule-cols">
         {featured.map((c) => (
           <li
             key={c.slug}
-            className="group relative flex flex-col py-8 lg:px-8 lg:first:pl-0 lg:last:pr-0"
+            className="group relative flex flex-col py-xl lg:px-xl lg:first:pl-zero lg:last:pr-zero"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-s">
               {/* Decorative: the category name follows. */}
               <CategoryTile
                 category={c.category}
                 cut
                 className="size-8 shrink-0"
               />
-              <span className="text-label text-muted-foreground">
+              <span className="text-body-s text-muted-foreground font-heavy">
                 {c.categoryName}
               </span>
             </div>
-            <h4 className="font-display-wide mt-4 text-h3">
+            <h4 className="font-display-wide mt-m text-body-l font-medium">
               {/* The name is the one link. Its ::after covers the column, so the column is one target. */}
               <Link
                 href={classHref(c)}
@@ -77,11 +79,11 @@ export function HomeClasses({ className }: { className?: string }) {
                 {c.name}
               </Link>
             </h4>
-            <p className="mt-2 max-w-[42ch] text-body text-pretty text-muted-foreground">
+            <p className="mt-xs max-w-[42ch] text-body-m text-pretty text-muted-foreground">
               {c.blurb}
             </p>
             {/* The two facts a first visit turns on: how long and how hard. */}
-            <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-label">
+            <p className="mt-m flex flex-wrap items-center gap-x-s gap-y-xxs text-body-s font-heavy">
               <span className="tabular-nums">{c.duration} min</span>
               <span aria-hidden="true" className="text-muted-foreground">
                 ·

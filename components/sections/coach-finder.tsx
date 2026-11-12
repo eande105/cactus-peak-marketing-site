@@ -58,7 +58,7 @@ function CoachMark({ coach, lit }: { coach: Coach; lit: boolean }) {
     <div
       className={cn(
         "relative isolate aspect-[16/7] overflow-hidden",
-        lit ? "text-[var(--neutral-1)]" : "text-night-foreground"
+        lit ? "text-neutral-1" : "text-night-foreground"
       )}
     >
       <ObjectCrop
@@ -80,10 +80,12 @@ function CoachMark({ coach, lit }: { coach: Coach; lit: boolean }) {
       {coach.years ? (
         <span
           className={cn(
-            "absolute bottom-4 left-5 rounded-sm px-2 py-0.5 text-label tabular-nums",
+            "absolute bottom-4 left-5",
+            "corner-xs px-xs py-xxs",
+            "text-body-s tabular-nums font-heavy",
             lit
               ? "bg-night text-night-foreground"
-              : "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+              : "bg-[var(--cat-strength)] text-neutral-1"
           )}
         >
           {coach.years} years coaching
@@ -108,13 +110,13 @@ export function SpecialtyMark({
   return cat ? (
     <CategoryTile
       category={cat}
-      className={cn("size-6 shrink-0 rounded-full", className)}
+      className={cn("size-6 shrink-0 corner-full", className)}
     />
   ) : (
     <span
       aria-hidden="true"
       className={cn(
-        "grid size-6 shrink-0 place-items-center rounded-full bg-card",
+        "grid size-6 shrink-0 place-items-center corner-full bg-card",
         className
       )}
     >
@@ -129,7 +131,14 @@ export function SpecialtyMark({
 /** A specialty as a chip: its mark, then its name. */
 export function SpecialtyChip({ name }: { name: string }) {
   return (
-    <li className="flex items-center gap-1.5 rounded-full bg-muted py-1 pr-3 pl-1 text-caption font-semibold">
+    <li
+      className={cn(
+        "flex items-center gap-xs",
+        "corner-full py-xxs pr-s pl-xxs",
+        "text-body-s font-heavy",
+        "bg-muted"
+      )}
+    >
       <SpecialtyMark name={name} />
       {name}
     </li>
@@ -149,12 +158,12 @@ function ClubReach({ coach }: { coach: Coach }) {
   const at = clubs.filter((c) => coach.clubs.includes(c.slug))
   return (
     <div>
-      <h4 className="text-label">Trains at</h4>
-      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+      <h4 className="text-body-s font-heavy">Trains at</h4>
+      <ul className="mt-xs flex flex-wrap gap-x-m gap-y-xs">
         {at.map((c) => (
           <li
             key={c.slug}
-            className="flex items-center gap-2 text-caption whitespace-nowrap"
+            className="flex items-center gap-xs text-body-s whitespace-nowrap"
           >
             <ClubPin n={c.n} />
             {c.short}
@@ -173,21 +182,23 @@ export function CoachCard({ coach, lit }: { coach: Coach; lit: boolean }) {
   return (
     <li
       className={cn(
-        "flex flex-col overflow-hidden rounded-lg edge ring-border",
+        "flex flex-col overflow-hidden corner-m hairline ring-border",
         lit ? "bg-[var(--cat-strength)]" : "bg-night"
       )}
     >
       <CoachMark coach={coach} lit={lit} />
-      <div className="flex flex-1 flex-col gap-5 bg-card p-5">
+      <div className="flex flex-1 flex-col gap-l bg-card p-l">
         <div>
-          <h3 className="font-display-wide text-h3">{coach.name}</h3>
+          <h3 className="font-display-wide text-body-l font-medium">
+            {coach.name}
+          </h3>
           {coach.credential ? (
-            <p className="text-caption text-pretty text-muted-foreground">
+            <p className="text-body-s text-pretty text-muted-foreground">
               {coach.credential}
             </p>
           ) : null}
         </div>
-        <ul aria-label="Coaches for" className="flex flex-wrap gap-1.5">
+        <ul aria-label="Coaches for" className="flex flex-wrap gap-xs">
           {coach.specialties.map((s) => (
             <SpecialtyChip key={s} name={s} />
           ))}
@@ -197,7 +208,7 @@ export function CoachCard({ coach, lit }: { coach: Coach; lit: boolean }) {
             and the way to ask for them on a tour. The visible label stays short; hidden text
             after it names the coach for a screen reader. */}
         {coach.profile ? (
-          <div className="mt-auto pt-4 rule-t">
+          <div className="mt-auto pt-m rule-t">
             <LinkButton
               href={`/coaches/${coach.slug}`}
               variant={lit ? "primary" : "outline"}
@@ -253,9 +264,13 @@ export function CoachFinder({ goals }: { goals: CoachGoal[] }) {
         onValueChange={(v) => {
           if (v[0] !== undefined) setGoal(String(v[0]))
         }}
-        className="flex flex-wrap gap-1 rounded-lg bg-card p-1 edge ring-border"
+        className={cn(
+          "flex flex-wrap gap-xxs hairline",
+          "corner-m p-xxs",
+          "bg-card ring-border"
+        )}
       >
-        <Toggle value={ALL} className="min-h-11 gap-2 px-3">
+        <Toggle value={ALL} className="min-h-11 gap-xs px-s">
           Every coach
           <span className="tabular-nums opacity-70">{pt.length}</span>
         </Toggle>
@@ -263,7 +278,7 @@ export function CoachFinder({ goals }: { goals: CoachGoal[] }) {
           <Toggle
             key={g.specialty}
             value={g.specialty}
-            className="min-h-11 gap-2 px-3"
+            className="min-h-11 gap-xs px-s"
           >
             <GymObject id={g.icon} className="size-5 shrink-0" />
             {g.title}
@@ -280,11 +295,11 @@ export function CoachFinder({ goals }: { goals: CoachGoal[] }) {
       {/* The results toolbar (filter-bar.tsx). The goals above are the filter, so the bar carries what the goal
           means, the count and the sort. */}
       <FilterBar
-        className="mt-4"
+        className="mt-m"
         results={
           <>
             <span />
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div className="flex flex-wrap items-center gap-x-l gap-y-s">
               <ResultCount
                 shown={list.length}
                 total={pt.length}
@@ -303,7 +318,7 @@ export function CoachFinder({ goals }: { goals: CoachGoal[] }) {
         }
       />
 
-      <ul className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-xxl grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
         {list.map((c, i) => (
           // The first card is lit in Copper: the most experienced coach for the goal, unless the sort is by name.
           <CoachCard key={c.slug} coach={c} lit={i === 0} />
@@ -313,24 +328,32 @@ export function CoachFinder({ goals }: { goals: CoachGoal[] }) {
       {/* The one tour action in the section: for a visitor who has not picked a coach yet. */}
       <aside
         aria-labelledby="coach-match-title"
-        className="mt-12 grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+        className={cn(
+          "grid gap-l hairline",
+          "mt-xxl corner-m p-l",
+          "bg-card ring-border",
+          "sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
+        )}
       >
         <span
           aria-hidden="true"
-          className="grid size-14 place-items-center rounded-md bg-night"
+          className="grid size-14 place-items-center corner-s bg-night"
         >
           <GymObject id="whistle" scheme="night" className="size-9" />
         </span>
         <div className="min-w-0">
-          <h3 id="coach-match-title" className="font-display-wide text-h3">
+          <h3
+            id="coach-match-title"
+            className="font-display-wide text-body-l font-medium"
+          >
             Not sure who fits?
           </h3>
-          <p className="mt-2 max-w-[60ch] text-body text-pretty text-muted-foreground">
+          <p className="mt-xs max-w-[60ch] text-body-m text-pretty text-muted-foreground">
             Book a free tour and tell us your goal. A coach shows you the club
             and points you to the right person. No card.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 sm:col-start-2 lg:col-start-auto">
+        <div className="flex flex-wrap items-center gap-x-l gap-y-s sm:col-start-2 lg:col-start-auto">
           <LinkButton href="/tour">Book a free tour</LinkButton>
           <TextLink href="/coaches">See every coach</TextLink>
         </div>

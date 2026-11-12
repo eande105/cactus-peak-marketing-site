@@ -44,7 +44,7 @@ export function ScheduleDayStrip({
       // A scroll box clips anything past its edge. The padding leaves room for the focus ring, and the
       // negative margin keeps the buttons where they were.
       className={cn(
-        "-m-1 max-w-[calc(100%+0.5rem)] overflow-x-auto p-1",
+        "-m-xxs max-w-[calc(100%+0.5rem)] overflow-x-auto p-xxs",
         className
       )}
     >
@@ -144,7 +144,7 @@ export function ScheduleTeaser({
   return (
     <div>
       {switcher && !fixedClub ? (
-        <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="mb-m flex flex-wrap items-center gap-s">
           {allowAll ? (
             <SelectBox
               inline
@@ -162,7 +162,7 @@ export function ScheduleTeaser({
         </div>
       ) : null}
       <ScheduleDayStrip value={day} onChange={setDay} counts={counts} />
-      <div className="mt-4" aria-live="polite">
+      <div className="mt-m" aria-live="polite">
         {rows.length ? (
           <ScheduleList
             sessions={rows}
@@ -193,7 +193,7 @@ export function ScheduleTeaser({
           </EmptyState>
         )}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6">
+      <div className="mt-m flex flex-wrap items-center justify-between gap-x-l">
         <TextLink
           href={scheduleUrl({
             club: c ? c.slug : "all",
@@ -206,7 +206,7 @@ export function ScheduleTeaser({
             ? "Open the full schedule for this class"
             : "See full schedule"}
         </TextLink>
-        <p className="text-caption text-muted-foreground">
+        <p className="text-body-s text-muted-foreground">
           All times are Arizona time.
         </p>
       </div>

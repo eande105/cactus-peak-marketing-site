@@ -29,22 +29,22 @@ const TERMS = [
 function OfferTicket() {
   // A notch is a disc in the page colour over the seam, so the card reads as cut.
   const notch =
-    "absolute size-10 rounded-full bg-background -translate-1/2 lg:size-14"
+    "absolute size-10 corner-full bg-background -translate-1/2 lg:size-14"
   return (
     <section aria-labelledby="offer-title" className="overflow-x-clip rule-b">
-      <Container className="pt-8 pb-10 lg:pt-14 lg:pb-16">
-        <div className="grid rounded-2xl bg-card edge ring-border lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
-          <div className="px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-14">
+      <Container className="pt-xl pb-xxl lg:pt-section lg:pb-section">
+        <div className="grid corner-xl bg-card hairline ring-border lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
+          <div className="px-l py-xl sm:px-xxl sm:py-xxl lg:px-section lg:py-section">
             <h1
               id="offer-title"
               className="display-hero max-w-[12ch] text-balance"
             >
               $0 enrollment through Nov 30.
             </h1>
-            <p className="lede mt-5 max-w-[34ch] text-pretty text-muted-foreground lg:mt-6">
+            <p className="lede mt-l max-w-[34ch] text-pretty text-muted-foreground lg:mt-l">
               Join any plan by Nov 30 and skip the $49 enrollment fee.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-xl flex flex-wrap items-center gap-s">
               <LinkButton href="/join/plan" size="lg" className="max-sm:flex-1">
                 Join now
               </LinkButton>
@@ -58,7 +58,7 @@ function OfferTicket() {
               </LinkButton>
             </div>
           </div>
-          <div className="relative flex flex-col justify-between gap-6 rounded-b-2xl bg-[var(--cat-strength)] p-6 text-[var(--neutral-1)] sm:p-8 lg:rounded-r-2xl lg:rounded-bl-none">
+          <div className="relative flex flex-col justify-between gap-l corner-b-xl bg-[var(--cat-strength)] p-l text-neutral-1 sm:p-xl lg:corner-r-xl lg:corner-bl-zero">
             {/* The perforation: a dashed line on the seam, with a notch at each end. */}
             <span
               aria-hidden="true"
@@ -83,12 +83,12 @@ function OfferTicket() {
               ]}
               className="max-lg:hidden"
             />
-            <p className="flex items-end justify-between gap-4">
-              <span className="tabular font-data text-[clamp(4rem,9vw,7rem)] leading-none font-bold">
+            <p className="flex items-end justify-between gap-m">
+              <span className="tabular font-data text-[clamp(4rem,9vw,7rem)] leading-none font-heavy">
                 $0
               </span>
-              <span className="pb-2 text-right text-label">
-                <s className="tabular font-data text-h3 font-bold">
+              <span className="pb-xs text-right text-body-s font-heavy">
+                <s className="tabular font-data text-body-l font-heavy">
                   <span className="sr-only">usually </span>$49
                 </s>
                 <span className="block">enrollment</span>
@@ -108,26 +108,29 @@ export default async function Promo() {
       <OfferTicket />
       <Band id="plans">
         <SectionHead title="Pick a plan." />
-        <table className="mt-8 w-full text-left rule-t rule-heavy lg:mt-12">
+        <table className="mt-xl w-full text-left rule-t rule-heavy lg:mt-xxl">
           <caption className="sr-only">Plans with the fall offer</caption>
           <tbody>
             {plans.map((p) => (
               <tr key={p.slug} className="[&>*]:rule-b">
-                <th scope="row" className="font-display-wide py-4 text-h2">
+                <th
+                  scope="row"
+                  className="font-display-wide py-m text-body-xxl font-heavy"
+                >
                   {p.name}
                 </th>
-                <td className="tabular py-4 font-data text-h2 font-bold">
+                <td className="tabular py-m font-data text-body-xxl font-heavy">
                   ${p.price}
-                  <span className="text-body font-normal text-muted-foreground">
+                  <span className="text-body-m font-regular text-muted-foreground">
                     /mo
                   </span>
                 </td>
-                <td className="hidden py-4 text-body text-muted-foreground md:table-cell">
+                <td className="hidden py-m text-body-m text-muted-foreground md:table-cell">
                   {p.bestFor}
                 </td>
-                <td className="py-4 text-right">
+                <td className="py-m text-right">
                   <Link
-                    className="inline-flex min-h-11 items-center font-semibold text-link underline-offset-4 hover:underline"
+                    className="inline-flex min-h-11 items-center font-heavy text-link underline-offset-4 hover:underline"
                     href={`/join/plan?plan=${p.slug}`}
                   >
                     Join {p.name}
@@ -140,9 +143,9 @@ export default async function Promo() {
       </Band>
       <Band tone="tint" id="terms">
         <SectionHead title="The terms, in plain words." />
-        <ul className="mt-8 max-w-2xl rule-t rule-heavy lg:mt-12">
+        <ul className="mt-xl max-w-2xl rule-t rule-heavy lg:mt-xxl">
           {TERMS.map((t) => (
-            <li key={t} className="py-3.5 text-body text-pretty rule-b">
+            <li key={t} className="py-m text-body-m text-pretty rule-b">
               {t}
             </li>
           ))}

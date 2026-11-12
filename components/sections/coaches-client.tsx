@@ -78,14 +78,14 @@ export function CoachGrid({
         onValueChange={(v) => {
           if (v[0] !== undefined) setClub(String(v[0]))
         }}
-        className="flex flex-wrap gap-1 rounded-lg bg-card p-1 edge ring-border"
+        className="flex flex-wrap gap-xxs corner-m bg-card p-xxs hairline ring-border"
       >
-        <Toggle value={ALL} className="min-h-11 gap-2 px-3">
+        <Toggle value={ALL} className="min-h-11 gap-xs px-s">
           Every club
           <span className="tabular-nums opacity-70">{coaches.length}</span>
         </Toggle>
         {clubs.map((c) => (
-          <Toggle key={c.slug} value={c.slug} className="min-h-11 gap-2 px-3">
+          <Toggle key={c.slug} value={c.slug} className="min-h-11 gap-xs px-s">
             <ClubPin n={c.n} />
             {c.short}
             <span className="tabular-nums opacity-70">
@@ -97,7 +97,7 @@ export function CoachGrid({
       </ToggleGroup>
 
       <FilterBar
-        className="mt-4"
+        className="mt-m"
         filters={
           <>
             <SelectBox
@@ -150,13 +150,13 @@ export function CoachGrid({
       <ActiveFilters items={active} onClearAll={reset} />
 
       {list.length ? (
-        <ul className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-xxl grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
           {list.map((c, i) => (
             <CoachCard key={c.slug} coach={c} lit={i === 0} />
           ))}
         </ul>
       ) : (
-        <EmptyState className="mt-10" title="No coaches match.">
+        <EmptyState className="mt-xxl" title="No coaches match.">
           <Button variant="outline" onClick={reset}>
             Clear filters
           </Button>

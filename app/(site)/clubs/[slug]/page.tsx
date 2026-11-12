@@ -152,14 +152,14 @@ export default async function ClubPage({
           categories={categories}
           classTypes={classTypes}
           slots={slots}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
       {/* Where, how to get in, the clubs next door, and when to come. */}
       <Band tone="tint" id="visit">
         <SectionHead size="lead" title="Plan your visit." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubVisit club={club} clubs={clubs} />
         </div>
       </Band>
@@ -175,7 +175,7 @@ export default async function ClubPage({
             </TextLink>
           }
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubPeople
             club={club}
             coaches={clubCoaches}
@@ -193,7 +193,7 @@ export default async function ClubPage({
         />
         {/* The clubs page's plan cards, with this club as home: the club key marks it, and Trailhead
             names it and leaves out a pool the club does not have. */}
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubsPlanCards
             plans={plans}
             clubs={clubs}

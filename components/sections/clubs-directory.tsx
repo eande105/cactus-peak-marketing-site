@@ -39,7 +39,7 @@ export function ClubsDirectory({
     [clubs, d]
   )
   return (
-    <div className={cn("grid gap-8 lg:grid-cols-12 lg:gap-12", className)}>
+    <div className={cn("grid gap-xl lg:grid-cols-12 lg:gap-xxl", className)}>
       {/* The search holds still beside the taller cards on wide screens. */}
       <div className="self-start lg:sticky lg:top-24 lg:col-span-4">
         <ZipFinder f={f} idPrefix="cd" />
@@ -47,7 +47,13 @@ export function ClubsDirectory({
           <button
             type="button"
             onClick={f.clear}
-            className="mt-2 inline-flex min-h-11 items-center text-label text-link underline-offset-4 hover:underline"
+            className={cn(
+              "inline-flex min-h-11 items-center",
+              "mt-xs",
+              "text-body-s underline-offset-4 font-heavy",
+              "text-link",
+              "hover:underline"
+            )}
           >
             Clear distances
           </button>
@@ -56,10 +62,10 @@ export function ClubsDirectory({
 
       <div className="min-w-0 lg:col-span-8">
         {/* The status of the search and the legend for each card's facility row. */}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pb-4 rule-b">
+        <div className="flex flex-wrap items-center justify-between gap-x-l gap-y-xs pb-m rule-b">
           <p
             aria-live="polite"
-            className="flex min-h-6 items-center gap-2.5 text-label"
+            className="flex min-h-6 items-center gap-s text-body-s font-heavy"
           >
             <GymObject
               id="location"
@@ -77,7 +83,7 @@ export function ClubsDirectory({
           <FacilityLegend keys={keys} />
         </div>
 
-        <ol className="mt-6 grid gap-4 md:grid-cols-2">
+        <ol className="mt-l grid gap-m md:grid-cols-2">
           {sorted.map((c, i) => (
             <ClubCard
               key={c.slug}
@@ -110,10 +116,16 @@ function ClubCard({
   nearest: boolean
 }) {
   return (
-    <li className="row-span-4 grid grid-rows-subgrid gap-0 overflow-hidden rounded-lg bg-card edge ring-border">
-      <div className="px-5 pt-5 pb-4">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display-wide flex flex-wrap items-center gap-x-2.5 gap-y-1 text-h3 text-balance">
+    <li
+      className={cn(
+        "row-span-4 grid grid-rows-subgrid gap-zero overflow-hidden hairline",
+        "corner-m",
+        "bg-card ring-border"
+      )}
+    >
+      <div className="px-l pt-l pb-m">
+        <div className="flex items-start justify-between gap-s">
+          <h3 className="font-display-wide flex flex-wrap items-center gap-x-s gap-y-xxs text-body-l text-balance font-medium">
             <ClubPin n={c.n} />
             <Link
               href={`/clubs/${c.slug}`}
@@ -125,10 +137,10 @@ function ClubCard({
           {/* The distance, or a dash in the same place and size until a search fills it in. The nearest club's
               tag sits under its miles, so a long name keeps to its line. */}
           {miles !== undefined ? (
-            <p className="tabular flex shrink-0 flex-col items-end gap-1 text-body font-semibold">
+            <p className="tabular flex shrink-0 flex-col items-end gap-xxs text-body-m font-heavy">
               {miles.toFixed(1)} mi
               {nearest ? (
-                <span className="rounded-sm bg-accent px-1.5 text-caption font-semibold">
+                <span className="corner-xs bg-accent px-xs text-body-s font-heavy">
                   Nearest
                 </span>
               ) : null}
@@ -136,17 +148,17 @@ function ClubCard({
           ) : (
             <p
               aria-hidden="true"
-              className="tabular shrink-0 text-body font-semibold text-border-strong"
+              className="tabular shrink-0 text-body-m font-heavy text-border-strong"
             >
               – mi
             </p>
           )}
         </div>
-        <p className="mt-1 text-caption text-muted-foreground">{c.city}</p>
-        <p className="text-caption text-muted-foreground tabular-nums">
+        <p className="mt-xxs text-body-s text-muted-foreground">{c.city}</p>
+        <p className="text-body-s text-muted-foreground tabular-nums">
           {c.type} · {c.sqFt.toLocaleString("en-US")} sq ft
         </p>
-        <p className="mt-3 text-body text-pretty">{c.personality}</p>
+        <p className="mt-s text-body-m text-pretty">{c.personality}</p>
       </div>
 
       {/* The three reasons to come, in cells split by rules, each with its object over its name. Below 21rem the
@@ -156,7 +168,12 @@ function ClubCard({
           {c.signature.map((s) => (
             <li
               key={s}
-              className="flex items-center gap-3 px-5 py-3 text-label text-balance break-words @[21rem]:flex-col @[21rem]:px-3 @[21rem]:py-4 @[21rem]:text-center"
+              className={cn(
+                "flex items-center gap-s",
+                "px-l py-s",
+                "text-body-s text-balance break-words font-heavy",
+                "@[21rem]:flex-col @[21rem]:px-s @[21rem]:py-m @[21rem]:text-center"
+              )}
             >
               <GymObject
                 id={facilityIcon(s)}
@@ -168,13 +185,13 @@ function ClubCard({
         </ul>
       </div>
 
-      <div className="px-5 py-4">
+      <div className="px-l py-m">
         <FacilityIcons club={c} keys={keys} />
       </div>
 
       {/* The two first steps at this club, both opening with the club picked. Below 22rem (a phone) the halves stack, so "Try a free 3-day pass" keeps its padding. */}
-      <div className="@container content-start px-5 pb-5">
-        <div className="grid gap-3 @[22rem]:grid-cols-2">
+      <div className="@container content-start px-l pb-l">
+        <div className="grid gap-s @[22rem]:grid-cols-2">
           <LinkButton href={`/tour?club=${c.slug}`} className="w-full">
             Book a free tour<span className="sr-only"> of {c.name}</span>
           </LinkButton>

@@ -10,7 +10,7 @@ import { Logo } from "./logo"
 
 export function SkipLinks({ club }: { club?: boolean }) {
   const cls =
-    "absolute left-2 top-2 z-[100] -translate-y-24 rounded-md bg-card px-4 py-3 text-label shadow-(--shadow-m) ring-2 ring-ring focus:translate-y-0"
+    "absolute left-2 top-2 z-[100] -translate-y-24 corner-s bg-card px-m py-s text-body-s shadow-(--shadow-m) ring-2 ring-ring focus:translate-y-0 font-heavy"
   const path = usePathname()
   // Only club and kids pages have an #hours section. A skip link with no target is a dead end.
   const hours = /^\/(clubs\/[^/]+|kids)$/.test(path)
@@ -79,7 +79,10 @@ export function BottomActionBar() {
       <section
         aria-label="Quick actions"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 flex gap-3 bg-card px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t transition-transform duration-(--motion-large-duration) ease-(--motion-large-easing) motion-reduce:transition-none md:hidden",
+          "fixed inset-x-0 bottom-0 z-50 flex gap-s rule-t",
+          "px-m pt-s pb-[max(12px,env(safe-area-inset-bottom))]",
+          "bg-card transition-transform duration-(--motion-large-duration) ease-(--motion-large-easing)",
+          "motion-reduce:transition-none md:hidden",
           show ? "translate-y-0" : "translate-y-full"
         )}
         inert={!show}
@@ -108,16 +111,22 @@ export function MinimalCheckoutHeader({
 }) {
   return (
     <header className="bg-card rule-b">
-      <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div
+        className={cn(
+          "flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-m",
+          "mx-auto px-m",
+          "sm:px-l lg:px-xl"
+        )}
+      >
         {/* The horizontal logo needs 200 px (brand minimum). Below 360 px the exit link leaves less, so the symbol shows. */}
         <Logo width={200} className="shrink-0 max-[359px]:hidden" />
         <Logo width={40} symbolOnly className="min-[360px]:hidden" />
         <div className="hidden flex-1 md:block">{children}</div>
-        <div className="flex items-center gap-4 text-caption">
+        <div className="flex items-center gap-m text-body-s">
           <span className="hidden sm:inline">
             Need help?{" "}
             <a
-              className="tabular font-semibold text-link underline-offset-4 hover:underline"
+              className="tabular font-heavy text-link underline-offset-4 hover:underline"
               href={`tel:${tel}`}
             >
               {phone}

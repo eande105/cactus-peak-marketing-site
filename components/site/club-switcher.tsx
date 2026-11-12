@@ -1,8 +1,8 @@
 "use client"
 
 import { useId, useMemo, useState } from "react"
-import { ClubPin } from "@/components/brand/club-pin"
 import { StatusLine } from "@/components/brand/club-parts"
+import { ClubPin } from "@/components/brand/club-pin"
 import { varyingFacilities } from "@/components/brand/facilities"
 import { BusynessMeter } from "@/components/brand/meters"
 import {
@@ -12,6 +12,10 @@ import {
   LocateFixed,
   MapPin,
 } from "@/components/icons"
+import {
+  FacilityIcons,
+  FacilityLegend,
+} from "@/components/sections/club-facility-key"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -27,10 +31,6 @@ import { distancesFrom } from "@/lib/geo"
 import { clubStatus } from "@/lib/time"
 import type { ClubSlug } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import {
-  FacilityIcons,
-  FacilityLegend,
-} from "@/components/sections/club-facility-key"
 import { useCatalog, useClubNow } from "./catalog-context"
 import { lookupZip, useMyClub } from "./club-context"
 
@@ -113,8 +113,8 @@ export function ZipFinder({
   const errorLine = (
     <div id={`${id}-e`} aria-live="polite">
       {f.error ? (
-        <p className="mt-2 flex items-start gap-1.5 text-caption font-medium text-destructive">
-          <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+        <p className="mt-xs flex items-start gap-xs text-body-s font-medium text-destructive">
+          <AlertCircle className="mt-xxs size-4 shrink-0" aria-hidden="true" />
           {f.error}
         </p>
       ) : null}
@@ -129,10 +129,10 @@ export function ZipFinder({
           f.find()
         }}
       >
-        <label htmlFor={id} className="mb-1 block text-label">
+        <label htmlFor={id} className="mb-xxs block text-body-s font-heavy">
           ZIP code
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-xs">
           <div className="relative min-w-0 flex-1">
             <MapPin
               className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
@@ -148,7 +148,7 @@ export function ZipFinder({
               onChange={(e) => f.setZip(e.target.value.replace(/\D/g, ""))}
               aria-invalid={!!f.error}
               aria-describedby={`${id}-e`}
-              className="tabular bg-card pl-9"
+              className="tabular bg-card pl-xl"
             />
           </div>
           <Button type="submit" className="shrink-0">
@@ -159,7 +159,7 @@ export function ZipFinder({
       {errorLine}
       <div
         aria-hidden="true"
-        className="my-4 flex items-center gap-3 text-caption text-muted-foreground"
+        className="my-m flex items-center gap-s text-body-s text-muted-foreground"
       >
         <span className="h-px flex-1 bg-border" />
         or
@@ -176,7 +176,7 @@ export function ZipFinder({
         <LocateFixed aria-hidden="true" />
         Use my location
       </Button>
-      <p id={`${id}-n`} className="mt-2 text-caption text-muted-foreground">
+      <p id={`${id}-n`} className="mt-xs text-body-s text-muted-foreground">
         {notice}
       </p>
     </div>
@@ -220,20 +220,23 @@ export function ClubSwitcher({
             : "Find your club"
         }
         className={cn(
-          "inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-caption font-medium hover:bg-secondary-hover",
-          placement === "mobile-row" && "w-full bg-muted px-4",
+          "inline-flex min-h-11 items-center gap-xs",
+          "corner-s px-xs",
+          "text-body-s font-medium",
+          "hover:bg-secondary-hover",
+          placement === "mobile-row" && "w-full bg-muted px-m",
           placement === "block" &&
-            "w-full justify-between rounded-lg bg-card px-4 py-3 edge ring-border",
+            "w-full justify-between corner-m bg-card px-m py-s hairline ring-border",
           className
         )}
       >
         <MapPin className="size-4 shrink-0" aria-hidden="true" />
         <span className="min-w-0 truncate">{label}</span>
         {club ? (
-          <span className="hidden items-center gap-1.5 font-normal text-muted-foreground sm:inline-flex">
+          <span className="hidden items-center gap-xs font-regular text-muted-foreground sm:inline-flex">
             <span
               aria-hidden="true"
-              className="size-2 rounded-full bg-success"
+              className="size-2 corner-full bg-success"
             />
             {s.short}
           </span>
@@ -242,16 +245,16 @@ export function ClubSwitcher({
       </OverlayTrigger>
       <OverlayPopup className="md:w-[460px]">
         {/* The title keeps XL space at its end for the corner close (dialog.md). */}
-        <OverlayTitle className="pr-8">Pick your club</OverlayTitle>
+        <OverlayTitle className="pr-xl">Pick your club</OverlayTitle>
         <OverlayDescription>
           We use this to show your hours and classes.
         </OverlayDescription>
-        <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+        <div className="min-h-0 flex-1 overflow-y-auto pr-xxs">
           <ZipFinder f={f} idPrefix="sw" />
-          <FacilityLegend keys={keys} className="mt-5" />
-          <fieldset className="mt-3">
+          <FacilityLegend keys={keys} className="mt-l" />
+          <fieldset className="mt-s">
             <legend className="sr-only">Clubs</legend>
-            <RadioGroupBox className="flex flex-col gap-2" aria-label="Clubs">
+            <RadioGroupBox className="flex flex-col gap-xs" aria-label="Clubs">
               {list.map((c) => {
                 const on = selected === c.slug
                 return (
@@ -267,15 +270,19 @@ export function ClubSwitcher({
                     aria-describedby={`pick-${c.slug}-more`}
                     onClick={() => setPick(c.slug)}
                     className={cn(
-                      "relative flex min-h-16 w-full flex-col gap-0.5 rounded-lg bg-card px-4 py-3 text-left edge ring-border hover:ring-border-strong",
+                      "relative flex min-h-16 w-full flex-col gap-xxs hairline",
+                      "corner-m px-m py-s",
+                      "text-left",
+                      "bg-card ring-border",
+                      "hover:ring-border-strong",
                       on && "bg-accent ring-2 ring-primary"
                     )}
                   >
                     <span
                       id={`pick-${c.slug}-name`}
-                      className="flex items-center justify-between gap-2 text-label"
+                      className="flex items-center justify-between gap-xs text-body-s font-heavy"
                     >
-                      <span className="flex min-w-0 items-center gap-2">
+                      <span className="flex min-w-0 items-center gap-xs">
                         <ClubPin n={c.n} />
                         {c.name}
                       </span>
@@ -292,10 +299,10 @@ export function ClubSwitcher({
                       ) : null}
                     </span>
                     <span id={`pick-${c.slug}-more`} className="contents">
-                      <span className="text-caption text-muted-foreground">
+                      <span className="text-body-s text-muted-foreground">
                         {c.city}
                       </span>
-                      <span className="flex flex-wrap items-center gap-x-3">
+                      <span className="flex flex-wrap items-center gap-x-s">
                         <StatusLine />
                         <BusynessMeter level={c.busyness} />
                       </span>
@@ -305,7 +312,7 @@ export function ClubSwitcher({
                         club={c}
                         keys={keys}
                         ringless={on}
-                        className="mt-2"
+                        className="mt-xs"
                       />
                     </span>
                   </button>
@@ -314,7 +321,7 @@ export function ClubSwitcher({
             </RadioGroupBox>
           </fieldset>
         </div>
-        <div className="flex items-center justify-between gap-3 pt-4 rule-t">
+        <div className="flex items-center justify-between gap-s pt-m rule-t">
           <OverlayClose
             render={
               <Button

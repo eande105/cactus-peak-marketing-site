@@ -20,7 +20,7 @@ export function ClubPin({ n, className }: { n: number; className?: string }) {
         y="17"
         textAnchor="middle"
         dominantBaseline="central"
-        className="fill-night-foreground text-[19px] font-bold tabular-nums"
+        className="fill-night-foreground text-body-l font-heavy tabular-nums"
       >
         {n}
       </text>
