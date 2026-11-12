@@ -157,52 +157,52 @@ export default async function Job({
 
       {/* A posting header: one column for the role, its posting line and the actions, then the pay picture wide. */}
       <section aria-labelledby="job-hero-title" className="rule-b">
-        <Container className="pt-6 pb-10 lg:pt-10 lg:pb-14">
+        <Container className="pt-l pb-xxl lg:pt-xxl lg:pb-section">
           <div className="mx-auto max-w-3xl">
             <Link
               href="/careers#roles"
-              className="mb-6 flex min-h-11 w-fit items-center gap-1.5 text-label text-link underline-offset-4 hover:underline"
+              className="mb-l flex min-h-11 w-fit items-center gap-xs text-body-s text-link underline-offset-4 hover:underline font-heavy"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
               All open roles
             </Link>
-            <p className="flex flex-wrap gap-2">
-              <span className="inline-flex rounded-full bg-muted px-3 py-1 text-label">
+            <p className="flex flex-wrap gap-xs">
+              <span className="inline-flex corner-full bg-muted px-s py-xxs text-body-s font-heavy">
                 {j.dept}
               </span>
-              <span className="inline-flex rounded-full px-3 py-1 text-label ring-1 ring-border ring-inset">
+              <span className="inline-flex corner-full px-s py-xxs text-body-s ring-1 ring-border ring-inset font-heavy">
                 {j.type}
               </span>
             </p>
             <h1
               id="job-hero-title"
-              className="display-lead mt-4 max-w-[18ch] text-balance"
+              className="display-lead mt-m max-w-[18ch] text-balance"
             >
               {j.title}
             </h1>
-            <p className="lede mt-5 max-w-[44ch] text-pretty text-muted-foreground lg:mt-6">
+            <p className="lede mt-l max-w-[44ch] text-pretty text-muted-foreground lg:mt-l">
               {summary}
             </p>
-            <div className="mt-8 pt-5 rule-t">
+            <div className="mt-xl pt-l rule-t">
               <PostingLine items={posting} />
             </div>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-xl flex flex-wrap items-center gap-s">
               <LinkButton href={applyHref} size="lg" className="max-sm:flex-1">
                 Apply
               </LinkButton>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-s">
                 <ShareButton label="Share" />
               </div>
             </div>
           </div>
-          <div className="mx-auto mt-10 max-w-5xl lg:mt-12">
+          <div className="mx-auto mt-xxl max-w-5xl lg:mt-xxl">
             <RolePay job={j} low={low} high={high} />
           </div>
         </Container>
       </section>
 
       <Band tone="tint" id="work">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <div className="lg:col-span-5">
             <SectionHead size="lead" title="The work." />
           </div>
@@ -215,16 +215,18 @@ export default async function Job({
       </Band>
 
       <Band id="bring">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <RuleList
             className="lg:col-span-5"
             title="What you bring"
             items={requirements}
           />
           <div className="lg:col-span-7">
-            <h2 className="font-display-wide text-h3">What you get</h2>
+            <h2 className="font-display-wide text-body-l font-medium">
+              What you get
+            </h2>
             <ObjectTiles
-              className="mt-6 lg:!grid-cols-2"
+              className="mt-l lg:!grid-cols-2"
               tiles={[
                 {
                   title: "Free membership for you and your family",
@@ -239,7 +241,7 @@ export default async function Job({
 
       <Band tone="tint" id="hire">
         <SectionHead size="lead" title="How we hire." />
-        <NumberedSteps className="mt-12" steps={HIRE_STEPS} />
+        <NumberedSteps className="mt-xxl" steps={HIRE_STEPS} />
       </Band>
 
       {others.length ? (
@@ -250,7 +252,7 @@ export default async function Job({
             action={<TextLink href="/careers#roles">See every role</TextLink>}
           />
           <ProgramRows
-            className="mt-12"
+            className="mt-xxl"
             rows={others.slice(0, 4).map((x) => ({
               key: x.slug,
               icon: DEPT_OBJECT[x.dept] ?? "whistle",
@@ -263,23 +265,26 @@ export default async function Job({
         </Band>
       ) : null}
 
-      <Container className="pb-16 lg:pb-24">
+      <Container className="pb-section lg:pb-section-l">
         {/* The one apply action at the end, in the coach finder's "Not sure who fits?" form. */}
         <aside
           aria-labelledby="job-apply-title"
-          className="grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+          className="grid gap-l corner-m bg-card p-l hairline ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
         >
           <span
             aria-hidden="true"
-            className="grid size-14 place-items-center rounded-md bg-[var(--cat-strength)]"
+            className="grid size-14 place-items-center corner-s bg-[var(--cat-strength)]"
           >
             <BrandMark scheme="copper" className="size-9" />
           </span>
           <div className="min-w-0">
-            <h2 id="job-apply-title" className="font-display-wide text-h3">
+            <h2
+              id="job-apply-title"
+              className="font-display-wide text-body-l font-medium"
+            >
               Ready to apply?
             </h2>
-            <p className="mt-2 max-w-[60ch] text-body text-pretty text-muted-foreground">
+            <p className="mt-xs max-w-[60ch] text-body-m text-pretty text-muted-foreground">
               Cactus Peak is an equal opportunity employer. To ask for an
               accommodation, call (480) 555-0100.
             </p>

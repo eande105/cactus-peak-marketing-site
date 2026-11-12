@@ -53,7 +53,7 @@ function Disc({
       aria-hidden="true"
       style={style}
       className={cn(
-        "grid shrink-0 place-items-center rounded-full",
+        "grid shrink-0 place-items-center corner-full",
         tone === "lit" && "bg-[var(--cat-strength)]",
         tone === "night" && "bg-night",
         tone === "pale" && "bg-muted",
@@ -125,19 +125,19 @@ export function AboutHero({ clubs, lede }: { clubs: Club[]; lede: string }) {
       aria-labelledby="about-hero-title"
       className="overflow-hidden rule-b"
     >
-      <Container className="pt-8 lg:pt-14">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-12">
+      <Container className="pt-xl lg:pt-section">
+        <div className="grid gap-l lg:grid-cols-12 lg:items-end lg:gap-xxl">
           <h1
             id="about-hero-title"
             className="display-hero max-w-[12ch] text-balance lg:col-span-7"
           >
             Built for the East Valley.
           </h1>
-          <div className="lg:col-span-5 lg:pb-2">
+          <div className="lg:col-span-5 lg:pb-xs">
             <p className="lede max-w-[36ch] text-pretty text-muted-foreground">
               {lede}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-xl flex flex-wrap items-center gap-s">
               <LinkButton href="/clubs" size="lg" className="max-sm:flex-1">
                 Find your club
               </LinkButton>
@@ -158,14 +158,14 @@ export function AboutHero({ clubs, lede }: { clubs: Club[]; lede: string }) {
           aria-label={`The Cactus Peak mark: five ribs, one for each club, in the order they opened. ${byYear
             .map((c) => `${c.opened}, ${c.name}, ${c.city}`)
             .join("; ")}.`}
-          className="relative mt-12 lg:mt-16"
+          className="relative mt-xxl lg:mt-section"
         >
           {/* The ground line runs the whole column; the stage stands on it. */}
           <div aria-hidden="true" className="relative rule-b rule-heavy">
-            <span className="absolute bottom-3 left-0 text-label text-muted-foreground max-sm:hidden">
+            <span className="absolute bottom-3 left-0 text-body-s text-muted-foreground max-sm:hidden font-heavy">
               Mesa
             </span>
-            <span className="absolute right-0 bottom-3 text-label text-muted-foreground max-sm:hidden">
+            <span className="absolute right-0 bottom-3 text-body-s text-muted-foreground max-sm:hidden font-heavy">
               Gilbert
             </span>
             <div className="relative mx-auto w-full max-w-[40rem]">
@@ -236,10 +236,10 @@ export function AboutHero({ clubs, lede }: { clubs: Club[]; lede: string }) {
                 style={{ left: pctX(ribX(i)) }}
                 className="absolute top-3 w-[13%] -translate-x-1/2 text-center"
               >
-                <span className="tabular block font-data text-label font-bold sm:text-h3">
+                <span className="tabular block font-data text-body-s font-heavy sm:text-body-l">
                   {c.opened}
                 </span>
-                <span className="mt-0.5 block text-caption text-balance text-muted-foreground max-sm:hidden">
+                <span className="mt-xxs block text-body-s text-balance text-muted-foreground max-sm:hidden">
                   {c.short}
                 </span>
               </li>
@@ -278,7 +278,7 @@ export function CoachesHero({
       aria-labelledby="coaches-hero-title"
       className="overflow-hidden rule-b"
     >
-      <Container className="pt-10 pb-12 text-center lg:pt-14 lg:pb-16">
+      <Container className="pt-xxl pb-xxl text-center lg:pt-section lg:pb-section">
         <div
           role="img"
           aria-label={`${coaches.length} coaches, including ${side
@@ -308,7 +308,10 @@ export function CoachesHero({
                 aria-hidden="true"
                 style={style}
                 className={cn(
-                  "font-display-wide -mx-1 grid shrink-0 place-items-center rounded-full bg-night text-night-foreground ring-4 ring-background",
+                  "grid shrink-0 place-items-center",
+                  "-mx-xxs corner-full",
+                  "font-display-wide",
+                  "bg-night text-night-foreground ring-4 ring-background",
                   hide
                 )}
               >
@@ -322,22 +325,22 @@ export function CoachesHero({
                 id="mark"
                 tone="lit"
                 style={style}
-                className="relative z-10 -mx-1 ring-4 ring-background"
+                className="relative z-10 -mx-xxs ring-4 ring-background"
               />
             )
           })}
         </div>
         <h1
           id="coaches-hero-title"
-          className="display-hero mx-auto mt-6 max-w-[14ch] text-balance"
+          className="display-hero mx-auto mt-l max-w-[14ch] text-balance"
         >
           Coaches who know your name.
         </h1>
-        <p className="lede mx-auto mt-5 max-w-[40ch] text-pretty text-muted-foreground">
+        <p className="lede mx-auto mt-l max-w-[40ch] text-pretty text-muted-foreground">
           {coaches.length} coaches, with {years} years of coaching between them.
           Every class has one, not a screen.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-xl flex flex-wrap items-center justify-center gap-s">
           <LinkButton href="#coaches" size="lg" className="max-sm:flex-1">
             Find your coach
           </LinkButton>
@@ -373,25 +376,37 @@ export function JournalHero({
 }) {
   return (
     <section aria-labelledby="journal-hero-title" className="rule-b">
-      <Container className="pt-8 pb-12 lg:pt-12 lg:pb-16">
-        <p className="tabular flex flex-wrap justify-between gap-x-6 gap-y-1 py-3 text-label rule-y rule-heavy">
+      <Container className="pt-xl pb-xxl lg:pt-xxl lg:pb-section">
+        <p
+          className={cn(
+            "tabular flex flex-wrap justify-between gap-x-l gap-y-xxs rule-y rule-heavy",
+            "py-s",
+            "text-body-s font-heavy"
+          )}
+        >
           <span>No. {count}</span>
           <span className="max-sm:hidden">Training notes from our coaches</span>
           <span>Mesa and Gilbert</span>
         </p>
         <h1
           id="journal-hero-title"
-          className="display-poster mt-4 whitespace-nowrap"
+          className="display-poster mt-m whitespace-nowrap"
         >
           The Journal.
         </h1>
-        <div className="mt-6 grid gap-10 pt-8 rule-t lg:mt-8 lg:grid-cols-12 lg:gap-12 lg:pt-10">
+        <div
+          className={cn(
+            "grid gap-xxl rule-t",
+            "mt-l pt-xl",
+            "lg:mt-xl lg:grid-cols-12 lg:gap-xxl lg:pt-xxl"
+          )}
+        >
           <div className="lg:col-span-4">
             <p className="lede max-w-[32ch] text-pretty text-muted-foreground">
               Written in Mesa and Gilbert, in the heat. One note a month, by
               email if you want it.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-l flex flex-wrap gap-s">
               <LinkButton
                 href="#notes"
                 variant="outline"
@@ -411,17 +426,17 @@ export function JournalHero({
             </div>
           </div>
           {latest ? (
-            <article className="relative grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center lg:col-span-8">
+            <article className="relative grid gap-l sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center lg:col-span-8">
               <Disc
                 id={journalObject(latest.slug)}
                 tone="night"
                 className="size-28 sm:size-40 lg:size-48"
               />
               <div>
-                <p className="tabular text-label text-muted-foreground">
+                <p className="tabular text-body-s text-muted-foreground font-heavy">
                   Latest · {latest.cat} · {latest.date}
                 </p>
-                <h2 className="font-display-wide mt-2 text-h2 text-balance lg:text-h1">
+                <h2 className="font-display-wide mt-xs text-body-xxl text-balance lg:text-display-m font-heavy lg:font-heavy">
                   <Link
                     href={`/journal/${latest.slug}`}
                     className="no-underline after:absolute after:inset-0 hover:underline"
@@ -429,10 +444,10 @@ export function JournalHero({
                     {latest.title}
                   </Link>
                 </h2>
-                <p className="mt-3 max-w-[52ch] text-body text-pretty text-muted-foreground">
+                <p className="mt-s max-w-[52ch] text-body-m text-pretty text-muted-foreground">
                   {latest.dek}
                 </p>
-                <p className="mt-3 text-label">
+                <p className="mt-s text-body-s font-heavy">
                   By {author} · {latest.min} min read
                 </p>
               </div>
@@ -479,7 +494,13 @@ export function CareersHero({
       aria-labelledby="careers-hero-title"
       className="overflow-hidden rule-b"
     >
-      <Container className="grid gap-12 pt-8 pb-12 lg:grid-cols-12 lg:items-center lg:gap-16 lg:pt-14 lg:pb-16">
+      <Container
+        className={cn(
+          "grid gap-xxl",
+          "pt-xl pb-xxl",
+          "lg:grid-cols-12 lg:items-center lg:gap-section lg:pt-section lg:pb-section"
+        )}
+      >
         <div className="lg:col-span-6">
           <h1
             id="careers-hero-title"
@@ -487,11 +508,11 @@ export function CareersHero({
           >
             Help people climb.
           </h1>
-          <p className="lede mt-5 max-w-[38ch] text-pretty text-muted-foreground lg:mt-6">
+          <p className="lede mt-l max-w-[38ch] text-pretty text-muted-foreground lg:mt-l">
             We hire coaches, lifeguards, kids club staff and front desk teams
             for 5 clubs in Mesa and Gilbert.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-xl flex flex-wrap items-center gap-s">
             <LinkButton href="#roles" size="lg" className="max-sm:flex-1">
               See open roles
             </LinkButton>
@@ -504,13 +525,21 @@ export function CareersHero({
               How we hire
             </LinkButton>
           </div>
-          <ul aria-label="What you get" className="mt-10 flex flex-wrap gap-2">
+          <ul
+            aria-label="What you get"
+            className="mt-xxl flex flex-wrap gap-xs"
+          >
             {perks.map((p) => (
               <li
                 key={p.label}
-                className="flex items-center gap-2 rounded-full bg-muted py-1 pr-3.5 pl-1 text-label"
+                className={cn(
+                  "flex items-center gap-xs",
+                  "corner-full py-xxs pr-m pl-xxs",
+                  "text-body-s font-heavy",
+                  "bg-muted"
+                )}
               >
-                <span className="grid size-7 place-items-center rounded-full bg-card">
+                <span className="grid size-7 place-items-center corner-full bg-card">
                   <GymObject id={p.icon} className="size-5" />
                 </span>
                 {p.label}
@@ -525,19 +554,23 @@ export function CareersHero({
         >
           <span
             aria-hidden="true"
-            className="absolute inset-[11%] rounded-full border-2 border-dashed border-border"
+            className="absolute inset-[11%] corner-full border-2 border-dashed border-border"
           />
           <span
             aria-hidden="true"
             className={cn(
-              "absolute inset-[30%] flex flex-col items-center justify-center rounded-full text-center",
+              "absolute inset-[30%] flex flex-col items-center justify-center",
+              "corner-full",
+              "text-center",
               nightFill
             )}
           >
-            <span className="tabular font-data text-figure-lg">
+            <span className="tabular font-data text-display-xxl font-heavy">
               {jobs.length}
             </span>
-            <span className="mt-1 text-label text-night-muted">open roles</span>
+            <span className="mt-xxs text-body-s text-night-muted font-heavy">
+              open roles
+            </span>
           </span>
           {ring.map((j, i) => {
             const a = (-90 + (i * 360) / ring.length) * (Math.PI / 180)
@@ -583,16 +616,16 @@ const BUBBLE_AT = [
 export function FaqHero({ questions }: { questions: HeroQuestion[] }) {
   return (
     <section aria-labelledby="faq-hero-title" className="rule-b">
-      <Container className="relative py-12 lg:py-16 xl:min-h-[36rem] xl:py-24">
+      <Container className="relative py-xxl lg:py-section xl:min-h-[36rem] xl:py-section-l">
         <div className="relative z-10 mx-auto max-w-[34rem] text-center">
           <h1 id="faq-hero-title" className="display-hero text-balance">
             Questions, answered.
           </h1>
-          <p className="lede mt-5 text-pretty text-muted-foreground">
+          <p className="lede mt-l text-pretty text-muted-foreground">
             Short answers on tours, passes, fees, booking rules and kids club.
             If yours is not here, a person answers.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-xl flex flex-wrap items-center justify-center gap-s">
             <LinkButton href="#questions" size="lg" className="max-sm:flex-1">
               Find an answer
             </LinkButton>
@@ -608,7 +641,11 @@ export function FaqHero({ questions }: { questions: HeroQuestion[] }) {
         </div>
         <ul
           aria-label="Common questions"
-          className="mx-auto mt-12 flex max-w-2xl flex-col gap-3 xl:static xl:mt-0 xl:max-w-none"
+          className={cn(
+            "flex max-w-2xl flex-col gap-s",
+            "mx-auto mt-xxl",
+            "xl:static xl:mt-zero xl:max-w-none"
+          )}
         >
           {questions.slice(0, BUBBLE_AT.length).map((q, i) => {
             const at = BUBBLE_AT[i]
@@ -629,8 +666,12 @@ export function FaqHero({ questions }: { questions: HeroQuestion[] }) {
                 <a
                   href={`#${q.id}`}
                   className={cn(
-                    "group relative flex items-center gap-3 rounded-2xl bg-card py-2.5 pr-4 pl-2.5 text-label text-pretty no-underline edge ring-border hover:bg-muted",
-                    at.side === "left" ? "xl:rounded-bl-sm" : "xl:rounded-br-sm"
+                    "group relative flex items-center gap-s hairline",
+                    "corner-xl py-s pr-m pl-s",
+                    "text-body-s text-pretty no-underline font-heavy",
+                    "bg-card ring-border",
+                    "hover:bg-muted",
+                    at.side === "left" ? "xl:corner-bl-xs" : "xl:corner-br-xs"
                   )}
                 >
                   <Disc
@@ -670,45 +711,60 @@ export type Line = {
 export function ContactHero({ lines, note }: { lines: Line[]; note: string }) {
   return (
     <section aria-labelledby="contact-hero-title" className="rule-b">
-      <Container className="pt-8 pb-12 lg:pt-14 lg:pb-16">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-12">
+      <Container className="pt-xl pb-xxl lg:pt-section lg:pb-section">
+        <div className="grid gap-l lg:grid-cols-12 lg:items-end lg:gap-xxl">
           <h1
             id="contact-hero-title"
             className="display-hero max-w-[10ch] text-balance lg:col-span-7"
           >
             Talk to a person.
           </h1>
-          <p className="lede max-w-[36ch] text-pretty text-muted-foreground lg:col-span-5 lg:pb-3">
+          <p className="lede max-w-[36ch] text-pretty text-muted-foreground lg:col-span-5 lg:pb-s">
             Call your club for the fastest answer. After hours, send a message
             and we reply within 1 business day.
           </p>
         </div>
-        <ul className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:mt-14 lg:grid-cols-6">
+        <ul
+          className={cn(
+            "grid grid-cols-2 gap-xs",
+            "mt-xxl",
+            "sm:grid-cols-3 sm:gap-s lg:mt-section lg:grid-cols-6"
+          )}
+        >
           {lines.map((l) => (
             <li key={l.key}>
               <a
                 href={`tel:${l.tel}`}
                 className={cn(
-                  "flex h-full flex-col gap-6 rounded-2xl p-4 no-underline sm:p-5",
+                  "flex h-full flex-col gap-l",
+                  "corner-xl p-m",
+                  "no-underline",
+                  "sm:p-l",
                   l.lit
                     ? `${litFill} [&:focus-visible]:outline-[var(--night)]`
-                    : "bg-card edge ring-border hover:bg-muted"
+                    : "bg-card hairline ring-border hover:bg-muted"
                 )}
               >
                 <Disc id={l.icon} tone="night" className="size-11" />
                 <span className="mt-auto">
                   <span
                     className={cn(
-                      "block text-caption",
+                      "block text-body-s",
                       l.lit ? "" : "text-muted-foreground"
                     )}
                   >
                     {l.sub}
                   </span>
-                  <span className="font-display-wide block text-label text-balance sm:text-body-strong">
+                  <span className="font-display-wide block text-body-s text-balance sm:text-body-m font-heavy sm:font-heavy">
                     {l.name}
                   </span>
-                  <span className="tabular mt-2 block font-data text-body-strong font-bold underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4">
+                  <span
+                    className={cn(
+                      "tabular block",
+                      "mt-xs",
+                      "font-data text-body-m font-heavy underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4"
+                    )}
+                  >
                     {l.phone}
                   </span>
                 </span>
@@ -716,7 +772,7 @@ export function ContactHero({ lines, note }: { lines: Line[]; note: string }) {
             </li>
           ))}
         </ul>
-        <p className="mt-6 text-body text-muted-foreground">{note}</p>
+        <p className="mt-l text-body-m text-muted-foreground">{note}</p>
       </Container>
     </section>
   )
@@ -750,15 +806,15 @@ export function DeskDay({ rows }: { rows: DayRow[] }) {
             `${r.day}: the club is open ${fmtClock(r.open[0])} to ${fmtClock(r.open[1])}, and a person answers ${fmtClock(r.desk[0])} to ${fmtClock(r.desk[1])}.`
         )
         .join(" ")}
-      className={cn("rounded-2xl p-5 sm:p-8", nightFill)}
+      className={cn("corner-xl p-l sm:p-xl", nightFill)}
     >
-      <div aria-hidden="true" className="flex flex-col gap-8 sm:gap-10">
+      <div aria-hidden="true" className="flex flex-col gap-xl sm:gap-xxl">
         {rows.map((r) => (
           <div key={r.day}>
-            <p className="font-display-wide text-h3">{r.day}</p>
-            <div className="relative mt-4 h-14 rounded-full fill-quiet sm:h-16">
+            <p className="font-display-wide text-body-l font-medium">{r.day}</p>
+            <div className="relative mt-m h-14 corner-full fill-quiet sm:h-16">
               <div
-                className="absolute inset-y-0 rounded-full fill-quiet-strong"
+                className="absolute inset-y-0 corner-full fill-quiet-strong"
                 style={{
                   left: pos(r.open[0]),
                   right: `calc(100% - ${pos(r.open[1])})`,
@@ -766,7 +822,7 @@ export function DeskDay({ rows }: { rows: DayRow[] }) {
               />
               <div
                 className={cn(
-                  "absolute inset-y-1.5 flex items-center justify-center rounded-full px-3",
+                  "absolute inset-y-1.5 flex items-center justify-center corner-full px-s",
                   litFill
                 )}
                 // Where the desk hours reach an end of the open hours, the lit bar keeps the same 0.375rem inset
@@ -776,12 +832,12 @@ export function DeskDay({ rows }: { rows: DayRow[] }) {
                   right: `calc(100% - ${pos(r.desk[1])} + ${r.desk[1] >= r.open[1] ? "0.375rem" : "0px"})`,
                 }}
               >
-                <span className="tabular truncate text-label font-semibold sm:text-body-strong">
+                <span className="tabular truncate text-body-s font-heavy sm:text-body-m">
                   {fmtClock(r.desk[0])}–{fmtClock(r.desk[1])}
                 </span>
               </div>
             </div>
-            <div className="tabular relative mt-2 h-5 text-caption whitespace-nowrap text-night-muted">
+            <div className="tabular relative mt-xs h-5 text-body-s whitespace-nowrap text-night-muted">
               <span className="absolute" style={{ left: pos(r.open[0]) }}>
                 {fmtClock(r.open[0])}
               </span>
@@ -794,13 +850,19 @@ export function DeskDay({ rows }: { rows: DayRow[] }) {
             </div>
           </div>
         ))}
-        <ul className="flex flex-wrap gap-x-6 gap-y-2 pt-5 text-label rule-t rule-night">
-          <li className="flex items-center gap-2">
-            <span className="size-3 rounded-full bg-[color-mix(in_oklab,currentColor_40%,transparent)]" />
+        <ul
+          className={cn(
+            "flex flex-wrap gap-x-l gap-y-xs rule-t rule-night",
+            "pt-l",
+            "text-body-s font-heavy"
+          )}
+        >
+          <li className="flex items-center gap-xs">
+            <span className="size-3 corner-full bg-[color-mix(in_oklab,currentColor_40%,transparent)]" />
             Club open
           </li>
-          <li className="flex items-center gap-2">
-            <span className="size-3 rounded-full bg-[var(--cat-strength)]" />A
+          <li className="flex items-center gap-xs">
+            <span className="size-3 corner-full bg-[var(--cat-strength)]" />A
             person answers
           </li>
         </ul>

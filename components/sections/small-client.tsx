@@ -107,7 +107,7 @@ export function ShareButton({
         <Share2 aria-hidden="true" />
         {label}
       </Button>
-      <span role="status" className="text-caption text-muted-foreground">
+      <span role="status" className="text-body-s text-muted-foreground">
         {msg}
       </span>
     </>
@@ -134,7 +134,7 @@ export function Tabs2<T extends string>({
       onValueChange={(v) => {
         if (v[0] !== undefined) onChange(v[0] as T)
       }}
-      className="-m-1 max-w-[calc(100%+0.5rem)] overflow-x-auto p-1"
+      className="-m-xxs max-w-[calc(100%+0.5rem)] overflow-x-auto p-xxs"
     >
       {items.map((t) => (
         <Toggle key={t.id} value={t.id} className="min-h-11 shrink-0">
@@ -232,19 +232,19 @@ export function ContactForm({
   }, [sent])
   if (sent)
     return (
-      <div className="flex flex-col items-start gap-4 rounded-2xl bg-card p-6 edge ring-border sm:p-8">
-        <span className="grid size-12 place-items-center rounded-full bg-[var(--cat-strength)] text-[var(--neutral-1)]">
+      <div className="flex flex-col items-start gap-m corner-xl bg-card p-l hairline ring-border sm:p-xl">
+        <span className="grid size-12 place-items-center corner-full bg-[var(--cat-strength)] text-neutral-1">
           <Check className="size-6" aria-hidden="true" />
         </span>
         <div>
           <h3
             ref={doneRef}
             tabIndex={-1}
-            className="font-display-wide text-h2 outline-none"
+            className="font-display-wide text-body-xxl outline-none font-heavy"
           >
             Thanks, {sent}.
           </h3>
-          <p className="mt-1 text-body text-muted-foreground">
+          <p className="mt-xxs text-body-m text-muted-foreground">
             {forCoach
               ? `We will pass it to ${forCoach.first} and reply by ${replyBy}.`
               : `A person at the front desk will reply by ${replyBy}.`}
@@ -264,31 +264,33 @@ export function ContactForm({
         e.preventDefault()
         submit()
       }}
-      className="relative overflow-hidden rounded-2xl bg-card edge ring-border"
+      className="relative overflow-hidden corner-xl bg-card hairline ring-border"
     >
-      <div className="flex items-center gap-4 px-6 py-5 rule-b sm:px-8">
+      <div className="flex items-center gap-m px-l py-l rule-b sm:px-xl">
         <span
           aria-hidden="true"
-          className="grid size-12 shrink-0 place-items-center rounded-full bg-night"
+          className="grid size-12 shrink-0 place-items-center corner-full bg-night"
         >
           <GymObject id="envelope" scheme="night" className="size-7" />
         </span>
         <div className="min-w-0">
-          <p className="font-display-wide text-h3">To the front desk</p>
-          <p className="text-caption text-muted-foreground">
+          <p className="font-display-wide text-body-l font-medium">
+            To the front desk
+          </p>
+          <p className="text-body-s text-muted-foreground">
             We reply by {replyBy}.
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-6 p-6 sm:p-8">
+      <div className="flex flex-col gap-l p-l sm:p-xl">
         <ErrorSummary errors={errors} />
         {forCoach ? (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg bg-muted p-3">
+          <div className="flex flex-wrap items-center gap-x-m gap-y-xs corner-m bg-muted p-s">
             <CoachAvatar slug={forCoach.slug} name={forCoach.name} size={40} />
-            <p className="min-w-0 flex-1 text-body">
-              To <span className="font-semibold">{forCoach.name}</span>, by way
-              of the front desk.
+            <p className="min-w-0 flex-1 text-body-m">
+              To <span className="font-heavy">{forCoach.name}</span>, by way of
+              the front desk.
             </p>
             <Button
               type="button"
@@ -315,9 +317,9 @@ export function ContactForm({
         {/* The topic as one-tap chips: a visitor sees every reason at once instead of opening a menu. Tapping the
             chosen topic again clears it, because the topic is optional. */}
         <fieldset>
-          <legend className="text-label">
+          <legend className="text-body-s font-heavy">
             What is it about?
-            <span className="font-normal text-muted-foreground">
+            <span className="font-regular text-muted-foreground">
               {" "}
               (optional)
             </span>
@@ -325,13 +327,13 @@ export function ContactForm({
           <ToggleGroup
             value={v.topic ? [v.topic] : []}
             onValueChange={(x) => setV({ ...v, topic: String(x[0] ?? "") })}
-            className="mt-3 flex flex-wrap gap-2"
+            className="mt-s flex flex-wrap gap-xs"
           >
             {TOPICS.map((t) => (
               <Toggle
                 key={t}
                 value={t}
-                className="min-h-10 rounded-full px-4 ring-1 ring-border ring-inset"
+                className="min-h-10 corner-full px-m ring-1 ring-border ring-inset"
               >
                 {t}
               </Toggle>
@@ -339,7 +341,7 @@ export function ContactForm({
           </ToggleGroup>
         </fieldset>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-l sm:grid-cols-2">
           <TextField
             label="First name"
             required
@@ -384,7 +386,7 @@ export function ContactForm({
           )}
         </Field>
         {v.message.length >= 900 ? (
-          <p className="tabular -mt-4 text-caption">
+          <p className="tabular -mt-m text-body-s">
             {v.message.length} of 1000
           </p>
         ) : null}
@@ -392,8 +394,8 @@ export function ContactForm({
 
       <Honeypot />
 
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 bg-muted/50 px-6 py-4 rule-t sm:px-8">
-        <p className="text-caption text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-l gap-y-m bg-muted/50 px-l py-m rule-t sm:px-xl">
+        <p className="text-body-s text-muted-foreground">
           We use this only to answer you.{" "}
           <Link href="/legal/privacy" className="underline">
             Privacy policy
@@ -437,13 +439,13 @@ export function NewsletterStrip() {
         }).catch(() => null)
         setState(r?.ok ? "ok" : r && !r.ok && r.fields ? "error" : "failed")
       }}
-      className="relative flex flex-col gap-3"
+      className="relative flex flex-col gap-s"
     >
       <Honeypot />
       <label htmlFor="nl" className="sr-only">
         Email address
       </label>
-      <div className="flex gap-2 max-sm:flex-col">
+      <div className="flex gap-xs max-sm:flex-col">
         <Input
           id="nl"
           type="email"
@@ -456,7 +458,7 @@ export function NewsletterStrip() {
           }}
           aria-invalid={state === "error"}
           aria-describedby="nl-status"
-          className="min-h-12 flex-1 bg-card text-body text-foreground shadow-none"
+          className="min-h-12 flex-1 bg-card text-body-m text-foreground shadow-none"
         />
         <Button type="submit" size="lg" loading={state === "busy"}>
           Subscribe
@@ -465,7 +467,7 @@ export function NewsletterStrip() {
       <p
         id="nl-status"
         role="status"
-        className="min-h-5 text-caption text-night-muted"
+        className="min-h-5 text-body-s text-night-muted"
       >
         {state === "ok"
           ? "Subscribed. One note a month."

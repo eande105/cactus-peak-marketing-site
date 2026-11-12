@@ -21,9 +21,9 @@ type DrawerPlacement = "bottom" | "right"
 // max-w-none lifts the 420 px popup cap so the wider sizes apply.
 const place: Record<DialogPlacement, string> = {
   center:
-    "left-1/2 top-1/2 w-[min(440px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] -translate-x-1/2 -translate-y-1/2 max-sm:inset-0 max-sm:left-0 max-sm:top-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-screen max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none",
-  top: "left-1/2 top-24 w-[min(640px,calc(100vw-32px))] max-h-[calc(100dvh-8rem)] -translate-x-1/2 translate-y-0 max-sm:top-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-screen max-sm:rounded-none",
-  full: "inset-0 h-dvh max-h-none w-screen translate-x-0 translate-y-0 rounded-none",
+    "left-1/2 top-1/2 w-[min(440px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] -translate-x-1/2 -translate-y-1/2 max-sm:inset-0 max-sm:left-0 max-sm:top-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-screen max-sm:translate-x-0 max-sm:translate-y-0 max-sm:corner-zero",
+  top: "left-1/2 top-24 w-[min(640px,calc(100vw-32px))] max-h-[calc(100dvh-8rem)] -translate-x-1/2 translate-y-0 max-sm:top-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-screen max-sm:corner-zero",
+  full: "inset-0 h-dvh max-h-none w-screen translate-x-0 translate-y-0 corner-zero",
 }
 
 const OverlayKind = createContext<DrawerPlacement | null>(null)

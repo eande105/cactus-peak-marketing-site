@@ -41,26 +41,30 @@ export function SessionPlan({ pack, each }: { pack: Pack; each?: number }) {
     <figure
       role="img"
       aria-label={`A pack of ${pack.n} sessions${each ? ` at $${each} a session` : ""}. Your coach checks the plan every 4 sessions.`}
-      className="m-0"
+      className="m-zero"
     >
       <div
         aria-hidden="true"
-        className="mb-4 flex items-baseline justify-between gap-4 pb-3 rule-b rule-heavy sm:mb-5"
+        className={cn(
+          "flex items-baseline justify-between gap-m rule-b rule-heavy",
+          "mb-m pb-s",
+          "sm:mb-l"
+        )}
       >
-        <span className="font-display-wide text-lead sm:text-h3">
+        <span className="font-display-wide text-body-l sm:text-body-l sm:font-medium">
           {pack.n}-pack
         </span>
         {each ? (
-          <span className="tabular font-data text-h3 font-bold sm:text-h2">
+          <span className="tabular font-data text-body-l font-heavy sm:text-body-xxl">
             ${each}
-            <span className="text-body font-normal text-muted-foreground">
+            <span className="text-body-m font-regular text-muted-foreground">
               {" "}
               a session
             </span>
           </span>
         ) : null}
       </div>
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-4 gap-xs sm:gap-s">
         {sessions.map((n) => {
           const check = n % 4 === 0
           const id: ObjectId = check
@@ -73,25 +77,27 @@ export function SessionPlan({ pack, each }: { pack: Pack; each?: number }) {
               key={n}
               aria-hidden="true"
               className={cn(
-                "flex aspect-square flex-col justify-between rounded-lg p-2.5 sm:rounded-2xl sm:p-4",
+                "flex aspect-square flex-col justify-between",
+                "corner-m p-s",
+                "sm:corner-xl sm:p-m",
                 check ? litFill : nightFill
               )}
             >
-              <span className="flex items-start justify-between gap-1">
+              <span className="flex items-start justify-between gap-xxs">
                 <GymObject
                   id={id}
                   scheme={check ? "copper" : "night"}
                   className="size-7 sm:size-10"
                 />
                 {check ? (
-                  <span className="text-right text-caption font-semibold max-md:hidden">
+                  <span className="text-right text-body-s font-heavy max-md:hidden">
                     Plan
                     <br />
                     check
                   </span>
                 ) : null}
               </span>
-              <span className="tabular font-data text-h3 leading-none font-bold sm:text-h2">
+              <span className="tabular font-data text-body-l leading-none font-heavy sm:text-body-xxl">
                 {n}
               </span>
             </div>
@@ -128,7 +134,7 @@ export function RecoveryCairn({ stones }: { stones: Stone[] }) {
       aria-label={`The recovery suite, in the order of a visit: ${stones
         .map((s) => (s.time ? `${s.name}, ${s.time}` : s.name))
         .join("; ")}.`}
-      className="flex flex-col items-center gap-2 sm:gap-3"
+      className="flex flex-col items-center gap-xs sm:gap-s"
     >
       {stones.map((s, i) => {
         const lit = i === 0
@@ -138,23 +144,25 @@ export function RecoveryCairn({ stones }: { stones: Stone[] }) {
             key={s.name}
             aria-hidden="true"
             className={cn(
-              "flex h-16 items-center justify-between gap-3 rounded-full px-5 sm:h-24 sm:px-8",
+              "flex h-16 items-center justify-between gap-s",
+              "corner-full px-l",
+              "sm:h-24 sm:px-xl",
               STONE_WIDTH[i] ?? "w-full",
-              lit ? litFill : last ? "bg-card edge ring-border" : nightFill
+              lit ? litFill : last ? "bg-card hairline ring-border" : nightFill
             )}
           >
-            <span className="flex min-w-0 items-center gap-3">
+            <span className="flex min-w-0 items-center gap-s">
               <GymObject
                 id={s.icon}
                 scheme={lit ? "copper" : last ? "sand" : "night"}
                 className="size-7 shrink-0 sm:size-10"
               />
-              <span className="font-display-wide min-w-0 text-label sm:text-h3">
+              <span className="font-display-wide min-w-0 text-body-s sm:text-body-l font-heavy sm:font-medium">
                 {s.name}
               </span>
             </span>
             {s.time ? (
-              <span className="tabular font-data text-label font-bold whitespace-nowrap sm:text-h3">
+              <span className="tabular font-data text-body-s font-heavy whitespace-nowrap sm:text-body-l">
                 {s.time}
               </span>
             ) : null}
@@ -192,7 +200,7 @@ export function PoolGauge({ pools }: { pools: PoolColumn[] }) {
   return (
     <ul
       aria-label="Water temperature at each pool"
-      className="grid aspect-[5/4] items-end gap-2 sm:aspect-[2/1] sm:gap-3 lg:aspect-[3/1]"
+      className="grid aspect-[5/4] items-end gap-xs sm:aspect-[2/1] sm:gap-s lg:aspect-[3/1]"
       style={{ gridTemplateColumns: `repeat(${pools.length}, minmax(0, 1fr))` }}
     >
       {pools.map((p) => (
@@ -205,7 +213,7 @@ export function PoolGauge({ pools }: { pools: PoolColumn[] }) {
         >
           <div
             className={cn(
-              "flex h-full flex-col justify-between rounded-t-2xl p-2.5 sm:p-5",
+              "flex h-full flex-col justify-between corner-t-xl p-s sm:p-l",
               p.lit ? litFill : nightFill
             )}
           >
@@ -215,17 +223,17 @@ export function PoolGauge({ pools }: { pools: PoolColumn[] }) {
               className="size-6 sm:size-9"
             />
             <span className="min-w-0">
-              <span className="tabular block font-data text-h3 leading-none font-bold sm:text-h1">
+              <span className="tabular block font-data text-body-l leading-none font-heavy sm:text-display-m">
                 {p.range}
                 <span className="sr-only"> degrees Fahrenheit</span>
               </span>
-              <span className="mt-2 block text-caption font-semibold text-balance sm:text-label">
+              <span className="mt-xs block text-body-s font-heavy text-balance sm:text-body-s">
                 {p.name}
               </span>
               <span
                 className={cn(
-                  "mt-0.5 block text-caption text-pretty max-sm:hidden",
-                  p.lit ? "text-[var(--neutral-1)]" : "text-night-muted"
+                  "mt-xxs block text-body-s text-pretty max-sm:hidden",
+                  p.lit ? "text-neutral-1" : "text-night-muted"
                 )}
               >
                 {p.line}
@@ -272,7 +280,7 @@ export function CourtCount({ clubs }: { clubs: Club[] }) {
   return (
     <ul
       aria-label="The courts at each club"
-      className="grid gap-2 sm:gap-3"
+      className="grid gap-xs sm:gap-s"
       style={{ gridTemplateColumns: `repeat(${clubs.length}, minmax(0, 1fr))` }}
     >
       {clubs.map((c) => {
@@ -282,22 +290,22 @@ export function CourtCount({ clubs }: { clubs: Club[] }) {
           <li
             key={c.slug}
             className={cn(
-              "flex flex-col gap-3 rounded-2xl p-2.5 sm:gap-4 sm:p-4",
+              "flex flex-col gap-s corner-xl p-s sm:gap-m sm:p-m",
               lit ? litFill : nightFill
             )}
           >
             <p>
-              <span className="tabular block font-data text-h2 leading-none font-bold sm:text-h1">
+              <span className="tabular block font-data text-body-xxl leading-none font-heavy sm:text-display-m">
                 {tiles.length}
               </span>
-              <span className="mt-2 block text-caption font-semibold text-balance sm:text-label">
+              <span className="mt-xs block text-body-s font-heavy text-balance sm:text-body-s">
                 {c.short}
               </span>
               <span className="sr-only">: {courtLine(c)}</span>
             </p>
             <span
               aria-hidden="true"
-              className="grid grid-cols-2 gap-1.5 sm:gap-2"
+              className="grid grid-cols-2 gap-xs sm:gap-xs"
             >
               {tiles.map((id, i) => (
                 <span
@@ -305,7 +313,7 @@ export function CourtCount({ clubs }: { clubs: Club[] }) {
                   // biome-ignore lint/suspicious/noArrayIndexKey: fixed order from the club data
                   key={i}
                   className={cn(
-                    "grid aspect-square place-items-center rounded-md",
+                    "grid aspect-square place-items-center corner-s",
                     tileFill
                   )}
                 >
@@ -349,11 +357,11 @@ const AGE_TICKS = [0, 3, 6, 9, 12, 15, 18]
 export function AgeSpan({ bands }: { bands: AgeBand[] }) {
   const pct = (age: number) => `${(age / AGE_MAX) * 100}%`
   return (
-    <figure className="m-0">
-      <ul aria-label="Programs by age" className="flex flex-col gap-4 sm:gap-5">
+    <figure className="m-zero">
+      <ul aria-label="Programs by age" className="flex flex-col gap-m sm:gap-l">
         {bands.map((b) => (
           <li key={b.key}>
-            <p className="flex items-center gap-2 text-label">
+            <p className="flex items-center gap-xs text-body-s font-heavy">
               <GymObject id={b.icon} className="size-6 shrink-0" />
               {b.name}
               <span className="sr-only">, ages {b.ages}</span>
@@ -366,16 +374,18 @@ export function AgeSpan({ bands }: { bands: AgeBand[] }) {
             </p>
             <div
               aria-hidden="true"
-              className="relative mt-2 h-11 rounded-full bg-[color-mix(in_oklab,var(--foreground)_8%,transparent)] sm:h-14"
+              className="relative mt-xs h-11 corner-full bg-[color-mix(in_oklab,var(--foreground)_8%,transparent)] sm:h-14"
             >
               <span
                 className={cn(
-                  "absolute inset-y-0 flex items-center justify-end rounded-full px-3 sm:px-4",
+                  "absolute inset-y-0 flex items-center justify-end",
+                  "corner-full px-s",
+                  "sm:px-m",
                   b.lit ? litFill : nightFill
                 )}
                 style={{ left: pct(b.from), width: pct(b.to - b.from) }}
               >
-                <span className="tabular font-data text-label font-bold whitespace-nowrap sm:text-h3">
+                <span className="tabular font-data text-body-s font-heavy whitespace-nowrap sm:text-body-l">
                   {b.ages}
                 </span>
               </span>
@@ -386,7 +396,7 @@ export function AgeSpan({ bands }: { bands: AgeBand[] }) {
       {/* The age scale under the bars. */}
       <div
         aria-hidden="true"
-        className="relative mt-3 h-6 text-caption text-muted-foreground tabular-nums rule-t"
+        className="relative mt-s h-6 text-body-s text-muted-foreground tabular-nums rule-t"
       >
         {AGE_TICKS.map((t) => (
           <span

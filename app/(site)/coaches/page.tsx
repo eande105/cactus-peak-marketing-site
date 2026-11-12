@@ -30,7 +30,7 @@ export default async function Coaches() {
 
       <Band tone="tint" id="coaches">
         <SectionHead size="lead" title="Find your coach." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <CoachGridFromUrl />
         </div>
       </Band>
@@ -42,7 +42,7 @@ export default async function Coaches() {
           lede="Classes come with every plan. One-on-one time is a pack you add."
         />
         <OfferColumns
-          className="mt-12 lg:!grid-cols-2"
+          className="mt-xxl lg:!grid-cols-2"
           offers={[
             {
               key: "classes",

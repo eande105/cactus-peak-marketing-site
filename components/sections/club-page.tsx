@@ -166,12 +166,12 @@ export function ClubBoard({ club }: { club: Club }) {
   const here = BOARD.filter((s) => s.at(club))
   const lit = facilityIcon(club.signature[0] ?? "")
   return (
-    <div className="rounded-2xl bg-night p-3">
+    <div className="corner-xl bg-night p-s">
       {/* The board is a picture of a list, so it carries the list as its name. */}
       <ul
         role="img"
         aria-label={`Spaces at ${club.short}: ${here.map((s) => s.name.toLowerCase()).join(", ")}.`}
-        className="grid aspect-[6/5] grid-cols-6 grid-rows-5 gap-2 sm:gap-3"
+        className="grid aspect-[6/5] grid-cols-6 grid-rows-5 gap-xs sm:gap-s"
       >
         {BOARD.map((s) => {
           const on = s.at(club)
@@ -181,13 +181,13 @@ export function ClubBoard({ club }: { club: Club }) {
               key={s.id}
               aria-hidden="true"
               className={cn(
-                "grid min-h-0 place-items-center rounded-lg",
+                "grid min-h-0 place-items-center corner-m",
                 s.area,
                 isLit
                   ? "bg-[var(--cat-strength)]"
                   : on
                     ? "bg-night-fill"
-                    : "border border-dashed border-night-rule"
+                    : "edge-m border-dashed border-night-rule"
               )}
             >
               {on ? (
@@ -215,19 +215,25 @@ export function ClubBoard({ club }: { club: Club }) {
 export function ClubHero({ club }: { club: Club }) {
   return (
     <section aria-labelledby="club-hero-title" className="rule-b">
-      <Container className="grid gap-10 pt-8 pb-10 lg:grid-cols-12 lg:items-end lg:gap-14 lg:pt-14 lg:pb-14">
+      <Container
+        className={cn(
+          "grid gap-xxl",
+          "pt-xl pb-xxl",
+          "lg:grid-cols-12 lg:items-end lg:gap-section lg:pt-section lg:pb-section"
+        )}
+      >
         <div className="lg:col-span-6">
           <h1 id="club-hero-title" className="display-hero text-balance">
             {club.name}
           </h1>
           {/* The name is the cross streets, so the city goes on its own line under it. */}
-          <p className="mt-3 text-lead text-muted-foreground">
+          <p className="mt-s text-body-l text-muted-foreground">
             {club.city}, AZ
           </p>
-          <p className="lede mt-5 max-w-[34ch] text-pretty lg:mt-6">
+          <p className="lede mt-l max-w-[34ch] text-pretty lg:mt-l">
             {club.personality}
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-xl flex flex-wrap items-center gap-s">
             <LinkButton
               href={`/tour?club=${club.slug}`}
               size="lg"
@@ -281,18 +287,18 @@ export function ClubSpaces({
     ),
   ].filter((id) => id !== focus)
   return (
-    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
       {/* The column sticks below the header and the section nav (--sticky-top). */}
       <div className="lg:col-span-5">
         <div className="lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)]">
           <h2 className="display-lead max-w-[12ch] text-balance">
             Inside {club.short}.
           </h2>
-          <p className="mt-4 max-w-[36ch] text-lead text-pretty text-muted-foreground">
+          <p className="mt-m max-w-[36ch] text-body-l text-pretty text-muted-foreground">
             {lede}
           </p>
           {/* Decorative: the list beside it names each space. */}
-          <div className="relative mt-10 aspect-[5/4] overflow-hidden rounded-lg max-lg:hidden">
+          <div className="relative mt-xxl aspect-[5/4] overflow-hidden corner-m max-lg:hidden">
             <ObjectRack
               ratio="5/4"
               layout="cluster"
@@ -310,7 +316,11 @@ export function ClubSpaces({
           <li
             key={sp.id}
             id={`am-${sp.id}`}
-            className="grid scroll-mt-4 grid-cols-[auto_minmax(0,1fr)] gap-x-5 py-8 rule-b sm:gap-x-8 lg:py-10"
+            className={cn(
+              "grid grid-cols-[auto_minmax(0,1fr)] gap-x-l rule-b",
+              "scroll-mt-4 py-xl",
+              "sm:gap-x-xl lg:py-xxl"
+            )}
           >
             <GymObject
               id={spaceObjects[sp.graphic].lead}
@@ -318,17 +328,17 @@ export function ClubSpaces({
               className="size-12 sm:size-16"
             />
             <div>
-              <h3 className="font-display-wide text-h3 lg:text-h2">
+              <h3 className="font-display-wide text-body-l lg:text-body-xxl font-medium lg:font-heavy">
                 {sp.name}
               </h3>
-              <p className="mt-2 text-lead text-pretty">{sp.line}</p>
-              <ul className="mt-5 grid gap-x-8 gap-y-2 text-body text-muted-foreground sm:grid-cols-2">
+              <p className="mt-xs text-body-l text-pretty">{sp.line}</p>
+              <ul className="mt-l grid gap-x-xl gap-y-xs text-body-m text-muted-foreground sm:grid-cols-2">
                 {sp.amenities.map((x) => (
                   <li key={x}>{x}</li>
                 ))}
               </ul>
               {sp.link ? (
-                <div className="mt-6">
+                <div className="mt-l">
                   <TextLink href={sp.link.href}>{sp.link.label}</TextLink>
                 </div>
               ) : null}
@@ -339,16 +349,18 @@ export function ClubSpaces({
 
       {spaces.amenities.length ? (
         <div className="lg:col-span-12">
-          <h3 className="font-display-wide text-h3">Also at {club.short}</h3>
-          <ul className="mt-4 grid rule-t sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4">
+          <h3 className="font-display-wide text-body-l font-medium">
+            Also at {club.short}
+          </h3>
+          <ul className="mt-m grid rule-t sm:grid-cols-2 sm:gap-x-xl lg:grid-cols-4">
             {spaces.amenities.map((am) => {
               const row = (
-                <span className="flex min-h-14 items-center gap-3 py-2">
+                <span className="flex min-h-14 items-center gap-s py-xs">
                   <GymObject
                     id={spaceObjects[am.graphic].lead}
                     className="size-8 shrink-0"
                   />
-                  <span className="text-body font-semibold">{am.name}</span>
+                  <span className="text-body-m font-heavy">{am.name}</span>
                 </span>
               )
               return (
@@ -385,31 +397,37 @@ export function ClubSpaces({
  * week's hours and the busy hours sit side by side, so a visitor picks a time with both in view.
  */
 export function ClubVisit({ club, clubs }: { club: Club; clubs: Club[] }) {
-  const row = "grid grid-cols-[5.5rem_minmax(0,1fr)] gap-x-4 rule-b py-3"
+  const row = "grid grid-cols-[5.5rem_minmax(0,1fr)] gap-x-m rule-b py-s"
   const here: [number, number] = [club.lat, club.lng]
   const others = clubs
     .filter((c) => c.slug !== club.slug)
     .map((c) => ({ c, mi: miles(here, [c.lat, c.lng]) }))
     .sort((a, b) => a.mi - b.mi)
   return (
-    <div className="grid gap-12 lg:gap-16">
-      <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+    <div className="grid gap-xxl lg:gap-section">
+      <div className="grid gap-xl lg:grid-cols-12 lg:gap-xxl">
         <ClubMap
           only={club.slug}
-          className="aspect-[4/3] w-full overflow-hidden rounded-lg sm:aspect-[16/9] lg:col-span-7 lg:aspect-auto lg:h-full lg:min-h-[32rem]"
+          className={cn(
+            "aspect-[4/3] w-full overflow-hidden",
+            "corner-m",
+            "sm:aspect-[16/9] lg:col-span-7 lg:aspect-auto lg:h-full lg:min-h-[32rem]"
+          )}
           interactive={false}
         />
 
         <div className="min-w-0 lg:col-span-5">
-          <h3 className="font-display-wide text-h3">Getting here</h3>
-          <p className="mt-3 text-lead text-pretty">
+          <h3 className="font-display-wide text-body-l font-medium">
+            Getting here
+          </h3>
+          <p className="mt-s text-body-l text-pretty">
             {club.cross}
             <br />
             <span className="text-muted-foreground">
               {club.city}, AZ {club.zip}
             </span>
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-l flex flex-wrap gap-s">
             <LinkButton
               href={directionsHref(club)}
               external
@@ -427,7 +445,7 @@ export function ClubVisit({ club, clubs }: { club: Club; clubs: Club[] }) {
               {club.phone}
             </LinkButton>
           </div>
-          <dl className="mt-6 text-body rule-t">
+          <dl className="mt-l text-body-m rule-t">
             <div className={row}>
               <dt className="font-medium">Parking</dt>
               <dd className="text-pretty text-muted-foreground">
@@ -442,25 +460,25 @@ export function ClubVisit({ club, clubs }: { club: Club; clubs: Club[] }) {
             </div>
           </dl>
 
-          <h3 className="font-display-wide mt-10 text-h3">
+          <h3 className="font-display-wide mt-xxl text-body-l font-medium">
             Other clubs nearby
           </h3>
-          <ul className="mt-3 rule-t">
+          <ul className="mt-s rule-t">
             {others.map(({ c, mi }) => (
               <li key={c.slug} className="rule-b">
                 <Link
                   href={`/clubs/${c.slug}`}
-                  className="group flex min-h-14 items-center gap-4 py-3 no-underline"
+                  className="group flex min-h-14 items-center gap-m py-s no-underline"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block text-body-strong underline-offset-4 group-hover:underline">
+                    <span className="block text-body-m underline-offset-4 group-hover:underline font-heavy">
                       {c.name}
                     </span>
-                    <span className="block text-caption text-muted-foreground">
+                    <span className="block text-body-s text-muted-foreground">
                       {c.type} · {c.city}
                     </span>
                   </span>
-                  <span className="text-body text-muted-foreground tabular-nums">
+                  <span className="text-body-m text-muted-foreground tabular-nums">
                     {mi.toFixed(1)} mi
                   </span>
                   <span
@@ -476,10 +494,10 @@ export function ClubVisit({ club, clubs }: { club: Club; clubs: Club[] }) {
         </div>
       </div>
 
-      <div className="grid gap-12 pt-12 rule-t lg:grid-cols-12 lg:gap-16 lg:pt-16">
+      <div className="grid gap-xxl pt-xxl rule-t lg:grid-cols-12 lg:gap-section lg:pt-section">
         <div className="min-w-0 lg:col-span-5">
-          <h3 className="font-display-wide text-h3">Hours</h3>
-          <ClubHours club={club} className="mt-4" />
+          <h3 className="font-display-wide text-body-l font-medium">Hours</h3>
+          <ClubHours club={club} className="mt-m" />
         </div>
         <div className="min-w-0 lg:col-span-7">
           <PopularTimesChart club={club} />
@@ -515,18 +533,18 @@ export function ClubPeople({
       ? { quote: other.quote, who: other.who, detail: other.goal }
       : null
   return (
-    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
       {voice ? (
         <figure className="lg:col-span-5">
           <GymObject id={voiceIcon(voice.quote)} className="size-12" />
-          <blockquote className="font-display-wide mt-6 text-h2 text-balance lg:text-h1">
+          <blockquote className="font-display-wide mt-l text-body-xxl text-balance lg:text-display-m font-heavy lg:font-heavy">
             “{voice.quote}”
           </blockquote>
-          <figcaption className="mt-8 flex items-center gap-4">
+          <figcaption className="mt-xl flex items-center gap-m">
             <Mark who={voice.who} />
             <span>
-              <span className="block text-body-strong">{voice.who}</span>
-              <span className="block text-caption text-muted-foreground">
+              <span className="block text-body-m font-heavy">{voice.who}</span>
+              <span className="block text-body-s text-muted-foreground">
                 {voice.detail}
               </span>
             </span>
@@ -535,20 +553,22 @@ export function ClubPeople({
       ) : null}
 
       <div className={cn(voice ? "lg:col-span-7" : "lg:col-span-12")}>
-        <h3 className="font-display-wide text-h3">Coaches at {club.short}</h3>
-        <ul className="mt-4 grid rule-t sm:grid-cols-2 sm:gap-x-8">
+        <h3 className="font-display-wide text-body-l font-medium">
+          Coaches at {club.short}
+        </h3>
+        <ul className="mt-m grid rule-t sm:grid-cols-2 sm:gap-x-xl">
           {coaches.map((c) => (
             <li key={c.slug} className="rule-b">
               <Link
                 href={`/coaches/${c.slug}`}
-                className="group flex items-center gap-4 py-4 no-underline"
+                className="group flex items-center gap-m py-m no-underline"
               >
                 <CoachAvatar slug={c.slug} name={c.name} size={48} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-body-strong group-hover:underline">
+                  <span className="block text-body-m group-hover:underline font-heavy">
                     {c.name}
                   </span>
-                  <span className="block text-body text-muted-foreground">
+                  <span className="block text-body-m text-muted-foreground">
                     {c.specialties.slice(0, 2).join(", ")}
                   </span>
                 </span>

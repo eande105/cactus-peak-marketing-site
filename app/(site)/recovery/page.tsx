@@ -127,7 +127,7 @@ export default async function Recovery() {
           lede="Four parts, in the order most members use them."
         />
         <ProgramRows
-          className="mt-12"
+          className="mt-xxl"
           rows={STONES.map((s) => ({
             key: s.name,
             icon: s.icon,
@@ -144,7 +144,7 @@ export default async function Recovery() {
           lede="The suites have a cold plunge. The lounges have the sauna and compression."
         />
         {/* A table from md, one block for each club below it, so nothing scrolls sideways. */}
-        <div className="mt-12">
+        <div className="mt-xxl">
           <FactTable
             caption="Recovery at each club"
             corner="Club"
@@ -176,7 +176,7 @@ export default async function Recovery() {
           action={<TextLink href="/membership#compare">Compare plans</TextLink>}
         />
         <OfferColumns
-          className="mt-12"
+          className="mt-xxl"
           offers={plans.map((p) => ({
             key: p.slug,
             title: p.name,
@@ -207,7 +207,7 @@ export default async function Recovery() {
 
       <Band id="visit">
         <SectionHead size="lead" title="How a visit goes." />
-        <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="mt-xxl grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <NumberedSteps
             className="lg:col-span-8 lg:!grid-cols-3"
             steps={[
@@ -247,7 +247,7 @@ export default async function Recovery() {
           title="Recover in a class."
           lede="Stretch & Release is on every plan. The suite slots are Summit's."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubClassTable
             items={["stretch-and-release", "sauna-plunge", "compression"]
               .map((x) => classBySlug(x))

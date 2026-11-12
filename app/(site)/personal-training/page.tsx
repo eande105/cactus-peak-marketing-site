@@ -131,7 +131,7 @@ export default async function PT() {
           lede="Every session follows a written plan, and every fourth one checks it."
         />
         <NumberedSteps
-          className="mt-12"
+          className="mt-xxl"
           steps={[
             {
               title: "Meet.",
@@ -164,7 +164,7 @@ export default async function PT() {
           lede={`One session is $${prices.ptSingle}. A pack brings it down to $${cheapest}.`}
         />
         <OfferColumns
-          className="mt-12"
+          className="mt-xxl"
           offers={packs.map((p) => ({
             key: String(p.n),
             title: `${p.n} sessions`,
@@ -186,7 +186,7 @@ export default async function PT() {
             ),
           }))}
         />
-        <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="mt-xxl grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <RuleList
             className="lg:col-span-7"
             title="Every pack"
@@ -198,12 +198,14 @@ export default async function PT() {
             ]}
           />
           <div className="lg:col-span-5">
-            <h3 className="font-display-wide text-h3">On Summit?</h3>
-            <p className="mt-3 text-body text-pretty text-muted-foreground">
+            <h3 className="font-display-wide text-body-l font-medium">
+              On Summit?
+            </h3>
+            <p className="mt-s text-body-m text-pretty text-muted-foreground">
               Summit includes a 30-minute intro session each quarter. Use it to
               meet a coach and get a plan before you buy a pack.
             </p>
-            <TextLink href="/membership#plans" className="mt-3">
+            <TextLink href="/membership#plans" className="mt-s">
               See Summit
             </TextLink>
           </div>
@@ -212,7 +214,7 @@ export default async function PT() {
 
       <Band tone="tint" id="coaches">
         <SectionHead size="lead" title="Find your coach." />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <CoachFinder goals={GOALS} />
         </div>
       </Band>

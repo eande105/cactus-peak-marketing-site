@@ -36,13 +36,13 @@ export function StatusLine({
   return (
     <span
       className={cn(
-        "inline-flex flex-wrap items-center gap-x-1.5 text-caption font-medium",
+        "inline-flex flex-wrap items-center gap-x-xs text-body-s font-medium",
         night ? "text-night-foreground" : "text-foreground",
         className
       )}
     >
       {Icon === "dot" ? (
-        <span aria-hidden="true" className="size-2 rounded-full bg-success" />
+        <span aria-hidden="true" className="size-2 corner-full bg-success" />
       ) : (
         <Clock className="size-3.5 text-warning" aria-hidden="true" />
       )}
@@ -50,7 +50,7 @@ export function StatusLine({
       {showHours ? (
         <span
           className={cn(
-            "font-normal",
+            "font-regular",
             night ? "text-night-muted" : "text-muted-foreground"
           )}
         >
@@ -77,25 +77,27 @@ export function ClubCard({
     <Link
       href={href}
       className={cn(
-        "group flex min-h-16 items-center gap-3 rounded-lg px-2 py-2 hover:bg-muted",
+        "group flex min-h-16 items-center gap-s",
+        "corner-m px-xs py-xs",
+        "hover:bg-muted",
         className
       )}
     >
       <ClubArt
         slug={club.slug}
         detail="simple"
-        className="w-14 shrink-0 rounded-sm"
+        className="w-14 shrink-0 corner-xs"
       />
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2 text-label">
+        <span className="flex items-center gap-xs text-body-s font-heavy">
           {club.name}
           {yourClub ? (
-            <span className="rounded-sm bg-accent px-1.5 text-caption text-foreground">
+            <span className="corner-xs bg-accent px-xs text-body-s text-foreground">
               Your club
             </span>
           ) : null}
         </span>
-        <span className="block text-caption text-muted-foreground">
+        <span className="block text-body-s text-muted-foreground">
           {club.type}
           <span aria-hidden="true"> · </span>
           <span className="text-foreground">{status.text}</span>
@@ -153,8 +155,8 @@ export function HoursTable({
   return (
     <dl
       className={cn(
-        "grid gap-y-2 text-caption",
-        compact ? "grid-cols-2 gap-x-4" : "grid-cols-[auto_1fr] gap-x-8",
+        "grid gap-y-xs text-body-s",
+        compact ? "grid-cols-2 gap-x-m" : "grid-cols-[auto_1fr] gap-x-xl",
         className
       )}
     >
@@ -162,19 +164,17 @@ export function HoursTable({
         <Fragment key={r.label}>
           <dt
             className={cn(
-              r.isToday
-                ? "font-semibold text-foreground"
-                : "text-muted-foreground"
+              r.isToday ? "font-heavy text-foreground" : "text-muted-foreground"
             )}
           >
             {r.label}
             {r.isToday ? (
-              <span className="ml-2 rounded-sm bg-accent px-1.5 py-0.5 text-caption text-foreground">
+              <span className="ml-xs corner-xs bg-accent px-xs py-xxs text-body-s text-foreground">
                 Today
               </span>
             ) : null}
           </dt>
-          <dd className={cn("tabular", r.isToday ? "font-semibold" : "")}>
+          <dd className={cn("tabular", r.isToday ? "font-heavy" : "")}>
             {r.hours}
           </dd>
         </Fragment>
@@ -258,17 +258,17 @@ export function ClubHours({
     },
   ]
   // pl-3 on phones: at 320 px the "Today" tag and two times need every pixel of the row.
-  const cell = "py-2 pl-3 text-right whitespace-nowrap tabular-nums sm:pl-4"
+  const cell = "py-xs pl-s text-right whitespace-nowrap tabular-nums sm:pl-m"
   return (
-    <table className={cn("w-full text-left text-body", className)}>
+    <table className={cn("w-full text-left text-body-m", className)}>
       <caption className="sr-only">Hours at {club.name}</caption>
       <thead>
-        <tr className="text-label text-muted-foreground [&>*]:rule-b">
-          <td className="pb-2" />
-          <th scope="col" className="pb-2 pl-3 text-right font-medium sm:pl-4">
+        <tr className="text-body-s text-muted-foreground [&>*]:rule-b font-heavy">
+          <td className="pb-xs" />
+          <th scope="col" className="pb-xs pl-s text-right font-medium sm:pl-m">
             Opens
           </th>
-          <th scope="col" className="pb-2 pl-3 text-right font-medium sm:pl-4">
+          <th scope="col" className="pb-xs pl-s text-right font-medium sm:pl-m">
             Closes
           </th>
         </tr>
@@ -276,30 +276,36 @@ export function ClubHours({
       {groups.map((g) => (
         <tbody
           key={g.name}
-          className="[&>tr:last-child>*]:pb-3 [&>tr:last-child>*]:rule-b"
+          className="[&>tr:last-child>*]:pb-s [&>tr:last-child>*]:rule-b"
         >
           <tr>
             <th
               scope="colgroup"
               colSpan={3}
-              className="pt-3 pb-1 text-body-strong"
+              className="pt-s pb-xxs text-body-m font-heavy"
             >
               {g.name}
             </th>
           </tr>
           {g.rows.map((r) => (
-            <tr key={r.when} className={cn(r.today && "font-semibold")}>
+            <tr key={r.when} className={cn(r.today && "font-heavy")}>
               <th
                 scope="row"
                 className={cn(
-                  "py-2 pr-2 font-normal",
-                  r.today ? "font-semibold" : "text-muted-foreground"
+                  "py-xs pr-xs font-regular",
+                  r.today ? "font-heavy" : "text-muted-foreground"
                 )}
               >
                 <span className="sr-only">{g.name}, </span>
                 {r.when}
                 {r.today ? (
-                  <span className="ml-2 rounded-sm bg-accent px-1.5 py-0.5 text-caption font-normal text-foreground">
+                  <span
+                    className={cn(
+                      "ml-xs corner-xs px-xs py-xxs",
+                      "text-body-s font-regular",
+                      "bg-accent text-foreground"
+                    )}
+                  >
                     Today
                   </span>
                 ) : null}

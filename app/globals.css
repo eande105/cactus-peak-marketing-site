@@ -1,61 +1,33 @@
 /*
- * shadcn token file. Every value here is an alias of the Graphical theme "Cactus Peak Athletic" (D-16).
- * Nothing in this file is a color, size, or font chosen by hand. The owning values live in GUI.md,
- * components/graphical/theme.ts, and the variables that components/theme-variables.tsx (first paint) and
- * GraphicalProvider (runtime) write from that document. Those variables change with the color mode, so the
- * aliases below need no separate .dark block (except --border, see below): --neutral-3 is Sand in light mode and the
- * dark canvas in dark mode.
+ * App styles on the Graphical theme "Cactus Peak Athletic" (graphical/themes/graphical.json, the source of truth).
+ * graphical/generated/theme.css defines every theme variable at :root and .dark; tailwind-theme.css adds Graphical's
+ * classes (text-body-m, p-m, corner-m, edge-s, font-heavy, bg-neutral-3, ...). Both are generated: edit the theme
+ * (or apply an editor batch with graphical-adopt), then run `npx graphical-install --theme graphical`.
  *
- * ROLE MAP (shadcn variable -> Graphical token -> brand colour name where one exists)
+ * This file defines no color, size or font by hand. Its tokens are aliases of Graphical tokens, recorded in
+ * graphical/role-map.json:
  *
- *   --background            neutral-3                canvas (Sand)
- *   --foreground            neutral-10               text
- *   --card                  neutral-1                surface (white)
- *   --card-foreground       neutral-10
- *   --popover               neutral-1                dialog, drawer, select popup (Graphical popover parts)
- *   --popover-foreground    neutral-10
- *   --primary               color-1                  primaryActionColor
- *   --primary-foreground    cte-accent-text          automatic contrast foreground on color-1 (white in light, black in dark)
- *   --secondary             neutral-3                Button secondary fill
- *   --secondary-foreground  neutral-10
- *   --muted                 neutral-4                surface-muted
- *   --muted-foreground      neutral-8                text-muted, description text (BUILD-NOTES: grey text wall)
- *   --accent                color-1-transparent      selected and active fill (color-1 at the theme's 20% translucency)
- *   --accent-foreground     neutral-10
- *   --destructive           error                    Button danger fill, error text
- *   --border                neutral-5 (dark: neutral-4) hairline edges and dividers (Caliche)
- *   --input                 neutral-6                Input and Checkbox edge
- *   --ring                  color-5                  focus ring on every component
+ *   shadcn and app color roles (:root, used as bg-card, text-muted-foreground, ring-border, ...):
+ *   background = neutral-3 (Sand), foreground = neutral-10 (Ink), card and popover = neutral-1,
+ *   primary = color-1 (Arizona Copper) with on-color-1 text, primary-hover and link = color-2 (Copper Deep),
+ *   secondary = neutral-3, muted = neutral-4, muted-foreground = neutral-8, accent = color-1 transparent,
+ *   destructive = error, destructive-hover = color-4 (Chili), border = neutral-5 (dark neutral-4, Caliche),
+ *   input = neutral-6, ring = color-3 (Monsoon Sky, focus only), night = color-5 (Saguaro Night),
+ *   night-foreground = neutral-3, night-muted = neutral-5, and the status colors' transparent levels.
  *
- *   Roles the app uses that shadcn has no slot for (variable here, @theme inline entry below):
- *   --input-hover           neutral-8                Input hover edge
- *   --hover                 neutral-3-transparent    Button outline hover fill
- *   --secondary-hover       neutral-5                Button secondary and ghost hover fill
- *   --primary-hover         color-6                  Button primary hover fill
- *   --destructive-hover     color-7                  Button danger hover fill
- *   --border-strong         neutral-6                Button secondary and outline edge
- *   --border-strong-hover   neutral-8                Button secondary and outline hover edge
- *   --disabled-foreground   neutral-6                disabled label and icon
- *   --success-subtle        success-transparent      status fill
- *   --warning-subtle        warning-transparent      status fill
- *   --danger-subtle         error-transparent        status fill
- *   success, warning        the theme's own --success and --warning, used directly as text-success, text-warning
- *   --night                 color-2                  Saguaro Night bands (footer, hero cards)
- *   --night-foreground      neutral-3                Sand text on Saguaro Night (12.0:1)
- *   --night-muted           neutral-5                Caliche text on Saguaro Night (9.0:1)
- *   --link                  color-6                  Copper Deep, copper text and links on light (5.6:1 on Sand)
- *
- *   Brand palette (brand-guidelines.md section 4) -> theme token, light / dark:
- *   Arizona Copper color-1 #b5532c / Dawn Copper #e0804f · Saguaro Night color-2 #1c3328 · Sand neutral-3 #f6f1e8
- *   Ink neutral-10 #1d1b17 · Stone neutral-7 #6b6457 / #a69f92 · Caliche neutral-5 #ddd2c1
- *   Copper Deep color-6 #9e4522 / #ee9a6e · Palo Verde success · Monsoon Amber warning · Chili error
- *   Monsoon Sky color-5, focus ring only. Headlines: Archivo 700-800 at width 112. Body and UI: Inter 400-600.
- *
- *   Type roles (text-display .. text-caption) alias the theme's size, line, and letter-spacing
- *   steps plus a font role weight. Radii, spacing, and motion alias --radius-*, --space-*, and --motion-*.
- *   See the @theme inline block.
+ * The category colors (--cat-*) and --night-fill are fixed: they keep their own values (spec 01, section 2.2).
+ * Headlines: Archivo (font-display) at width 112 via .font-display-wide. Body and UI: Inter (font-body).
+ * Figures: Archivo (font-data). Each role's weights come from its font class: font-regular, font-medium, font-heavy.
  */
+/* Cascade layers, in order. graphical-editor holds the development editor's stylesheet (graphical/editor.css): above
+   the preflight reset, below the app's components and utilities. */
+@layer theme, base, graphical-editor, components, utilities;
+/* Theme variables first, so every alias below and the component runtime read them. */
+@import "../graphical/generated/theme.css";
 @import "tailwindcss";
+/* Clear Tailwind's default palette, type, radius and shadow scales before Graphical's classes are added. */
+@import "./tailwind-reset.css";
+@import "../graphical/generated/tailwind-theme.css";
 /* Graphical runtime stylesheet, imported once. It sits in the base layer so Tailwind utilities still win over
    its zero-specificity reset and component defaults. */
 @import "../components/graphical/styles.css" layer(base);
@@ -73,7 +45,7 @@
   --popover: var(--neutral-1);
   --popover-foreground: var(--neutral-10);
   --primary: var(--color-1);
-  --primary-foreground: var(--cte-accent-text);
+  --primary-foreground: var(--on-color-1);
   --secondary: var(--neutral-3);
   --secondary-foreground: var(--neutral-10);
   --muted: var(--neutral-4);
@@ -83,20 +55,20 @@
   --destructive: var(--error);
   --border: var(--neutral-5);
   --input: var(--neutral-6);
-  --ring: var(--color-5);
+  --ring: var(--color-3);
 
   --input-hover: var(--neutral-8);
   --hover: var(--neutral-3-transparent);
   --secondary-hover: var(--neutral-5);
-  --primary-hover: var(--color-6);
-  --destructive-hover: var(--color-7);
+  --primary-hover: var(--color-2);
+  --destructive-hover: var(--color-4);
   --border-strong: var(--neutral-6);
   --border-strong-hover: var(--neutral-8);
   --disabled-foreground: var(--neutral-6);
   --success-subtle: var(--success-transparent);
   --warning-subtle: var(--warning-transparent);
   --danger-subtle: var(--error-transparent);
-  --night: var(--color-2);
+  --night: var(--color-5);
   --night-foreground: var(--neutral-3);
   --night-muted: var(--neutral-5);
   /* Dividers on Saguaro Night: Sand at the theme's 20% translucency. */
@@ -104,7 +76,7 @@
   /* Fills on Saguaro Night: a quiet fill at rest, and the stronger step for hover and the filled part of a track. */
   --night-fill: color-mix(in oklab, var(--night-foreground) 10%, transparent);
   --night-fill-strong: var(--neutral-3-transparent);
-  --link: var(--color-6);
+  --link: var(--color-2);
 }
 /* The one role that changes step with the mode. Brand Caliche, the divider colour, is neutral-5 in light
    (#ddd2c1) and neutral-4 in dark (#34423a), per brand-guidelines.md section 4. */
@@ -152,56 +124,45 @@
 }
 
 @theme inline {
-  /* Clear Tailwind's defaults so a palette class, a default size, or a default radius cannot appear by accident. */
-  --color-*: initial;
-  --font-*: initial;
-  --font-weight-*: initial;
-  --text-*: initial;
-  --radius-*: initial;
-  --shadow-*: initial;
-  --ease-*: initial;
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
+  --color-background: var(--neutral-3);
+  --color-foreground: var(--neutral-10);
+  --color-card: var(--neutral-1);
+  --color-card-foreground: var(--neutral-10);
+  --color-popover: var(--neutral-1);
+  --color-popover-foreground: var(--neutral-10);
+  --color-primary: var(--color-1);
+  --color-primary-foreground: var(--on-color-1);
+  --color-secondary: var(--neutral-3);
+  --color-secondary-foreground: var(--neutral-10);
+  --color-muted: var(--neutral-4);
+  --color-muted-foreground: var(--neutral-8);
+  --color-accent: var(--color-1-transparent);
+  --color-accent-foreground: var(--neutral-10);
+  --color-destructive: var(--error);
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-input-hover: var(--input-hover);
-  --color-hover: var(--hover);
-  --color-secondary-hover: var(--secondary-hover);
-  --color-primary-hover: var(--primary-hover);
-  --color-destructive-hover: var(--destructive-hover);
-  --color-border-strong: var(--border-strong);
-  --color-border-strong-hover: var(--border-strong-hover);
-  --color-disabled-foreground: var(--disabled-foreground);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-success-subtle: var(--success-subtle);
-  --color-warning-subtle: var(--warning-subtle);
-  --color-danger-subtle: var(--danger-subtle);
+  --color-input: var(--neutral-6);
+  --color-ring: var(--color-3);
+  --color-input-hover: var(--neutral-8);
+  --color-hover: var(--neutral-3-transparent);
+  --color-secondary-hover: var(--neutral-5);
+  --color-primary-hover: var(--color-2);
+  --color-destructive-hover: var(--color-4);
+  --color-border-strong: var(--neutral-6);
+  --color-border-strong-hover: var(--neutral-8);
+  --color-disabled-foreground: var(--neutral-6);
+  --color-success-subtle: var(--success-transparent);
+  --color-warning-subtle: var(--warning-transparent);
+  --color-danger-subtle: var(--error-transparent);
   --color-surface: var(--neutral-1);
-  --color-night: var(--night);
-  --color-night-foreground: var(--night-foreground);
-  --color-night-muted: var(--night-muted);
-  --color-night-rule: var(--night-rule);
+  --color-night: var(--color-5);
+  --color-night-foreground: var(--neutral-3);
+  --color-night-muted: var(--neutral-5);
+  --color-night-rule: var(--neutral-3-transparent);
   --color-night-fill: var(--night-fill);
-  --color-night-fill-strong: var(--night-fill-strong);
-  --color-link: var(--link);
-  --color-focus: var(--ring);
-  --color-border-hover: var(--border-strong);
+  --color-night-fill-strong: var(--neutral-3-transparent);
+  --color-link: var(--color-2);
+  --color-focus: var(--color-3);
+  --color-border-hover: var(--neutral-6);
   --color-cat-strength: var(--cat-strength);
   --color-cat-cycle: var(--cat-cycle);
   --color-cat-conditioning: var(--cat-conditioning);
@@ -211,90 +172,31 @@
   --color-cat-recovery: var(--cat-recovery);
   --color-cat-youth: var(--cat-youth);
 
-  /* Font roles: ui and editorial are Inter, brand and data are Archivo (see lib/app-theme.ts). */
-  --font-sans: var(--font-ui);
-  --font-heading: var(--font-brand);
-  --font-display: var(--font-brand);
-  --font-data: var(--font-data);
-  --font-weight-normal: var(--weight-ui-regular);
-  --font-weight-medium: var(--weight-ui-medium);
-  --font-weight-semibold: var(--weight-ui-heavy);
-  /* font-bold is used on prices, totals and stat figures, which are data type. */
-  --font-weight-bold: var(--weight-data-heavy);
-
-  /* Type roles. Each one is a Graphical text step (size, line height, tracking) with a font role weight. */
-  --text-display: var(--size-xxl);
-  --text-display--line-height: var(--line-xxl);
-  --text-display--letter-spacing: var(--letter-spacing-xxl);
-  --text-display--font-weight: var(--weight-brand-heavy);
-  --text-h1: var(--size-xl);
-  --text-h1--line-height: var(--line-xl);
-  --text-h1--letter-spacing: var(--letter-spacing-xl);
-  --text-h1--font-weight: var(--weight-brand-heavy);
-  --text-h2: var(--size-l);
-  --text-h2--line-height: var(--line-l);
-  --text-h2--letter-spacing: var(--letter-spacing-l);
-  --text-h2--font-weight: var(--weight-brand-heavy);
-  /* h3 has its own step below h2 (24 px), so a subordinate heading never matches its parent. */
-  --text-h3: 1.25rem;
-  --text-h3--line-height: 1.75rem;
-  --text-h3--letter-spacing: var(--letter-spacing-l);
-  --text-h3--font-weight: var(--weight-brand-medium);
-  /* Lead: the one supporting line under a section heading. Between body and h3, so it reads as support, not as a heading. */
-  --text-lead: 1.125rem;
-  --text-lead--line-height: 1.75rem;
-  --text-lead--font-weight: var(--weight-ui-regular);
-  /* Figures: stat numbers, prices and counts set at display size, in the data face. Three steps replace the
-     nine one-off sizes the pages used. Line height 1 keeps a figure on the baseline of the label beside it. */
-  --text-figure: 2.75rem;
-  --text-figure--line-height: 1;
-  --text-figure--font-weight: var(--weight-data-heavy);
-  --text-figure-lg: 3.5rem;
-  --text-figure-lg--line-height: 1;
-  --text-figure-lg--font-weight: var(--weight-data-heavy);
+  /* A stat figure set across the page width (aquatics, kids' hours, membership). Fluid, so it stays outside
+     Graphical's display steps and keeps its own size. */
   --text-figure-xl: clamp(3.5rem, 8vw, 7rem);
   --text-figure-xl--line-height: 1;
   --text-figure-xl--font-weight: var(--weight-data-heavy);
-  /* Lede: the first paragraph under a page title (.lede). One step above lead, because the page lede and a
-     section's lead line must differ. */
-  --text-lede: 1.25rem;
-  --text-lede--line-height: 1.75rem;
-  --text-body: var(--size-m);
-  --text-body--line-height: var(--line-m);
-  --text-body--letter-spacing: var(--letter-spacing-m);
-  --text-body--font-weight: var(--weight-ui-regular);
-  --text-body-strong: var(--size-m);
-  --text-body-strong--line-height: var(--line-m);
-  --text-body-strong--letter-spacing: var(--letter-spacing-m);
-  --text-body-strong--font-weight: var(--weight-ui-heavy);
-  --text-label: var(--size-s);
-  --text-label--line-height: var(--line-s);
-  --text-label--letter-spacing: var(--letter-spacing-s);
-  --text-label--font-weight: var(--weight-ui-heavy);
-  --text-caption: var(--size-s);
-  --text-caption--line-height: var(--line-s);
-  --text-caption--letter-spacing: var(--letter-spacing-s);
-  --text-caption--font-weight: var(--weight-ui-regular);
 
-  /* Radii: Tailwind's t-shirt names point at Graphical radius steps. sm = xs, md = s (buttons, inputs), lg = m (cards), 2xl = xl. */
-  --radius-full: 9999px;
-  --radius-sm: var(--radius-xs);
-  --radius-md: var(--radius-s);
-  --radius-lg: var(--radius-m);
-  --radius-2xl: var(--radius-xl);
-
-  /* Spacing: the numeric scale (p-4, gap-6, size-11) counts in Graphical's smallest step, so p-4 is --space-m. */
-  --spacing: var(--space-xxs);
+  /* Section rhythm past Graphical's largest spacing step (XXL), as named multiples of it: the space between page
+     sections and inside banded sections. py-section, gap-section, mt-section; section-l for the roomiest bands. */
+  --padding-section: calc(var(--space-xxl) * 4 / 3);
+  --margin-section: calc(var(--space-xxl) * 4 / 3);
+  --gap-section: calc(var(--space-xxl) * 4 / 3);
+  --padding-section-l: calc(var(--space-xxl) * 2);
+  --margin-section-l: calc(var(--space-xxl) * 2);
+  --gap-section-l: calc(var(--space-xxl) * 2);
 
   /* Small motion is the default for every transition utility. */
   --default-transition-duration: var(--motion-duration);
   --default-transition-timing-function: var(--motion-easing);
 }
 
-/* Graphical draws an edge as a zero-blur shadow, never a native border (GUI.md "Rules for UI work").
-   `edge` is that hairline. Set its color with a ring color utility (ring-input, ring-accent) and add an elevation
-   with shadow-(--shadow-s). It composes with both. */
-@utility edge {
+/* Graphical draws a visible edge as a zero-blur shadow, never a native border (gui/foundations.md).
+   `hairline` is that edge at the theme's small stroke. Set its color with a ring color utility (ring-input,
+   ring-accent) and add an elevation with shadow-s. It composes with both. Graphical's own `edge-*` classes set a
+   native border width; use them only where a real border is meant, such as a dashed rule. */
+@utility hairline {
   --tw-ring-shadow: 0 0 0 var(--border-s) var(--tw-ring-color, var(--border));
   box-shadow:
     var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000),
@@ -302,8 +204,8 @@
     var(--tw-shadow, 0 0 #0000);
 }
 
-/* edge-l is the same hairline at the theme's large border width, for an emphasized edge such as a selected or invalid group. */
-@utility edge-l {
+/* hairline-l is the same edge at the theme's large stroke, for an emphasized edge such as a selected or invalid group. */
+@utility hairline-l {
   --tw-ring-shadow: 0 0 0 var(--border-l) var(--tw-ring-color, var(--border));
   box-shadow:
     var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000),
@@ -473,7 +375,7 @@
     /* Keeps a focused or anchored element out from under the sticky stack (WCAG 2.4.11). The padding is the
        whole offset: targets add a scroll margin only for a small gap, never for the header again. */
     scroll-padding-top: var(--sticky-top);
-    @apply font-sans;
+    @apply font-body;
   }
   /* A page with the section nav has a taller stack at the top: the header and the nav. */
   html:has(nav[aria-label="On this page"]) {
@@ -498,14 +400,14 @@
     }
   }
   body {
-    @apply bg-background text-body text-foreground;
+    @apply bg-background text-body-m text-foreground;
     /* Default wrapping for all interface text. It inherits into portals. */
     text-wrap: pretty;
   }
   h1,
   h2,
   h3 {
-    @apply font-heading text-balance;
+    @apply font-display text-balance;
   }
   /* Keyboard focus: the theme's focus ring (color-5, 2px) placed just outside the 1px edge. */
   :focus-visible {
@@ -521,48 +423,58 @@
 
 /* Archivo is a variable font with a width axis. Headlines use the expanded cut, width 112 (brand guide section 5). */
 .font-display-wide {
-  font-family: var(--font-brand);
+  font-family: var(--font-display);
+  /* Like Graphical's font-display class: font-regular, font-medium and font-heavy take the display weights. */
+  --weight-regular: var(--weight-display-regular);
+  --weight-medium: var(--weight-display-medium);
+  --weight-heavy: var(--weight-display-heavy);
   font-stretch: 112%;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-s);
 }
 .tabular {
   font-variant-numeric: tabular-nums;
   font-family: var(--font-data);
+  /* Like Graphical's font-data class: the weight classes take the data weights. */
+  --weight-regular: var(--weight-data-regular);
+  --weight-medium: var(--weight-data-medium);
+  --weight-heavy: var(--weight-data-heavy);
 }
 /* A quiet label for data: a column, a legend, a footer group. Sentence case, never above a heading (REDESIGN.md goal 1).
    In the components layer so a color utility on the same element (a badge's text-primary-foreground) wins. */
 @layer components {
   .eyebrow {
-    font-family: var(--font-ui);
-    font-weight: var(--weight-ui-heavy);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    font-family: var(--font-body);
+    font-weight: var(--weight-body-heavy);
+    font-size: var(--size-s);
+    letter-spacing: var(--tracking-l);
+    line-height: var(--line-s);
     color: var(--muted-foreground);
   }
 }
-/* Lede: the first paragraph under a page title. 20/28, not in the base scale because body and lede must differ. */
+/* Lede: the first paragraph under a page title, one body step above body text. */
 .lede {
-  font-size: var(--text-lede);
-  line-height: var(--text-lede--line-height);
+  font-size: var(--size-l);
+  letter-spacing: var(--tracking-s);
+  line-height: var(--line-l);
   max-width: 58ch;
 }
 /* Display sizes. Hero: 3 lines at most. Lead: the one section per page that leads. Quiet: utility sections. */
 .display-hero {
-  font-family: var(--font-brand);
-  font-weight: var(--weight-brand-heavy);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-heavy);
   font-stretch: 112%;
   font-size: clamp(2.75rem, 7.4vw, 6rem);
   line-height: 0.98;
-  letter-spacing: -0.035em;
+  letter-spacing: var(--tracking-xs);
   text-wrap: balance;
 }
 .display-lead {
-  font-family: var(--font-brand);
-  font-weight: var(--weight-brand-heavy);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-heavy);
   font-stretch: 112%;
   font-size: clamp(2.25rem, 4.6vw, 4.25rem);
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--tracking-xs);
   text-wrap: balance;
 }
 /* Hero in a narrow column (the classes hero shares its row with the timetable), from lg. */
@@ -573,19 +485,20 @@
 }
 /* Poster: one short word set across the full width (the journal hero). The one display size above the hero. */
 .display-poster {
-  font-family: var(--font-brand);
-  font-weight: var(--weight-brand-heavy);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-heavy);
   font-stretch: 112%;
   font-size: clamp(2.5rem, 10.5vw, 9rem);
   line-height: 0.9;
-  letter-spacing: -0.045em;
+  letter-spacing: var(--tracking-xs);
 }
 .display-quiet {
-  font-family: var(--font-brand);
-  font-weight: var(--weight-brand-medium);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-medium);
   font-stretch: 112%;
-  font-size: 1.5rem;
-  line-height: 1.875rem;
+  font-size: var(--display-size-xxs);
+  letter-spacing: var(--tracking-s);
+  line-height: var(--display-line-xxs);
   text-wrap: balance;
 }
 .scrollbar-none {
@@ -693,8 +606,8 @@ footer .eyebrow,
     max-width: none;
     max-height: 88dvh;
     /* An edge-docked sheet has square corners on the docked edge. */
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-bottom-left-radius: var(--radius-zero);
+    border-bottom-right-radius: var(--radius-zero);
   }
   .overlay-side-viewport,
   .site-menu-viewport {
@@ -706,7 +619,7 @@ footer .eyebrow,
     max-width: none;
     height: 100dvh;
     max-height: none;
-    border-radius: 0;
+    border-radius: var(--radius-zero);
     transform: translateX(var(--drawer-swipe-movement-x, 0px));
   }
   .overlay-side {
@@ -730,7 +643,7 @@ footer .eyebrow,
       width: min(480px, 100%);
       height: 100dvh;
       max-height: none;
-      border-radius: 0;
+      border-radius: var(--radius-zero);
       transform: translateX(var(--drawer-swipe-movement-x, 0px));
     }
     .overlay-sheet[data-starting-style],
@@ -759,7 +672,7 @@ footer .eyebrow,
     background-color: var(--foreground);
     background-image: none;
     color: var(--background);
-    font-weight: var(--weight-ui-heavy);
+    font-weight: var(--weight-body-heavy);
   }
 }
 
@@ -778,6 +691,6 @@ footer .eyebrow,
     }
   }
   .brand-map .maplibregl-cooperative-gesture-screen {
-    @apply bg-night/70 text-body;
+    @apply bg-night/70 text-body-m;
   }
 }

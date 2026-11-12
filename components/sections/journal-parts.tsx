@@ -23,13 +23,13 @@ export function JournalCard({
 }) {
   const a = useCatalog().coachBySlug(p.author)
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-lg bg-card edge ring-border">
+    <article className="relative flex h-full flex-col overflow-hidden corner-m bg-card hairline ring-border">
       <JournalArt slug={p.slug} ratio="3/2" className="block w-full" />
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        <p className="tabular text-caption text-muted-foreground">
+      <div className="flex flex-1 flex-col gap-s p-l">
+        <p className="tabular text-body-s text-muted-foreground">
           {p.cat} · {p.date}
         </p>
-        <H className="font-display-wide text-h3 text-balance">
+        <H className="font-display-wide text-body-l text-balance font-medium">
           <Link
             href={`/journal/${p.slug}`}
             className="no-underline after:absolute after:inset-0 hover:underline"
@@ -37,10 +37,10 @@ export function JournalCard({
             {p.title}
           </Link>
         </H>
-        <p className="line-clamp-2 text-body text-pretty text-muted-foreground">
+        <p className="line-clamp-2 text-body-m text-pretty text-muted-foreground">
           {p.dek}
         </p>
-        <p className="mt-auto flex items-center gap-3 pt-4 text-caption text-muted-foreground rule-t">
+        <p className="mt-auto flex items-center gap-s pt-m text-body-s text-muted-foreground rule-t">
           {a ? <InstructorChip name={a.name} slug={a.slug} size={24} /> : null}
           <span className="tabular">{p.min} min read</span>
         </p>
@@ -72,7 +72,7 @@ export function JournalIndex({ skip }: { skip?: string }) {
         onChange={setCat}
       />
       <FilterBar
-        className="mt-4"
+        className="mt-m"
         results={
           <>
             <ResultCount shown={list.length} noun={["note", "notes"]} />
@@ -87,9 +87,9 @@ export function JournalIndex({ skip }: { skip?: string }) {
           </>
         }
       />
-      <div className="mt-10">
+      <div className="mt-xxl">
         {list.length ? (
-          <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
             {list.map((p) => (
               <li key={p.slug}>
                 <JournalCard p={p} />

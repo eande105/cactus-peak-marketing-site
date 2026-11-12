@@ -17,6 +17,9 @@ importers:
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       cn:
         specifier: ^0.5.0
         version: 0.5.0
@@ -48,6 +51,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.6.4
         version: 2.6.4
+      '@graphical/editor':
+        specifier: file:graphical/packages/editor-1.0.4.tgz
+        version: file:graphical/packages/editor-1.0.4.tgz(@base-ui/react@1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(csstype@3.2.3)(motion-dom@14.7.1)(motion@14.7.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.3
@@ -256,6 +262,43 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@graphical/editor@file:graphical/packages/editor-1.0.4.tgz':
+    resolution: {integrity: sha512-qqgLwng1INUZSNVORpXXZaPe0uRoqE0S3GHY3+S2bDB3nTRmMk+4ZheTZ/LrTOKI9RsiiTJTPCyRcsxgGHBY2g==, tarball: file:graphical/packages/editor-1.0.4.tgz}
+    version: 1.0.4
+    engines: {node: '>=20.9.0'}
+    hasBin: true
+    peerDependencies:
+      '@base-ui/react': '*'
+      '@lisse/core': '*'
+      '@lisse/react': '*'
+      brotli-lib: '*'
+      csstype: '*'
+      fflate: '*'
+      motion: '*'
+      motion-dom: '*'
+      react: ^19.0.0
+      react-dom: ^19.0.0
+      tailwindcss: '*'
+    peerDependenciesMeta:
+      '@base-ui/react':
+        optional: true
+      '@lisse/core':
+        optional: true
+      '@lisse/react':
+        optional: true
+      brotli-lib:
+        optional: true
+      csstype:
+        optional: true
+      fflate:
+        optional: true
+      motion:
+        optional: true
+      motion-dom:
+        optional: true
+      tailwindcss:
+        optional: true
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -518,6 +561,13 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@phosphor-icons/react@2.1.10':
+    resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
 
   '@supabase/auth-js@2.118.0':
     resolution: {integrity: sha512-xWfPXyhS2KDSfAneMtI6p/tBnbdiz/5vaRKXEqUfzfC9WCniKr2Ds5o5G7RIGig0bom4z6wUY9zaV07WDVTfnQ==}
@@ -814,6 +864,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  css-tree@3.2.1:
+    resolution: {integrity: sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==}
+    engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
+
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
@@ -973,6 +1027,11 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  lucide-react@1.31.0:
+    resolution: {integrity: sha512-G8u2eEtoHUnUa9f8lbvqDhCiORMnYLdUEo06EEG9MQvHQrInKcX3Pa2TH39MM5qyzRcWETxB0+aOwAPI1g1kEg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   lucide-react@1.63.0:
     resolution: {integrity: sha512-GkBfQG+FUJ41x6y3/lNXiOziVU0Rcqqq0TCzhHS8avsFXHZmOdmfBqsVTvHSaVmbI+wbdGkxHRmhYWhD3N4/yA==}
     peerDependencies:
@@ -988,6 +1047,9 @@ packages:
   maplibre-gl@6.16.0:
     resolution: {integrity: sha512-gApO66EMtoDZuio680RUBvskR7ahFd/NNhLN4tBAs+Y7FeT4gQV8zVFgYVMRmFxQznOEzecW19w6xOd9XjZjiA==}
     engines: {node: '>=16.14.0', npm: '>=8.1.0'}
+
+  mdn-data@2.27.1:
+    resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -1151,6 +1213,11 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -1384,6 +1451,21 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@graphical/editor@file:graphical/packages/editor-1.0.4.tgz(@base-ui/react@1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(csstype@3.2.3)(motion-dom@14.7.1)(motion@14.7.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)':
+    dependencies:
+      '@phosphor-icons/react': 2.1.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      css-tree: 3.2.1
+      lucide-react: 1.31.0(react@19.3.1)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+      typescript: 5.9.3
+    optionalDependencies:
+      '@base-ui/react': 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      csstype: 3.2.3
+      motion: 14.7.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      motion-dom: 14.7.1
+      tailwindcss: 4.3.3
+
   '@img/colour@1.1.0':
     optional: true
 
@@ -1572,6 +1654,11 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@16.4.3':
     optional: true
+
+  '@phosphor-icons/react@2.1.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
 
   '@supabase/auth-js@2.118.0':
     dependencies:
@@ -1782,6 +1869,11 @@ snapshots:
   convert-source-map@2.0.0:
     optional: true
 
+  css-tree@3.2.1:
+    dependencies:
+      mdn-data: 2.27.1
+      source-map-js: 1.2.2
+
   csstype@3.2.3: {}
 
   debug@4.4.3(supports-color@7.2.0):
@@ -1896,6 +1988,10 @@ snapshots:
       yallist: 3.1.1
     optional: true
 
+  lucide-react@1.31.0(react@19.3.1):
+    dependencies:
+      react: 19.3.1
+
   lucide-react@1.63.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
@@ -1926,6 +2022,8 @@ snapshots:
       potpack: 2.1.0
       quickselect: 3.0.0
       tinyqueue: 3.0.0
+
+  mdn-data@2.27.1: {}
 
   minimist@1.2.8: {}
 
@@ -2087,6 +2185,8 @@ snapshots:
   tinyqueue@3.0.0: {}
 
   tslib@2.8.1: {}
+
+  typescript@5.9.3: {}
 
   typescript@7.0.2:
     optionalDependencies:

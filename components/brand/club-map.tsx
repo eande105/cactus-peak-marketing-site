@@ -7,7 +7,7 @@ import type { ClubSlug } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const control =
-  "inline-flex size-11 items-center justify-center rounded-md bg-card edge ring-border-strong hover:bg-muted"
+  "inline-flex size-11 items-center justify-center corner-s bg-card hairline ring-border-strong hover:bg-muted"
 
 /** Brand map of Mesa and Gilbert with a Rib Peak pin for each club (components/map/brand-map.tsx). */
 export function ClubMap({
@@ -41,9 +41,9 @@ export function ClubMap({
           ? `Map of ${pins[0]?.name ?? "the club"} and the streets around it`
           : "Map of Mesa and Gilbert showing the clubs"
       }
-      className={cn("rounded-lg edge ring-border", className)}
+      className={cn("corner-m hairline ring-border", className)}
       fallback={
-        <p className="text-body text-muted-foreground">
+        <p className="text-body-m text-muted-foreground">
           The map did not load. Each club page lists its address.
         </p>
       }
@@ -54,15 +54,15 @@ export function ClubMap({
           onClick={() => onSelect?.(c.slug)}
           aria-pressed={onSelect ? on : undefined}
           aria-label={onSelect ? `${c.name} on the map` : c.name}
-          className="rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-default"
+          className="corner-s focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-default"
         >
           <BrandPin
             active={on}
             chipClassName={cn(
-              "rounded-sm px-1.5 py-0.5 text-caption font-semibold whitespace-nowrap",
+              "corner-xs px-xs py-xxs text-body-s font-heavy whitespace-nowrap",
               on
                 ? "bg-primary text-primary-foreground"
-                : "bg-card text-foreground edge ring-border"
+                : "bg-card text-foreground hairline ring-border"
             )}
           >
             {c.short}
@@ -70,7 +70,7 @@ export function ClubMap({
         </button>
       )}
       renderControls={({ zoomIn, zoomOut }) => (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-xs">
           <button
             type="button"
             aria-label="Zoom in"

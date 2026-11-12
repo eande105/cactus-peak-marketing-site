@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 export default function Search() {
   return (
-    <Container className="py-10">
+    <Container className="py-xxl">
       <Suspense fallback={null}>
         <SearchResults />
       </Suspense>

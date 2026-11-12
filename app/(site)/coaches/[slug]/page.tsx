@@ -146,7 +146,7 @@ export default async function CoachPage({
             <LinkButton href="#plans" variant="outline" size="lg">
               See plans
             </LinkButton>
-            <p className="text-body text-pretty text-muted-foreground">
+            <p className="text-body-m text-pretty text-muted-foreground">
               We will ask {c.first} to join your tour. Or{" "}
               <Link
                 href={`/contact?topic=coach&coach=${c.slug}#message`}
@@ -167,25 +167,28 @@ export default async function CoachPage({
           each specialty means. Nothing here repeats another band: the header leaves the specialties to this
           band, and how training works sits in the next one. */}
       <Band tone={tone("about")} id="about">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <div className="lg:col-span-5">
             <h2 className="display-lead max-w-[12ch] text-balance">
               How {c.first} coaches.
             </h2>
-            <p className="mt-6 max-w-[44ch] text-lead text-pretty">{c.bio}</p>
+            <p className="mt-l max-w-[44ch] text-body-l text-pretty">{c.bio}</p>
             {c.quote ? (
-              <figure className="mt-8 pl-5 rule-l rule-accent">
-                <blockquote className="font-display-wide text-h3 text-balance">
+              <figure className="mt-xl pl-l rule-l rule-accent">
+                <blockquote className="font-display-wide text-body-l text-balance font-medium">
                   “{c.quote}”
                 </blockquote>
               </figure>
             ) : null}
           </div>
           <section aria-labelledby="coaches-for" className="lg:col-span-7">
-            <h3 id="coaches-for" className="text-label text-muted-foreground">
+            <h3
+              id="coaches-for"
+              className="text-body-s text-muted-foreground font-heavy"
+            >
               Coaches for
             </h3>
-            <div className="mt-3">
+            <div className="mt-s">
               <CoachSpecialties coach={c} />
             </div>
           </section>
@@ -212,7 +215,7 @@ export default async function CoachPage({
           }
         />
         {classes.length ? (
-          <div className="mt-12">
+          <div className="mt-xxl">
             <CoachClasses
               classes={classes}
               favorite={c.favorite}
@@ -222,22 +225,31 @@ export default async function CoachPage({
         ) : null}
         {/* How the training works, once: the steps say how sessions run, so the line under them only adds
             what the steps do not (the packs and the price). */}
-        <section aria-labelledby="working-with" className="mt-16">
-          <h3 id="working-with" className="font-display-wide text-h2">
+        <section aria-labelledby="working-with" className="mt-section">
+          <h3
+            id="working-with"
+            className="font-display-wide text-body-xxl font-heavy"
+          >
             {working.title}
           </h3>
-          <NumberedSteps className="mt-8" steps={working.steps} />
+          <NumberedSteps className="mt-xl" steps={working.steps} />
           {c.pt ? (
-            <p className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 text-body rule-t">
+            <p
+              className={cn(
+                "flex flex-wrap items-center gap-x-l gap-y-xs rule-t",
+                "mt-xxl pt-l",
+                "text-body-m"
+              )}
+            >
               <span>
                 Packs of {packLine} sessions, from{" "}
-                <span className="font-semibold tabular-nums">${fromEach}</span>{" "}
-                a session.
+                <span className="font-heavy tabular-nums">${fromEach}</span> a
+                session.
               </span>
               <TextLink href="/personal-training#packs">See the packs</TextLink>
             </p>
           ) : (
-            <p className="mt-10 pt-6 text-body text-muted-foreground rule-t">
+            <p className="mt-xxl pt-l text-body-m text-muted-foreground rule-t">
               {c.first} leads classes and does not take personal training
               clients.{" "}
               <Link
@@ -254,7 +266,7 @@ export default async function CoachPage({
 
       <Band tone={tone("clubs")} id="clubs">
         <SectionHead size="lead" title={`Where to find ${c.first}.`} />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <CoachClubs coach={c} clubs={homeClubs} />
         </div>
       </Band>
@@ -271,7 +283,7 @@ export default async function CoachPage({
           action={<TextLink href="/membership#compare">Compare plans</TextLink>}
         />
         <OfferColumns
-          className="mt-12"
+          className="mt-xxl"
           offers={plans.map((p) => ({
             key: p.slug,
             title: p.name,
@@ -299,7 +311,7 @@ export default async function CoachPage({
             title={`More coaches at ${c.first}'s clubs.`}
             action={<TextLink href="/coaches">See every coach</TextLink>}
           />
-          <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-xxl grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
             {others.map((o) => (
               <CoachCard key={o.slug} coach={o} lit={false} />
             ))}

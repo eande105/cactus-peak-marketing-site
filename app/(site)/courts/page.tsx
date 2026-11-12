@@ -126,7 +126,7 @@ export default async function Courts() {
           action={<TextLink href="/membership#compare">Compare plans</TextLink>}
         />
         {/* A table from md, one block for each club below it, so nothing scrolls sideways. */}
-        <div className="mt-12">
+        <div className="mt-xxl">
           <FactTable
             caption="Courts at each club"
             corner="Club"
@@ -151,7 +151,7 @@ export default async function Courts() {
           />
         </div>
         {without.length ? (
-          <p className="mt-6 max-w-[62ch] text-body text-pretty text-muted-foreground">
+          <p className="mt-l max-w-[62ch] text-body-m text-pretty text-muted-foreground">
             No courts at {without.map((c) => c.short).join(" or ")}. Ridge and
             Summit members play at the other {withCourts.length}.
           </p>
@@ -165,7 +165,7 @@ export default async function Courts() {
           lede="The window opens at 6 am Arizona time."
         />
         <NumberedSteps
-          className="mt-12"
+          className="mt-xxl"
           steps={[
             {
               title: "Pick a time.",
@@ -184,7 +184,7 @@ export default async function Courts() {
             },
           ]}
         />
-        <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 rule-t">
+        <div className="mt-xxl flex flex-wrap items-center gap-x-xl gap-y-m pt-xl rule-t">
           <HandoffButton
             label="Book a court"
             classSlug="pickleball-open-play"
@@ -192,12 +192,12 @@ export default async function Courts() {
             start={420}
             variant="primary"
           />
-          <p className="text-body text-muted-foreground">
+          <p className="text-body-m text-muted-foreground">
             Or call the desk at{" "}
             <a
               href={`tel:${DESK.tel}`}
               className={cn(
-                "inline-flex min-h-11 items-center font-semibold text-foreground tabular-nums",
+                "inline-flex min-h-11 items-center font-heavy text-foreground tabular-nums",
                 quietLink
               )}
             >
@@ -215,7 +215,7 @@ export default async function Courts() {
           lede="Open play when you want a game. A clinic or a drill when you want a coach."
         />
         <ProgramRows
-          className="mt-12"
+          className="mt-xxl"
           rows={[
             ["pickleball-open-play", "paddle"],
             ["pickleball-clinic", "paddle"],
@@ -237,10 +237,10 @@ export default async function Courts() {
                     {c.firstTimer ? " Good for first-timers." : ""}
                     {/* Start times differ by club, so each club gets its own line. */}
                     {per.length ? (
-                      <ul className="mt-2 text-muted-foreground">
+                      <ul className="mt-xs text-muted-foreground">
                         {per.map((p) => (
                           <li key={p.club.slug} className="tabular-nums">
-                            <span className="font-semibold text-foreground">
+                            <span className="font-heavy text-foreground">
                               {p.club.short}:
                             </span>{" "}
                             {p.text}
@@ -263,10 +263,10 @@ export default async function Courts() {
           title="Courts open today."
           lede="A sample of today's slots at Power & McKellips."
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <CourtGrid />
         </div>
-        <div className="mt-6">
+        <div className="mt-l">
           <HandoffButton
             label="Book a court"
             classSlug="pickleball-open-play"

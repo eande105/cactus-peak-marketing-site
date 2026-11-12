@@ -69,7 +69,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       <Overlay open={!!state} onOpenChange={(o) => !o && setState(null)}>
         <OverlayPopup>
           {/* The title keeps XL space at its end for the corner close (dialog.md). */}
-          <OverlayTitle className="pr-8">
+          <OverlayTitle className="pr-xl">
             {state?.kind === "waitlist"
               ? "Sign in to join the waitlist."
               : "Sign in to book."}
@@ -78,13 +78,13 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             {s?.className} · {d?.long}, {d?.month} {d?.dom},{" "}
             {s ? fmtTime(s.start) : ""} · {s?.clubName}
             {state?.kind === "waitlist" ? (
-              <span className="mt-2 block text-caption text-muted-foreground">
+              <span className="mt-xs block text-body-s text-muted-foreground">
                 We will text you if a spot opens. You have 30 minutes to
                 confirm.
               </span>
             ) : null}
           </OverlayDescription>
-          <div className="mt-3 flex flex-col gap-3">
+          <div className="mt-s flex flex-col gap-s">
             <LinkButton href={MEMBER_SIGN_IN_URL} external size="lg">
               Sign in
             </LinkButton>
@@ -95,7 +95,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
               Join Cactus Peak
             </LinkButton>
           </div>
-          <p className="text-caption text-muted-foreground">
+          <p className="text-body-s text-muted-foreground">
             Members book up to 7 days ahead. Summit members book 9.{" "}
             <Link
               href="/app"
@@ -173,34 +173,38 @@ function ClassPanel({
           foreground (review 2, P0-1); the Graphical ghost close is dark text for light surfaces. */}
       <OverlayPopup
         label="Class details"
-        className="p-0"
+        className="p-zero"
         closeClassName="text-night-foreground hover:bg-night-fill"
       >
         {s && ct && d ? (
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-            <div className="bg-night p-5 pr-14 text-night-foreground">
+            <div className="bg-night p-l pr-section text-night-foreground">
               <OverlayTitle className="sr-only">{ct.name}</OverlayTitle>
               <p className="eyebrow text-night-muted">
                 {d.long}, {d.month} {d.dom}
               </p>
-              <p className="tabular font-data text-h1 font-bold">
+              <p className="tabular font-data text-display-m font-heavy">
                 {fmtTime(s.start)}
               </p>
-              <p className="text-caption">{s.coach ?? "Self-guided"}</p>
-              <div className="mt-4">
+              <p className="text-body-s">{s.coach ?? "Self-guided"}</p>
+              <div className="mt-m">
                 <BookingStateButton session={s} filled />
               </div>
             </div>
-            <div className="flex flex-col gap-4 p-5">
+            <div className="flex flex-col gap-m p-l">
               <CategoryBadge id={ct.category} name={ct.categoryName} />
-              <h2 className="font-display-wide text-h2">{ct.name}</h2>
-              <p className="text-caption">
+              <h2 className="font-display-wide text-body-xxl font-heavy">
+                {ct.name}
+              </h2>
+              <p className="text-body-s">
                 {s.clubName}, {s.room}
               </p>
-              <dl className="grid grid-cols-3 gap-3 py-3 rule-y">
+              <dl className="grid grid-cols-3 gap-s py-s rule-y">
                 <div>
                   <dt className="eyebrow text-muted-foreground">Duration</dt>
-                  <dd className="tabular text-label">{ct.duration} min</dd>
+                  <dd className="tabular text-body-s font-heavy">
+                    {ct.duration} min
+                  </dd>
                 </div>
                 <div>
                   <dt className="eyebrow text-muted-foreground">Intensity</dt>
@@ -213,7 +217,7 @@ function ClassPanel({
                   <dd>
                     {!s.live ? (
                       s.countsFailed ? (
-                        <span className="text-caption">Ask the desk</span>
+                        <span className="text-body-s">Ask the desk</span>
                       ) : (
                         <Skeleton className="h-4 w-14" label="Loading spots" />
                       )
@@ -229,7 +233,7 @@ function ClassPanel({
                   </dd>
                 </div>
               </dl>
-              <IntensityKeyDetails className="-mt-2" />
+              <IntensityKeyDetails className="-mt-xs" />
               <InstructorChip
                 name={s.coach}
                 slug={s.coachSlug}
@@ -240,9 +244,9 @@ function ClassPanel({
                     : undefined
                 }
               />
-              <p className="text-body">{ct.blurb}</p>
+              <p className="text-body-m">{ct.blurb}</p>
               {ct.category === "aqua" ? (
-                <p className="text-caption">
+                <p className="text-body-s">
                   {/pool/i.test(s.room)
                     ? /warm/i.test(s.room)
                       ? `This class is in the warm-water pool (90–92°F) at ${s.clubName}.`
@@ -254,7 +258,7 @@ function ClassPanel({
                       }The warm-water pool (90–92°F) is at Dobson & Southern only.`}
                 </p>
               ) : null}
-              <p className="text-caption text-muted-foreground">
+              <p className="text-body-s text-muted-foreground">
                 Bring:{" "}
                 {(ct.bring.length ? ct.bring.join(", ") : ct.gear).replace(
                   /\.$/,
@@ -262,13 +266,13 @@ function ClassPanel({
                 )}
                 . Cancel free up to 2 hours before.
               </p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-s">
                 <LinkButton href={classHref(ct)} variant="ghost">
                   See class details
                 </LinkButton>
                 <Link
                   href="/app"
-                  className="inline-flex min-h-11 items-center text-label text-link underline-offset-4 hover:underline"
+                  className="inline-flex min-h-11 items-center text-body-s text-link underline-offset-4 hover:underline font-heavy"
                 >
                   How booking in the app works
                 </Link>

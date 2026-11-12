@@ -94,7 +94,7 @@ export function HomeServices({
   return (
     <ul
       className={cn(
-        "grid gap-y-6 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:grid-cols-5",
+        "grid gap-y-l sm:grid-cols-3 sm:gap-x-l sm:gap-y-xxl lg:grid-cols-5",
         className
       )}
     >
@@ -102,16 +102,18 @@ export function HomeServices({
         <li
           key={s.href}
           className={cn(
-            "group relative flex items-center gap-5 sm:flex-col sm:items-stretch sm:gap-0",
+            "group relative flex items-center gap-l sm:flex-col sm:items-stretch sm:gap-zero",
             // The stagger: every second column starts lower.
-            i % 2 === 1 && "lg:mt-16"
+            i % 2 === 1 && "lg:mt-section"
           )}
         >
           {/* Decorative: the name follows. Kids club is lit in Copper, the others are Night. Below sm the
               tile is too small for a crop to read, so it holds the whole object. */}
           <div
             className={cn(
-              "relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg p-3 sm:aspect-[4/5] sm:w-full sm:p-0",
+              "relative aspect-square w-16 shrink-0 overflow-hidden",
+              "corner-m p-s",
+              "sm:aspect-[4/5] sm:w-full sm:p-zero",
               i === 0 ? "bg-[var(--cat-strength)]" : "bg-night"
             )}
           >
@@ -129,8 +131,8 @@ export function HomeServices({
               className="transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none max-sm:hidden"
             />
           </div>
-          <div className="min-w-0 sm:mt-5">
-            <h3 className="font-display-wide text-h3 text-balance">
+          <div className="min-w-0 sm:mt-l">
+            <h3 className="font-display-wide text-body-l text-balance font-medium">
               {/* The name is the one link. Its ::after covers the column, so the tile is part of the target. */}
               <Link
                 href={s.href}
@@ -139,7 +141,7 @@ export function HomeServices({
                 {s.name}
               </Link>
             </h3>
-            <p className="text-body text-pretty text-muted-foreground">
+            <p className="text-body-m text-pretty text-muted-foreground">
               {s.fact}
             </p>
           </div>

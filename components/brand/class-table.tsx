@@ -49,7 +49,7 @@ export function ClassTable({
       {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
       <div
         role="row"
-        className={`hidden gap-x-4 py-2 text-caption font-semibold text-muted-foreground rule-b md:grid ${COLS}`}
+        className={`hidden gap-x-m py-xs text-body-s font-heavy text-muted-foreground rule-b md:grid ${COLS}`}
       >
         {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
         {/* biome-ignore lint/a11y/useFocusableInteractive: ARIA table rows and cells are not focusable by design; the audit approved the keyboard path through the links inside */}
@@ -79,15 +79,15 @@ export function ClassTable({
             // biome-ignore lint/a11y/useFocusableInteractive: ARIA table rows and cells are not focusable by design; the audit approved the keyboard path through the links inside
             <div
               role="row"
-              className="bg-muted py-3 pl-3 rule-b"
+              className="bg-muted py-s pl-s rule-b"
               style={{ boxShadow: `inset 4px 0 0 ${catColor(cat.id)}` }}
             >
               {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
               <div role="cell" aria-colspan={6}>
-                <h3 className="font-display-wide flex items-center gap-3 text-h3">
+                <h3 className="font-display-wide flex items-center gap-s text-body-l font-medium">
                   <CategoryIcon id={cat.id} className="size-5" />
                   {cat.name}
-                  <span className="text-caption font-normal text-muted-foreground">
+                  <span className="text-body-s font-regular text-muted-foreground">
                     {cat.tagline}
                   </span>
                 </h3>
@@ -102,22 +102,22 @@ export function ClassTable({
               <div
                 key={c.slug}
                 role="row"
-                className={`grid items-center gap-x-4 gap-y-1 py-3 pl-3 rule-b ${COLS}`}
+                className={`grid items-center gap-x-m gap-y-xxs py-s pl-s rule-b ${COLS}`}
               >
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
                 <div role="cell" className="min-w-0">
                   <Link
                     href={classHref(c)}
-                    className="font-display-wide inline-flex min-h-11 items-center text-h3 hover:underline"
+                    className="font-display-wide inline-flex min-h-11 items-center text-body-l hover:underline font-medium"
                   >
                     {c.name}
                   </Link>
-                  <p className="hidden text-body text-muted-foreground md:block">
+                  <p className="hidden text-body-m text-muted-foreground md:block">
                     {c.blurb}
                   </p>
                 </div>
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
-                <span role="cell" className="tabular text-body">
+                <span role="cell" className="tabular text-body-m">
                   <span className="text-muted-foreground md:hidden">
                     Length:{" "}
                   </span>
@@ -128,9 +128,9 @@ export function ClassTable({
                   <IntensityRibs level={c.intensity} categoryId={c.category} />
                 </span>
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
-                <span role="cell" className="text-body">
+                <span role="cell" className="text-body-m">
                   {c.firstTimer ? (
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-xs">
                       <Check
                         className="size-4 text-success"
                         aria-hidden="true"
@@ -144,7 +144,7 @@ export function ClassTable({
                   )}
                 </span>
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
-                <span role="cell" className="tabular text-body">
+                <span role="cell" className="tabular text-body-m">
                   <span className="text-muted-foreground md:hidden">
                     Next:{" "}
                   </span>
@@ -153,7 +153,7 @@ export function ClassTable({
                     : "Not here"}
                 </span>
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
-                <span role="cell" className="text-body text-muted-foreground">
+                <span role="cell" className="text-body-m text-muted-foreground">
                   {c.clubs === "all"
                     ? "All 5"
                     : `${c.clubs.length} ${c.clubs.length === 1 ? "club" : "clubs"}`}

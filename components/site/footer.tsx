@@ -56,13 +56,13 @@ function HoursRow({
 }) {
   return (
     <tr>
-      <th scope="row" className={cn("py-0.5 font-normal", className)}>
+      <th scope="row" className={cn("py-xxs font-regular", className)}>
         {day}
       </th>
       {[open, close].map((min, i) => (
         <td
           key={i === 0 ? "open" : "close"}
-          className={cn("py-0.5 pl-4 text-right", className)}
+          className={cn("py-xxs pl-m text-right", className)}
         >
           {fmtClock(min)}
         </td>
@@ -157,8 +157,8 @@ const L = ({ h, children }: { h: string; children: React.ReactNode }) =>
 function Column({ title, items }: { title: string; items: string[][] }) {
   return (
     <div>
-      <h2 className="text-label text-night-muted">{title}</h2>
-      <ul className="mt-3">
+      <h2 className="text-body-s text-night-muted font-heavy">{title}</h2>
+      <ul className="mt-s">
         {items.map(([h, l]) => (
           <li key={h + l}>
             <L h={h}>{l}</L>
@@ -181,21 +181,29 @@ function Column({ title, items }: { title: string; items: string[][] }) {
 export async function SiteFooter() {
   const { clubs } = await getCatalog()
   return (
-    <footer className="px-2 pt-8 pb-2 sm:px-3 sm:pb-3 lg:pt-12">
-      <div className="overflow-hidden rounded-2xl bg-night text-night-foreground">
-        <div className="w-full px-4 pt-12 sm:px-6 lg:px-12 lg:pt-16 xl:px-16 min-[100rem]:px-24">
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+    <footer className="px-xs pt-xl pb-xs sm:px-s sm:pb-s lg:pt-xxl">
+      <div className="overflow-hidden corner-xl bg-night text-night-foreground">
+        <div
+          className={cn(
+            "w-full",
+            "px-m pt-xxl",
+            "sm:px-l lg:px-xxl lg:pt-section xl:px-section min-[100rem]:px-section-l"
+          )}
+        >
+          <div className="grid gap-xxl lg:grid-cols-12 lg:gap-xl">
             <div className="lg:col-span-4">
               {/* The logo at its normal size, at the head of the contact column, with the tagline under it. */}
               <Logo reversed width={200} />
-              <p className="mt-3 text-lead text-night-muted">
+              <p className="mt-s text-body-l text-night-muted">
                 Climb at your own pace.
               </p>
               {/* Two text styles only: the muted label for names and column heads, and body text for the values.
                   The hours are a table, so each time sits in its own column and no dash is needed between them. */}
-              <div className="mt-8 grid gap-6 text-body">
+              <div className="mt-xl grid gap-l text-body-m">
                 <div>
-                  <p className="text-label text-night-muted">Member services</p>
+                  <p className="text-body-s text-night-muted font-heavy">
+                    Member services
+                  </p>
                   <a
                     href="tel:+14805550100"
                     className="tabular inline-flex min-h-11 items-center underline underline-offset-4"
@@ -208,22 +216,22 @@ export async function SiteFooter() {
                     <caption className="sr-only">
                       Hours at every club, and for member services calls
                     </caption>
-                    <thead className="text-label text-night-muted">
+                    <thead className="text-body-s text-night-muted font-heavy">
                       <tr>
                         {/* The live status takes the empty corner cell, above the day names. It is a plain cell, not a
                             column head, so a screen reader does not read it before each day. */}
-                        <td className="pb-2">
+                        <td className="pb-xs">
                           <ClubsOpenStatus />
                         </td>
-                        <th scope="col" className="pb-2 text-right">
+                        <th scope="col" className="pb-xs text-right">
                           Opens
                         </th>
-                        <th scope="col" className="pb-2 text-right">
+                        <th scope="col" className="pb-xs text-right">
                           Closes
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="[&>tr:last-child>*]:pb-4">
+                    <tbody className="[&>tr:last-child>*]:pb-m">
                       {HOURS.map(([day, hours]) => (
                         <HoursRow key={day} day={day} hours={hours} />
                       ))}
@@ -233,29 +241,34 @@ export async function SiteFooter() {
                       <HoursRow
                         day="Phone, daily"
                         hours={PHONE_HOURS_MIN}
-                        className="pt-4"
+                        className="pt-m"
                       />
                     </tbody>
                   </table>
                 </div>
               </div>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-xl flex flex-wrap items-center gap-s">
                 <a
                   href="https://apps.apple.com/"
-                  className="inline-flex min-h-11 items-center rounded-md bg-night-foreground px-4 text-label text-foreground"
+                  className={cn(
+                    "inline-flex min-h-11 items-center",
+                    "corner-s px-m",
+                    "text-body-s font-heavy",
+                    "bg-night-foreground text-foreground"
+                  )}
                 >
                   Download on the App Store
                 </a>
                 <Link
                   href="/app"
-                  className="inline-flex min-h-11 items-center text-label underline underline-offset-4"
+                  className="inline-flex min-h-11 items-center text-body-s underline underline-offset-4 font-heavy"
                 >
                   Members book in the app
                 </Link>
                 {socials.length ? (
                   // biome-ignore lint/a11y/useSemanticElements: link group, not form controls, so fieldset does not fit
                   <div
-                    className="flex gap-1"
+                    className="flex gap-xxs"
                     role="group"
                     aria-label="Social media"
                   >
@@ -264,7 +277,7 @@ export async function SiteFooter() {
                         key={name}
                         href={href}
                         aria-label={name}
-                        className="inline-flex size-11 items-center justify-center rounded-md hover:bg-night-fill"
+                        className="inline-flex size-11 items-center justify-center corner-s hover:bg-night-fill"
                       >
                         <Icon className="size-5" aria-hidden="true" />
                       </a>
@@ -276,7 +289,7 @@ export async function SiteFooter() {
 
             <nav
               aria-label="Footer"
-              className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 lg:col-span-8"
+              className="grid grid-cols-2 gap-x-l gap-y-xxl sm:grid-cols-4 lg:col-span-8"
             >
               <Column
                 title="Clubs"
@@ -291,14 +304,21 @@ export async function SiteFooter() {
             </nav>
           </div>
 
-          <div className="mt-12 flex flex-col gap-3 py-6 text-caption rule-t rule-night lg:mt-16 lg:flex-row lg:items-center lg:justify-between">
+          <div
+            className={cn(
+              "flex flex-col gap-s rule-t rule-night",
+              "mt-xxl py-l",
+              "text-body-s",
+              "lg:mt-section lg:flex-row lg:items-center lg:justify-between"
+            )}
+          >
             <p>
               © 2026 Cactus Peak Athletic.{" "}
               <span className="text-night-muted">
                 Fictional brand made for a university project.
               </span>
             </p>
-            <ul className="flex flex-wrap gap-x-4">
+            <ul className="flex flex-wrap gap-x-m">
               {legal.map(([h, l]) => (
                 <li key={h}>
                   <L h={h}>{l}</L>

@@ -49,14 +49,19 @@ export function HomeMembership({ className }: { className?: string }) {
   const { plans } = useCatalog()
   const featured = plans.find((p) => p.badge) ?? plans[0]
   return (
-    <div className={cn("grid gap-16 lg:grid-cols-12", className)}>
+    <div
+      className={cn(
+        "grid gap-section lg:grid-cols-12",
+        className
+      )}
+    >
       <div className="lg:col-span-6">
-        <p className="max-w-[46ch] text-lead text-pretty">
+        <p className="max-w-[46ch] text-body-l text-pretty">
           Every plan includes every class at your club. Ridge and Summit open
           all 5 clubs, their pools and the courts.
         </p>
-        <PlanBriefList className="mt-8" />
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <PlanBriefList className="mt-xl" />
+        <div className="mt-xl flex flex-wrap items-center gap-x-l gap-y-s">
           <LinkButton href={`/join/plan?plan=${featured.slug}`}>
             Become a member
           </LinkButton>
@@ -68,7 +73,12 @@ export function HomeMembership({ className }: { className?: string }) {
         {/* Decorative: the plan list names every plan. The pass shows the most popular plan. */}
         <div
           aria-hidden="true"
-          className="hidden aspect-[1.586] w-full max-w-md -rotate-2 flex-col justify-between rounded-lg bg-night p-6 text-night-foreground shadow-(--shadow-m) lg:flex"
+          className={cn(
+            "hidden aspect-[1.586] w-full max-w-md flex-col justify-between",
+            "corner-m p-l",
+            "-rotate-2 bg-night text-night-foreground shadow-(--shadow-m)",
+            "lg:flex"
+          )}
         >
           <Image
             src="/brand/cpa-horizontal-reversed.svg"
@@ -77,10 +87,12 @@ export function HomeMembership({ className }: { className?: string }) {
             height={43}
             className="self-start"
           />
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex items-end justify-between gap-m">
             <div>
-              <p className="text-caption text-night-muted">Member</p>
-              <p className="font-display-wide text-h2">{featured.name}</p>
+              <p className="text-body-s text-night-muted">Member</p>
+              <p className="font-display-wide text-body-xxl font-heavy">
+                {featured.name}
+              </p>
             </div>
             <ObjectRow
               ids={planObjects[featured.slug].slice(0, 3)}
@@ -91,20 +103,22 @@ export function HomeMembership({ className }: { className?: string }) {
         </div>
         {/* The pass is the app's check-in pass, so the app is named here, where the pass shows it. Below lg the
             pass is hidden and the line stands alone. */}
-        <p className="mb-12 flex flex-wrap items-center gap-x-4 gap-y-1 lg:mt-8">
-          <span className="text-body-strong">
+        <p className="mb-xxl flex flex-wrap items-center gap-x-m gap-y-xxs lg:mt-xl">
+          <span className="text-body-m font-heavy">
             Your pass, bookings and kids club live in the app.
           </span>
           <TextLink href="/app">Get the app</TextLink>
         </p>
 
-        <h3 className="font-display-wide text-h3">What members get</h3>
-        <ul className="mt-6 grid gap-x-8 gap-y-8 sm:grid-cols-2">
+        <h3 className="font-display-wide text-body-l font-medium">
+          What members get
+        </h3>
+        <ul className="mt-l grid gap-x-xl gap-y-xl sm:grid-cols-2">
           {perks.map((p) => (
-            <li key={p.title} className="pt-5 rule-t">
+            <li key={p.title} className="pt-l rule-t">
               <GymObject id={p.icon} className="size-8" />
-              <p className="mt-4 text-body-strong">{p.title}</p>
-              <p className="mt-1 text-body text-pretty text-muted-foreground">
+              <p className="mt-m text-body-m font-heavy">{p.title}</p>
+              <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                 {p.line}
               </p>
             </li>
@@ -124,23 +138,27 @@ export function PlanBriefList({ className }: { className?: string }) {
         <li key={p.slug} className="rule-b">
           <Link
             href={`/join/plan?plan=${p.slug}`}
-            className="group grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-1 py-4 no-underline"
+            className={cn(
+              "group grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-l gap-y-xxs",
+              "py-m",
+              "no-underline"
+            )}
           >
-            <span className="flex items-center gap-3">
-              <span className="font-display-wide text-h3 group-hover:underline">
+            <span className="flex items-center gap-s">
+              <span className="font-display-wide text-body-l group-hover:underline font-medium">
                 {p.name}
               </span>
               {p.badge ? (
-                <span className="rounded-sm bg-accent px-1.5 text-caption text-foreground">
+                <span className="corner-xs bg-accent px-xs text-body-s text-foreground">
                   {p.badge}
                 </span>
               ) : null}
             </span>
-            <span className="tabular text-body-strong">
+            <span className="tabular text-body-m font-heavy">
               ${p.price}
-              <span className="font-normal text-muted-foreground">/mo</span>
+              <span className="font-regular text-muted-foreground">/mo</span>
             </span>
-            <span className="col-span-2 text-body text-muted-foreground">
+            <span className="col-span-2 text-body-m text-muted-foreground">
               {p.bestFor.replace(/^Best for: /, "For ")}
             </span>
           </Link>

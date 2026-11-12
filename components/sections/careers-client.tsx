@@ -102,16 +102,16 @@ export function JobList() {
         onClearAll={reset}
       />
       {list.length ? (
-        <ul className="mt-6 rule-b rule-rows">
+        <ul className="mt-l rule-b rule-rows">
           {list.map((j) => (
             <li
               key={j.slug}
-              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-6 lg:grid-cols-12 lg:gap-x-8"
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-m gap-y-s py-l lg:grid-cols-12 lg:gap-x-xl"
             >
               {/* The object sits outside the heading, so the heading's name is only the title. */}
               <span
                 aria-hidden="true"
-                className="grid size-12 place-items-center rounded-md bg-night lg:col-span-1"
+                className="grid size-12 place-items-center corner-s bg-night lg:col-span-1"
               >
                 <GymObject
                   id={DEPT_OBJECT[j.dept] ?? "whistle"}
@@ -120,7 +120,7 @@ export function JobList() {
                 />
               </span>
               <div className="min-w-0 lg:col-span-4">
-                <h3 className="font-display-wide text-h3 text-balance">
+                <h3 className="font-display-wide text-body-l text-balance font-medium">
                   <Link
                     href={`/careers/${j.slug}`}
                     className="no-underline underline-offset-4 hover:underline"
@@ -128,15 +128,15 @@ export function JobList() {
                     {j.title}
                   </Link>
                 </h3>
-                <p className="text-caption text-muted-foreground">{j.dept}</p>
+                <p className="text-body-s text-muted-foreground">{j.dept}</p>
               </div>
-              <p className="text-body max-lg:col-start-2 lg:col-span-3">
+              <p className="text-body-m max-lg:col-start-2 lg:col-span-3">
                 {j.club}
-                <span className="block text-caption text-muted-foreground">
+                <span className="block text-body-s text-muted-foreground">
                   {j.type}
                 </span>
               </p>
-              <p className="tabular text-body-strong max-lg:col-start-2 lg:col-span-2">
+              <p className="tabular text-body-m max-lg:col-start-2 lg:col-span-2 font-heavy">
                 {j.pay}
               </p>
               <div className="max-lg:col-start-2 lg:col-span-2 lg:justify-self-end">
@@ -153,7 +153,7 @@ export function JobList() {
         </ul>
       ) : (
         <EmptyState
-          className="mt-4"
+          className="mt-m"
           title="No open roles match."
           text="Send us your email for the next opening."
         >
@@ -172,7 +172,7 @@ export function JobList() {
               }).catch(() => null)
               setState(r?.ok ? "ok" : "failed")
             }}
-            className="relative flex w-full max-w-md gap-2"
+            className="relative flex w-full max-w-md gap-xs"
           >
             <Honeypot />
             <label className="sr-only" htmlFor="tl">
@@ -192,7 +192,7 @@ export function JobList() {
               Join the list
             </Button>
           </form>
-          <p id="tl-status" role="status" className="text-caption">
+          <p id="tl-status" role="status" className="text-body-s">
             {state === "ok"
               ? "Thanks. We will write when a role opens."
               : state === "error"

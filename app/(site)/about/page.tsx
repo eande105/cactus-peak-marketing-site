@@ -84,14 +84,14 @@ function LeaderCard({
   return (
     <li
       className={cn(
-        "flex flex-col overflow-hidden rounded-lg edge ring-border",
+        "flex flex-col overflow-hidden corner-m hairline ring-border",
         lit ? "bg-[var(--cat-strength)]" : "bg-night"
       )}
     >
       <div
         className={cn(
           "relative isolate aspect-[16/7] overflow-hidden",
-          lit ? "text-[var(--neutral-1)]" : "text-night-foreground"
+          lit ? "text-neutral-1" : "text-night-foreground"
         )}
       >
         <ObjectCrop
@@ -111,15 +111,17 @@ function LeaderCard({
           {initials(leader.name)}
         </span>
       </div>
-      <div className="flex flex-1 flex-col gap-4 bg-card p-5">
+      <div className="flex flex-1 flex-col gap-m bg-card p-l">
         <div>
-          <h3 className="font-display-wide text-h3">{leader.name}</h3>
-          <p className="text-caption text-muted-foreground">{leader.role}</p>
+          <h3 className="font-display-wide text-body-l font-medium">
+            {leader.name}
+          </h3>
+          <p className="text-body-s text-muted-foreground">{leader.role}</p>
         </div>
-        <blockquote className="text-lead text-pretty">
+        <blockquote className="text-body-l text-pretty">
           “{leader.quote}”
         </blockquote>
-        <p className="mt-auto pt-4 text-caption text-muted-foreground rule-t">
+        <p className="mt-auto pt-m text-body-s text-muted-foreground rule-t">
           Favorite class: {leader.favorite} at {leader.club}
         </p>
       </div>
@@ -145,17 +147,17 @@ export default async function About() {
       />
 
       <Band tone="tint" id="story">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)]">
               <SectionHead size="lead" title="One club at a time." />
-              <p className="mt-6 max-w-[48ch] text-lead text-pretty">
+              <p className="mt-l max-w-[48ch] text-body-l text-pretty">
                 We opened {first?.name ?? "our first club"} in{" "}
                 {first?.opened ?? 2014} with a pool, a few courts and a rule:
                 nobody gets shamed. People came for the water and stayed for the
                 people.
               </p>
-              <p className="mt-4 max-w-[48ch] text-body text-pretty text-muted-foreground">
+              <p className="mt-m max-w-[48ch] text-body-m text-pretty text-muted-foreground">
                 Each club since was built for its neighborhood. The mark has
                 five ribs, one for each of them.
               </p>
@@ -167,13 +169,23 @@ export default async function About() {
               return (
                 <li
                   key={c.slug}
-                  className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-6 gap-y-3 py-8 rule-b sm:gap-x-10"
+                  className={cn(
+                    "grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-l gap-y-s rule-b",
+                    "py-xl",
+                    "sm:gap-x-xxl"
+                  )}
                 >
-                  <span className="tabular font-data text-figure sm:text-figure-lg">
+                  <span className="tabular font-data text-display-l sm:text-display-xxl font-heavy sm:font-heavy">
                     {c.opened}
                   </span>
                   <div className="min-w-0">
-                    <h3 className="font-display-wide flex items-center gap-3 text-h3 lg:text-h2">
+                    <h3
+                      className={cn(
+                        "flex items-center gap-s",
+                        "font-display-wide text-body-l font-medium",
+                        "lg:text-body-xxl lg:font-heavy"
+                      )}
+                    >
                       <ClubPin n={c.n} />
                       <Link
                         href={`/clubs/${c.slug}`}
@@ -182,14 +194,14 @@ export default async function About() {
                         {c.name}
                       </Link>
                     </h3>
-                    <p className="mt-1 text-caption text-muted-foreground">
+                    <p className="mt-xxs text-body-s text-muted-foreground">
                       {c.city}
                     </p>
-                    <p className="mt-3 text-body text-pretty">
+                    <p className="mt-s text-body-m text-pretty">
                       {c.personality}
                     </p>
                     {objects.length ? (
-                      <span aria-hidden="true" className="mt-4 flex gap-2">
+                      <span aria-hidden="true" className="mt-m flex gap-xs">
                         {objects.map((id) => (
                           <GymObject key={id} id={id} className="size-8" />
                         ))}
@@ -210,7 +222,7 @@ export default async function About() {
           lede="Five clubs later, the first visit still works the way it did in 2014."
         />
         <NumberedSteps
-          className="mt-12"
+          className="mt-xxl"
           steps={[
             {
               title: "Nobody gets shamed.",
@@ -242,7 +254,7 @@ export default async function About() {
           title="Who runs it."
           action={<TextLink href="/coaches">Meet the coaches</TextLink>}
         />
-        <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-xxl grid gap-x-xl gap-y-xxl sm:grid-cols-2 lg:grid-cols-3">
           {LEADERS.map((l, i) => (
             <LeaderCard key={l.name} leader={l} lit={i === 0} />
           ))}
@@ -250,22 +262,27 @@ export default async function About() {
         {/* The one careers action on the page, in the coach finder's "Not sure who fits?" form. */}
         <aside
           aria-labelledby="about-careers-title"
-          className="mt-12 grid gap-5 rounded-lg bg-card p-6 edge ring-border sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-8"
+          className={cn(
+            "grid gap-l hairline",
+            "mt-xxl corner-m p-l",
+            "bg-card ring-border",
+            "sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-l lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:p-xl"
+          )}
         >
           <span
             aria-hidden="true"
-            className={cn(
-              "grid size-14 place-items-center rounded-md",
-              litFill
-            )}
+            className={cn("grid size-14 place-items-center corner-s", litFill)}
           >
             <BrandMark scheme="copper" className="size-9" />
           </span>
           <div className="min-w-0">
-            <h3 id="about-careers-title" className="font-display-wide text-h3">
+            <h3
+              id="about-careers-title"
+              className="font-display-wide text-body-l font-medium"
+            >
               Help people climb.
             </h3>
-            <p className="mt-2 max-w-[60ch] text-body text-pretty text-muted-foreground">
+            <p className="mt-xs max-w-[60ch] text-body-m text-pretty text-muted-foreground">
               We hire coaches, lifeguards, kids club staff and front desk teams.
               Free membership for you and your family.
             </p>
@@ -280,7 +297,7 @@ export default async function About() {
 
       <Band id="neighborhood">
         <SectionHead size="lead" title="Part of the neighborhood." />
-        <ObjectTiles className="mt-12" tiles={NEIGHBORS} />
+        <ObjectTiles className="mt-xxl" tiles={NEIGHBORS} />
       </Band>
 
       <TourCTABand

@@ -139,8 +139,8 @@ export function ClubClassWeek({
     ) : null
 
   return (
-    <div className={cn("grid gap-8 lg:grid-cols-12 lg:gap-12", className)}>
-      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 lg:col-span-12">
+    <div className={cn("grid gap-xl lg:grid-cols-12 lg:gap-xxl", className)}>
+      <div className="flex flex-wrap items-center justify-between gap-x-xl gap-y-m lg:col-span-12">
         {/* No scroll box here: a scroll box clips the focus ring. On a phone the days take their own full-width
             line under the week button, so all seven fit and the picked day stays in view. */}
         <ToggleGroup
@@ -150,24 +150,36 @@ export function ClubClassWeek({
             if (v[0] !== undefined)
               setDay(v[0] === "week" ? "week" : Number(v[0]))
           }}
-          className="flex flex-wrap items-center gap-3 max-sm:w-full"
+          className="flex flex-wrap items-center gap-s max-sm:w-full"
         >
           {/* The week is the overview, not one more day, so it stands on its own beside the seven days.
               It is as tall as the day track (44 px buttons plus the track's 4 px padding on each side). */}
           <Toggle
             value="week"
-            className="min-h-13 shrink-0 gap-2 rounded-lg px-4 edge ring-border not-data-pressed:bg-card"
+            className={cn(
+              "min-h-13 shrink-0 gap-xs hairline",
+              "corner-m px-m",
+              "ring-border",
+              "not-data-pressed:bg-card"
+            )}
           >
             <CalendarDays className="size-4" aria-hidden="true" />
             Whole week
           </Toggle>
-          <div className="flex gap-0.5 rounded-lg bg-card p-1 edge ring-border max-sm:w-full sm:gap-1">
+          <div
+            className={cn(
+              "flex gap-xxs hairline",
+              "corner-m p-xxs",
+              "bg-card ring-border",
+              "max-sm:w-full sm:gap-xxs"
+            )}
+          >
             {WEEK_ORDER.map((d) => (
               <Toggle
                 key={d}
                 value={String(d)}
                 aria-label={`${DAYS_LONG[d]}${d === weekday ? ", today" : ""}`}
-                className="relative min-h-11 min-w-0 flex-1 px-0 sm:min-w-12 sm:px-3"
+                className="relative min-h-11 min-w-0 flex-1 px-zero sm:min-w-12 sm:px-s"
               >
                 {DAY_SHORT[d]}
                 {/* Today keeps its place in the week, so a dot under the name marks it. The dot is out of
@@ -175,7 +187,7 @@ export function ClubClassWeek({
                 {d === weekday ? (
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-current"
+                    className="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 corner-full bg-current"
                   />
                 ) : null}
               </Toggle>
@@ -185,39 +197,39 @@ export function ClubClassWeek({
         {day === "week" ? (
           <ul
             aria-label="Key"
-            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-muted-foreground"
+            className="flex flex-wrap items-center gap-x-l gap-y-xs text-body-s text-muted-foreground"
           >
-            <li className="flex items-center gap-2">
+            <li className="flex items-center gap-xs">
               <span
                 aria-hidden="true"
-                className="h-3.5 w-6 rounded-sm bg-muted ring-1 ring-border ring-inset"
+                className="h-3.5 w-6 corner-xs bg-muted ring-1 ring-border ring-inset"
               />
               5 days or more
             </li>
-            <li className="flex items-center gap-2">
+            <li className="flex items-center gap-xs">
               <span
                 aria-hidden="true"
-                className="h-3.5 w-6 rounded-sm bg-card ring-1 ring-border-strong ring-inset"
+                className="h-3.5 w-6 corner-xs bg-card ring-1 ring-border-strong ring-inset"
               />
               2 to 4 days
             </li>
-            <li className="flex items-center gap-2">
+            <li className="flex items-center gap-xs">
               <span
                 aria-hidden="true"
-                className="h-3.5 w-6 rounded-sm bg-card ring-1 ring-border ring-inset"
+                className="h-3.5 w-6 corner-xs bg-card ring-1 ring-border ring-inset"
               />
               1 day
             </li>
           </ul>
         ) : (
-          <p className="text-caption text-muted-foreground">
+          <p className="text-body-s text-muted-foreground">
             Start times on {dayWord}. All times are Arizona time.
           </p>
         )}
       </div>
 
       <div className="min-w-0 lg:col-span-8">
-        <div className="rounded-lg bg-card p-2 edge ring-border sm:p-4">
+        <div className="corner-m bg-card p-xs hairline ring-border sm:p-m">
           <table className="w-full border-collapse text-left">
             <caption className="sr-only">
               When each type of class runs at {club.name}
@@ -228,7 +240,7 @@ export function ClubClassWeek({
               <tr className="[&>*]:rule-b">
                 <th
                   scope="col"
-                  className="w-[30%] px-3 pb-3 text-label text-muted-foreground"
+                  className="w-[30%] px-s pb-s text-body-s text-muted-foreground font-heavy"
                 >
                   Class type
                 </th>
@@ -236,10 +248,12 @@ export function ClubClassWeek({
                   <th
                     key={p.key}
                     scope="col"
-                    className="px-1.5 pb-3 align-bottom"
+                    className="px-xs pb-s align-bottom"
                   >
-                    <span className="block text-label">{p.name}</span>
-                    <span className="block text-caption font-normal text-muted-foreground">
+                    <span className="block text-body-s font-heavy">
+                      {p.name}
+                    </span>
+                    <span className="block text-body-s font-regular text-muted-foreground">
                       {p.hours}
                     </span>
                   </th>
@@ -254,13 +268,13 @@ export function ClubClassWeek({
                   <Fragment key={cat.id}>
                     <tr
                       className={cn(
-                        "max-md:grid max-md:grid-cols-4 max-md:gap-1.5 max-md:px-1 max-md:py-4 [&>*]:rule-b last:[&>*]:rule-b-0",
+                        "max-md:grid max-md:grid-cols-4 max-md:gap-xs max-md:px-xxs max-md:py-m [&>*]:rule-b last:[&>*]:rule-b-0",
                         rowOn && "bg-background"
                       )}
                     >
                       <th
                         scope="row"
-                        className="px-1.5 py-1.5 font-normal max-md:col-span-4 max-md:px-0 max-md:pt-0 max-md:pb-1"
+                        className="px-xs py-xs font-regular max-md:col-span-4 max-md:px-zero max-md:pt-zero max-md:pb-xxs"
                       >
                         <button
                           type="button"
@@ -268,7 +282,10 @@ export function ClubClassWeek({
                           aria-label={`${cat.name}, every class`}
                           onClick={() => toggle({ cat: cat.id, part: "all" })}
                           className={cn(
-                            "group flex w-full items-center gap-3 rounded-md px-1.5 py-1.5 text-left hover:bg-muted",
+                            "group flex w-full items-center gap-s",
+                            "corner-s px-xs py-xs",
+                            "text-left",
+                            "hover:bg-muted",
                             rowOn &&
                               active?.part === "all" &&
                               "ring-2 ring-foreground ring-inset"
@@ -279,10 +296,10 @@ export function ClubClassWeek({
                             className="size-9 shrink-0"
                           />
                           <span className="min-w-0">
-                            <span className="block text-body-strong underline-offset-4 group-hover:underline">
+                            <span className="block text-body-m underline-offset-4 group-hover:underline font-heavy">
                               {cat.name}
                             </span>
-                            <span className="block text-caption text-muted-foreground tabular-nums">
+                            <span className="block text-body-s text-muted-foreground tabular-nums">
                               {total} {total === 1 ? "class" : "classes"}{" "}
                               {day === "week" ? "a week" : "that day"}
                             </span>
@@ -294,10 +311,10 @@ export function ClubClassWeek({
                         const on = rowOn && active?.part === i
                         const strong = day === "week" ? c.days.length : c.n
                         return (
-                          <td key={part.key} className="p-1 md:p-1.5">
+                          <td key={part.key} className="p-xxs md:p-xs">
                             {/* Below md the column heads are hidden, so each cell names its part of the day. */}
                             <span
-                              className="mb-1 block text-caption text-muted-foreground md:hidden"
+                              className="mb-xxs block text-body-s text-muted-foreground md:hidden"
                               aria-hidden="true"
                             >
                               {part.name}
@@ -313,7 +330,11 @@ export function ClubClassWeek({
                                 }, ${startsWord(c.starts)}`}
                                 onClick={() => toggle({ cat: cat.id, part: i })}
                                 className={cn(
-                                  "flex min-h-11 w-full flex-col justify-center rounded-md px-1.5 py-1.5 text-left transition-[box-shadow,background-color] hover:ring-2 hover:ring-foreground/40 motion-reduce:transition-none md:min-h-14 md:px-3 md:py-2",
+                                  "flex min-h-11 w-full flex-col justify-center",
+                                  "corner-s px-xs py-xs",
+                                  "text-left",
+                                  "transition-[box-shadow,background-color]",
+                                  "hover:ring-2 hover:ring-foreground/40 motion-reduce:transition-none md:min-h-14 md:px-s md:py-xs",
                                   day === "week" && strong >= 5
                                     ? "bg-muted ring-1 ring-border ring-inset"
                                     : strong >= 2
@@ -324,7 +345,7 @@ export function ClubClassWeek({
                                     "ring-2 ring-foreground hover:ring-foreground"
                                 )}
                               >
-                                <span className="text-label text-pretty">
+                                <span className="text-body-s text-pretty font-heavy">
                                   <span className="whitespace-nowrap md:hidden">
                                     {day === "week"
                                       ? daysShort(c.days)
@@ -336,14 +357,14 @@ export function ClubClassWeek({
                                       : startsWord(c.starts)}
                                   </span>
                                 </span>
-                                <span className="text-caption text-muted-foreground tabular-nums max-md:hidden">
+                                <span className="text-body-s text-muted-foreground tabular-nums max-md:hidden">
                                   {day === "week"
                                     ? startsWord(c.starts)
                                     : `${c.n} ${c.n === 1 ? "class" : "classes"}`}
                                 </span>
                               </button>
                             ) : (
-                              <span className="flex min-h-11 items-center px-1.5 text-muted-foreground md:min-h-14 md:px-3">
+                              <span className="flex min-h-11 items-center px-xs text-muted-foreground md:min-h-14 md:px-s">
                                 <span aria-hidden="true">–</span>
                                 <span className="sr-only">Not on</span>
                               </span>
@@ -355,7 +376,7 @@ export function ClubClassWeek({
                     {/* Below lg the panel opens under its row, where the tap was. */}
                     {rowOn && detail ? (
                       <tr className="max-md:block lg:hidden">
-                        <td colSpan={5} className="pb-3 max-md:block">
+                        <td colSpan={5} className="pb-s max-md:block">
                           {detail}
                         </td>
                       </tr>
@@ -415,12 +436,14 @@ function PickDetail({
     .filter(Boolean)
     .join(" · ")
   return (
-    <div className="rounded-lg bg-card p-5 edge ring-border">
-      <div className="flex items-start gap-3">
+    <div className="corner-m bg-card p-l hairline ring-border">
+      <div className="flex items-start gap-s">
         <CategoryTile category={row.cat.id} className="size-10 shrink-0" />
         <div className="min-w-0 flex-1">
-          <h3 className="font-display-wide text-h3">{row.cat.name}</h3>
-          <p className="text-caption text-muted-foreground">
+          <h3 className="font-display-wide text-body-l font-medium">
+            {row.cat.name}
+          </h3>
+          <p className="text-body-s text-muted-foreground">
             {when || "Every class this week"}
           </p>
         </div>
@@ -428,40 +451,45 @@ function PickDetail({
           type="button"
           onClick={onClose}
           aria-label={`Close ${row.cat.name}`}
-          className="-m-2 grid size-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          className={cn(
+            "grid size-11 shrink-0 place-items-center",
+            "-m-xs corner-s",
+            "text-muted-foreground",
+            "hover:bg-muted hover:text-foreground"
+          )}
         >
           <X className="size-4" aria-hidden="true" />
         </button>
       </div>
-      <ul className="mt-4 rule-t">
+      <ul className="mt-m rule-t">
         {classes.map(({ ct, times }) => (
-          <li key={ct.key} className="py-4 rule-b">
+          <li key={ct.key} className="py-m rule-b">
             <a
               href={classHref(ct)}
-              className="text-body-strong underline-offset-4 hover:underline"
+              className="text-body-m underline-offset-4 hover:underline font-heavy"
             >
               {ct.name}
             </a>
-            <p className="text-caption text-muted-foreground">
+            <p className="text-body-s text-muted-foreground">
               {ct.duration} min
               {ct.firstTimer ? " · Good for a first class" : ""}
             </p>
-            <ul className="mt-3 grid gap-2 text-body">
+            <ul className="mt-s grid gap-xs text-body-m">
               {times.map((s) => {
                 const coach = coachById(s.coachId)
                 return (
                   <li
                     key={`${s.start}-${s.days.join()}`}
-                    className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3"
+                    className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-s"
                   >
-                    <span className="text-body-strong tabular-nums">
+                    <span className="text-body-m tabular-nums font-heavy">
                       {fmtTimeShort(s.start)}
                     </span>
                     <span className="min-w-0">
                       {day === "week" ? (
                         <span className="block">{daysWord(s.days)}</span>
                       ) : null}
-                      <span className="block text-caption text-muted-foreground">
+                      <span className="block text-body-s text-muted-foreground">
                         {s.studio}
                         {coach ? ` · ${coach.name}` : ""}
                       </span>
@@ -473,7 +501,7 @@ function PickDetail({
           </li>
         ))}
       </ul>
-      <div className="mt-4">
+      <div className="mt-m">
         <TextLink href={typeHref(row.cat.id)}>About {row.cat.name}</TextLink>
       </div>
     </div>
@@ -489,35 +517,35 @@ function UpNext({ club }: { club: Club }) {
     )
     .slice(0, 5)
   return (
-    <div className="rounded-lg bg-card p-5 edge ring-border">
-      <h3 className="font-display-wide text-h3">Up next</h3>
-      <p className="text-caption text-muted-foreground">
+    <div className="corner-m bg-card p-l hairline ring-border">
+      <h3 className="font-display-wide text-body-l font-medium">Up next</h3>
+      <p className="text-body-s text-muted-foreground">
         Pick a cell in the table to see its classes.
       </p>
-      <ol className="mt-4 rule-t" aria-live="polite">
+      <ol className="mt-m rule-t" aria-live="polite">
         {next.map((s) => {
           const d = dayInfo(s.day, now.dayNum)
           return (
             <li
               key={s.id}
-              className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-x-3 py-3 rule-b"
+              className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-x-s py-s rule-b"
             >
               <span className="tabular-nums">
-                <span className="block text-body-strong">
+                <span className="block text-body-m font-heavy">
                   {fmtTimeShort(s.start)}
                 </span>
-                <span className="block text-caption text-muted-foreground">
+                <span className="block text-body-s text-muted-foreground">
                   {s.day === 0 ? "Today" : s.day === 1 ? "Tomorrow" : d.long}
                 </span>
               </span>
               <span className="min-w-0">
                 <a
                   href={classHref({ slug: s.classSlug })}
-                  className="block text-body-strong underline-offset-4 hover:underline"
+                  className="block text-body-m underline-offset-4 hover:underline font-heavy"
                 >
                   {s.className}
                 </a>
-                <span className="block text-caption text-muted-foreground">
+                <span className="block text-body-s text-muted-foreground">
                   {s.room}
                   {s.coach ? ` · ${s.coach}` : ""}
                 </span>
@@ -526,7 +554,7 @@ function UpNext({ club }: { club: Club }) {
           )
         })}
       </ol>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6">
+      <div className="mt-m flex flex-wrap items-center justify-between gap-x-l">
         <TextLink href={scheduleUrl({ club: club.slug })}>
           See full schedule
         </TextLink>

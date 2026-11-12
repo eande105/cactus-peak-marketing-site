@@ -148,7 +148,7 @@ export function ClubsOfferings({
   return (
     <div className={className}>
       {/* From lg: a table in a card, one row for each offering and one column for each club. */}
-      <div className="overflow-hidden rounded-lg bg-card edge ring-border max-lg:hidden">
+      <div className="overflow-hidden corner-m bg-card hairline ring-border max-lg:hidden">
         <table className="w-full table-fixed border-collapse text-left">
           <caption className="sr-only">
             What each of the 5 clubs has, one column for each club
@@ -161,20 +161,24 @@ export function ClubsOfferings({
               {/* The corner names the column of row heads, so it does not sit empty. */}
               <th
                 scope="col"
-                className="px-6 py-4 text-caption font-semibold text-muted-foreground"
+                className="px-l py-m text-body-s font-heavy text-muted-foreground"
               >
                 What you can do
               </th>
               {clubs.map((c) => (
-                <th key={c.slug} scope="col" className="px-4 py-4 font-normal">
+                <th key={c.slug} scope="col" className="px-m py-m font-regular">
                   <Link
                     href={`/clubs/${c.slug}`}
-                    className="flex items-center gap-2 text-label no-underline underline-offset-4 hover:underline"
+                    className={cn(
+                      "flex items-center gap-xs",
+                      "text-body-s no-underline underline-offset-4 font-heavy",
+                      "hover:underline"
+                    )}
                   >
                     <ClubPin n={c.n} />
                     {c.short}
                   </Link>
-                  <span className="mt-0.5 block text-caption text-muted-foreground">
+                  <span className="mt-xxs block text-body-s text-muted-foreground">
                     {c.city}
                   </span>
                 </th>
@@ -184,11 +188,11 @@ export function ClubsOfferings({
           <tbody>
             {offerings.map((o) => (
               <tr key={o.id} className="align-top [&>*]:rule-t">
-                <th scope="row" className="px-6 py-4 font-normal">
+                <th scope="row" className="px-l py-m font-regular">
                   <OfferingHead offering={o} />
                 </th>
                 {clubs.map((c) => (
-                  <td key={c.slug} className="px-4 py-4">
+                  <td key={c.slug} className="px-m py-m">
                     <Cell offering={o} value={o.at(c, ctx)} />
                   </td>
                 ))}
@@ -199,22 +203,22 @@ export function ClubsOfferings({
       </div>
 
       {/* Below lg five columns do not fit, so each offering is a block with the clubs as pin rows. */}
-      <ul className="grid gap-4 md:grid-cols-2 lg:hidden">
+      <ul className="grid gap-m md:grid-cols-2 lg:hidden">
         {offerings.map((o) => (
           <li
             key={o.id}
-            className="overflow-hidden rounded-lg bg-card edge ring-border"
+            className="overflow-hidden corner-m bg-card hairline ring-border"
           >
-            <div className="px-5 py-4 rule-b">
+            <div className="px-l py-m rule-b">
               <OfferingHead offering={o} />
             </div>
             <ul>
               {clubs.map((c) => (
                 <li
                   key={c.slug}
-                  className="flex items-start justify-between gap-4 px-5 py-3 not-last:rule-b"
+                  className="flex items-start justify-between gap-m px-l py-s not-last:rule-b"
                 >
-                  <span className="flex shrink-0 items-center gap-2 text-label">
+                  <span className="flex shrink-0 items-center gap-xs text-body-s font-heavy">
                     <ClubPin n={c.n} />
                     {c.short}
                   </span>
@@ -232,10 +236,10 @@ export function ClubsOfferings({
 /** The row head: the offering's object and title, linked to its page, over the plan that opens it. */
 function OfferingHead({ offering: o }: { offering: Offering }) {
   return (
-    <div className="flex items-start gap-3">
+    <div className="flex items-start gap-s">
       <GymObject id={o.object} className="size-8 shrink-0" />
       <div className="min-w-0">
-        <p className="text-body-strong">
+        <p className="text-body-m font-heavy">
           {o.href ? (
             <Link
               href={o.href}
@@ -247,8 +251,8 @@ function OfferingHead({ offering: o }: { offering: Offering }) {
             o.title
           )}
         </p>
-        <p className="mt-1">
-          <span className="rounded-sm bg-muted px-1.5 py-0.5 text-caption whitespace-nowrap">
+        <p className="mt-xxs">
+          <span className="corner-xs bg-muted px-xs py-xxs text-body-s whitespace-nowrap">
             {o.plan}
           </span>
         </p>
@@ -271,7 +275,7 @@ function Cell({
     return (
       <span
         className={cn(
-          "text-caption text-pretty",
+          "text-body-s text-pretty",
           align === "end" && "text-right"
         )}
       >

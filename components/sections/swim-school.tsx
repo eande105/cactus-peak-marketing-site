@@ -16,7 +16,7 @@ export function SwimLevels({ className }: { className?: string }) {
       {SWIM.levels.map(([name, ages, line], i) => (
         <li
           key={name}
-          className="flex items-center gap-4 py-4 rule-b first:rule-t"
+          className="flex items-center gap-m py-m rule-b first:rule-t"
         >
           <RibMeter
             value={i + 1}
@@ -29,13 +29,13 @@ export function SwimLevels({ className }: { className?: string }) {
             decorative
           />
           <div>
-            <p className="font-display-wide text-h3">
+            <p className="font-display-wide text-body-l font-medium">
               Level {i + 1} {name}
-              <span className="ml-2 text-body font-normal text-muted-foreground">
+              <span className="ml-xs text-body-m font-regular text-muted-foreground">
                 Ages {ages}
               </span>
             </p>
-            <p className="text-body text-muted-foreground">{line}</p>
+            <p className="text-body-m text-muted-foreground">{line}</p>
           </div>
         </li>
       ))}
@@ -52,23 +52,23 @@ export function SwimFacts({
   cta?: boolean
 }) {
   return (
-    <div className={cn("flex flex-col gap-3", className)}>
-      <p className="text-body-strong">
+    <div className={cn("flex flex-col gap-s", className)}>
+      <p className="text-body-m font-heavy">
         Ages {SWIM.ages}. At {SWIM.clubName} only. One 30-minute lesson a week,
         4 to 6 children per coach.
       </p>
-      <p className="text-body">
-        <span className="tabular font-semibold">${SWIM.memberPrice}</span> per
+      <p className="text-body-m">
+        <span className="tabular font-heavy">${SWIM.memberPrice}</span> per
         6-week session for a member’s child.{" "}
-        <span className="tabular font-semibold">${SWIM.nonMemberPrice}</span>{" "}
-        for a non-member. Swim school is not part of the $19 child add-on.
+        <span className="tabular font-heavy">${SWIM.nonMemberPrice}</span> for a
+        non-member. Swim school is not part of the $19 child add-on.
       </p>
-      <p className="text-body">
+      <p className="text-body-m">
         Non-members can enrol. Ask at the front desk, call {SWIM.phone}, or ask
         on a tour. The first lesson starts with a free level check.
       </p>
       {cta ? (
-        <div className="mt-2 flex flex-wrap items-center gap-3">
+        <div className="mt-xs flex flex-wrap items-center gap-s">
           <LinkButton href={`/tour?club=${SWIM.club}&note=swim-school`}>
             Book a tour to see swim school
           </LinkButton>
@@ -108,25 +108,25 @@ export function SwimSchoolGuide({ className }: { className?: string }) {
     (_, i) => AGE_MIN + i
   )
   return (
-    <div className={cn("flex flex-col gap-12", className)}>
+    <div className={cn("flex flex-col gap-xxl", className)}>
       {/* How lessons run. */}
       <ul className="grid grid-cols-2 rule-y md:grid-cols-4">
         {RUNS.map((r, i) => (
           <li
             key={r.label}
             className={cn(
-              "flex items-center gap-3 py-5",
-              i % 2 === 1 && "max-md:pl-4 max-md:rule-l",
+              "flex items-center gap-s py-l",
+              i % 2 === 1 && "max-md:pl-m max-md:rule-l",
               i > 1 && "max-md:rule-t",
-              i > 0 && "md:pl-6 md:rule-l"
+              i > 0 && "md:pl-l md:rule-l"
             )}
           >
             <GymObject id={r.icon} className="size-9 shrink-0" />
             <span>
-              <span className="font-display-wide block text-h3 tabular-nums">
+              <span className="font-display-wide block text-body-l tabular-nums font-medium">
                 {r.value}
               </span>
-              <span className="block text-label text-muted-foreground">
+              <span className="block text-body-s text-muted-foreground font-heavy">
                 {r.label}
               </span>
             </span>
@@ -136,49 +136,56 @@ export function SwimSchoolGuide({ className }: { className?: string }) {
 
       {/* The levels on one age line. */}
       <section aria-labelledby="swim-levels">
-        <h3 id="swim-levels" className="font-display-wide text-h3">
+        <h3
+          id="swim-levels"
+          className="font-display-wide text-body-l font-medium"
+        >
           Find your child’s level
         </h3>
-        <ol className="mt-6 rule-t rule-heavy">
+        <ol className="mt-l rule-t rule-heavy">
           {SWIM.levels.map(([name, ages, skill], i) => {
             const [from, to] = agesOf(ages)
             const goal = i === SWIM.levels.length - 1
             return (
               <li
                 key={name}
-                className="grid gap-x-8 gap-y-3 py-4 rule-b md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-center"
+                className="grid gap-x-xl gap-y-s py-m rule-b md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-center"
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-s">
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "grid size-9 shrink-0 place-items-center rounded-full font-data text-label font-bold tabular-nums",
+                      "grid size-9 shrink-0 place-items-center",
+                      "corner-full",
+                      "font-data text-body-s font-heavy tabular-nums",
                       goal
-                        ? "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+                        ? "bg-[var(--cat-strength)] text-neutral-1"
                         : "bg-night text-night-foreground"
                     )}
                   >
                     {i + 1}
                   </span>
                   <div className="min-w-0">
-                    <h4 className="text-body-strong">
+                    <h4 className="text-body-m font-heavy">
                       <span className="sr-only">Level {i + 1}: </span>
                       {name}
                     </h4>
-                    <p className="text-body text-pretty text-muted-foreground">
+                    <p className="text-body-m text-pretty text-muted-foreground">
                       {skill}
                     </p>
                   </div>
                 </div>
                 <div
-                  className="relative h-9 rounded-full bg-[color-mix(in_oklab,var(--foreground)_6%,transparent)]"
+                  className="relative h-9 corner-full bg-[color-mix(in_oklab,var(--foreground)_6%,transparent)]"
                   title={`Ages ${ages}`}
                 >
                   <span
                     className={cn(
-                      "absolute inset-y-0 grid place-items-center rounded-full px-3 text-label font-semibold whitespace-nowrap",
+                      "absolute inset-y-0 grid place-items-center",
+                      "corner-full px-s",
+                      "text-body-s font-heavy whitespace-nowrap",
                       goal
-                        ? "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+                        ? "bg-[var(--cat-strength)] text-neutral-1"
                         : "bg-night text-night-foreground"
                     )}
                     style={{
@@ -194,11 +201,11 @@ export function SwimSchoolGuide({ className }: { className?: string }) {
           })}
         </ol>
         {/* The age scale, under the bars' column. */}
-        <div className="grid gap-x-8 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
+        <div className="grid gap-x-xl md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
           <span className="max-md:hidden" />
           <div
             aria-hidden="true"
-            className="relative mt-2 h-5 text-caption text-muted-foreground tabular-nums"
+            className="relative mt-xs h-5 text-body-s text-muted-foreground tabular-nums"
           >
             {ticks.map((t) => (
               <span
@@ -216,36 +223,50 @@ export function SwimSchoolGuide({ className }: { className?: string }) {
       </section>
 
       {/* Price and how to start. */}
-      <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div className="grid gap-xxl lg:grid-cols-12 lg:gap-section">
         <section aria-labelledby="swim-price" className="lg:col-span-5">
-          <h3 id="swim-price" className="font-display-wide text-h3">
+          <h3
+            id="swim-price"
+            className="font-display-wide text-body-l font-medium"
+          >
             Price for a 6-week session
           </h3>
-          <dl className="mt-5 grid grid-cols-2 overflow-hidden rounded-lg bg-card edge ring-border">
-            <div className="p-5">
-              <dt className="text-label text-muted-foreground">
+          <dl
+            className={cn(
+              "grid grid-cols-2 overflow-hidden hairline",
+              "mt-l corner-m",
+              "bg-card ring-border"
+            )}
+          >
+            <div className="p-l">
+              <dt className="text-body-s text-muted-foreground font-heavy">
                 Member’s child
               </dt>
-              <dd className="tabular mt-1 font-data text-figure">
+              <dd className="tabular mt-xxs font-data text-display-l font-heavy">
                 ${SWIM.memberPrice}
               </dd>
             </div>
-            <div className="p-5 rule-l">
-              <dt className="text-label text-muted-foreground">Non-member</dt>
-              <dd className="tabular mt-1 font-data text-figure">
+            <div className="p-l rule-l">
+              <dt className="text-body-s text-muted-foreground font-heavy">
+                Non-member
+              </dt>
+              <dd className="tabular mt-xxs font-data text-display-l font-heavy">
                 ${SWIM.nonMemberPrice}
               </dd>
             </div>
           </dl>
-          <p className="mt-3 text-body text-pretty text-muted-foreground">
+          <p className="mt-s text-body-m text-pretty text-muted-foreground">
             The $19 child add-on does not cover swim school.
           </p>
         </section>
         <section aria-labelledby="swim-start" className="lg:col-span-7">
-          <h3 id="swim-start" className="font-display-wide text-h3">
+          <h3
+            id="swim-start"
+            className="font-display-wide text-body-l font-medium"
+          >
             How to start
           </h3>
-          <ol className="mt-5 grid gap-5 sm:grid-cols-3">
+          <ol className="mt-l grid gap-l sm:grid-cols-3">
             {[
               {
                 t: "Ask for a spot",
@@ -260,21 +281,21 @@ export function SwimSchoolGuide({ className }: { className?: string }) {
                 d: "30 minutes, for the 6 weeks of the session.",
               },
             ].map((s, i) => (
-              <li key={s.t} className="pt-3 rule-t rule-heavy">
+              <li key={s.t} className="pt-s rule-t rule-heavy">
                 <span
                   aria-hidden="true"
-                  className="tabular font-data text-h3 font-bold"
+                  className="tabular font-data text-body-l font-heavy"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="mt-2 text-body-strong">{s.t}</p>
-                <p className="mt-1 text-body text-pretty text-muted-foreground">
+                <p className="mt-xs text-body-m font-heavy">{s.t}</p>
+                <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                   {s.d}
                 </p>
               </li>
             ))}
           </ol>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
+          <div className="mt-l flex flex-wrap items-center gap-s">
             <LinkButton href={`/tour?club=${SWIM.club}&note=swim-school`}>
               Book a tour to see swim school
             </LinkButton>

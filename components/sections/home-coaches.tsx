@@ -5,7 +5,7 @@ import type { Coach } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 const disc =
-  "-ml-2 grid size-12 place-items-center rounded-full text-label ring-4 ring-muted"
+  "-ml-xs grid size-12 place-items-center corner-full text-body-s ring-4 ring-muted font-heavy"
 
 /**
  * Home coach line, at the foot of the classes band: the most experienced coaches as an overlapping row of
@@ -30,12 +30,14 @@ export function HomeCoachLine({
   return (
     <div
       className={cn(
-        "flex flex-col gap-x-8 gap-y-5 py-8 rule-b sm:flex-row sm:items-center",
+        "flex flex-col gap-x-xl gap-y-l rule-b",
+        "py-xl",
+        "sm:flex-row sm:items-center",
         className
       )}
     >
       {/* Decorative: the line names the count. The ring is the band colour, so the marks read as cut apart. */}
-      <span aria-hidden="true" className="flex shrink-0 pl-2">
+      <span aria-hidden="true" className="flex shrink-0 pl-xs">
         {shown.map((c) => (
           <span key={c.slug} className={cn(disc, nightFill)}>
             {initials(c.name)}
@@ -47,7 +49,7 @@ export function HomeCoachLine({
           </span>
         ) : null}
       </span>
-      <p className="font-display-wide min-w-0 flex-1 text-h3 text-balance">
+      <p className="font-display-wide min-w-0 flex-1 text-body-l text-balance font-medium">
         Every class has a coach. {listed.length} of them, with {years} years of
         coaching between them.
       </p>

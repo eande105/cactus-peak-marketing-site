@@ -104,7 +104,7 @@ export default async function MembershipPage() {
           action={<TextLink href="#compare">Compare every detail</TextLink>}
         />
         {/* The shared plan cards. The club key stays out: "Your plan, club by club" below shows it. */}
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubsPlanCards
             plans={plans}
             clubs={clubs}
@@ -114,7 +114,7 @@ export default async function MembershipPage() {
             facilityKey={false}
           />
         </div>
-        <PlanNotes className="mt-8" />
+        <PlanNotes className="mt-xl" />
       </Band>
 
       <Band id="clubs">
@@ -123,7 +123,7 @@ export default async function MembershipPage() {
           title="Your plan, club by club."
           lede="Every plan opens the classes at your club, and its pool if it has one. Ridge adds the other four clubs and the courts. Summit adds recovery."
         />
-        <PlanReach clubs={clubs} slots={slots} className="mt-12" />
+        <PlanReach clubs={clubs} slots={slots} className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="classes">
@@ -139,7 +139,7 @@ export default async function MembershipPage() {
           categories={categories}
           clubs={clubs}
           slots={slots}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
@@ -151,7 +151,7 @@ export default async function MembershipPage() {
           title="Bring the whole family."
           lede="One account. One plan for everyone on it."
         />
-        <FamilyCalculator className="mt-12" />
+        <FamilyCalculator className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="costs">
@@ -160,13 +160,13 @@ export default async function MembershipPage() {
           plans={plans}
           prices={prices}
           packs={packs}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
       <Band id="compare">
         <SectionHead size="lead" title="Every detail, side by side." />
-        <PlanComparisonTable stickyTop className="mt-12" />
+        <PlanComparisonTable stickyTop className="mt-xxl" />
       </Band>
 
       <FaqSection

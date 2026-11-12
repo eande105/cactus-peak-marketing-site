@@ -34,14 +34,17 @@ export function CoachAvatar({
     <span
       aria-hidden="true"
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center rounded-full bg-night text-caption font-semibold text-night-foreground",
+        "relative inline-flex shrink-0 items-center justify-center",
+        "corner-full",
+        "text-body-s font-heavy",
+        "bg-night text-night-foreground",
         className
       )}
       style={size ? { width: size, height: size } : undefined}
     >
       {initials(name)}
       {badge ? (
-        <span className="absolute -right-1 -bottom-1 grid size-[45%] place-items-center rounded-full bg-card ring-2 ring-background">
+        <span className="absolute -right-1 -bottom-1 grid size-[45%] place-items-center corner-full bg-card ring-2 ring-background">
           <GymObject id={object} className="size-[70%]" />
         </span>
       ) : null}
@@ -70,7 +73,7 @@ export function InstructorChip({
 }) {
   if (!name)
     return (
-      <span className={cn("text-caption text-muted-foreground", className)}>
+      <span className={cn("text-body-s text-muted-foreground", className)}>
         {empty}
       </span>
     )
@@ -80,7 +83,7 @@ export function InstructorChip({
     <>
       <CoachAvatar slug={slug} name={name} size={size} />
       {showName ? (
-        <span className="text-caption">{short}</span>
+        <span className="text-body-s">{short}</span>
       ) : (
         <span className="sr-only">{name}</span>
       )}
@@ -91,7 +94,7 @@ export function InstructorChip({
       <Link
         href={href}
         className={cn(
-          "inline-flex min-h-11 items-center gap-2 hover:underline",
+          "inline-flex min-h-11 items-center gap-xs hover:underline",
           className
         )}
       >
@@ -99,7 +102,7 @@ export function InstructorChip({
       </Link>
     )
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+    <span className={cn("inline-flex items-center gap-xs", className)}>
       {body}
     </span>
   )
@@ -122,19 +125,24 @@ export function ClassCard({
       <Link
         href={href}
         className={cn(
-          "group relative flex min-h-14 items-center gap-3 rounded-lg bg-card px-3 py-2 edge ring-border hover:ring-border-strong",
+          "group relative flex min-h-14 items-center gap-s hairline",
+          "corner-m px-s py-xs",
+          "bg-card ring-border",
+          "hover:ring-border-strong",
           className
         )}
       >
         <span
           aria-hidden="true"
-          className="absolute inset-y-2 left-0 w-1 rounded-r-sm"
+          className="absolute inset-y-2 left-0 w-1 corner-r-xs"
           style={{ background: catColor(ct.category) }}
         />
-        <CategoryIcon id={ct.category} className="ml-1 size-4 shrink-0" />
+        <CategoryIcon id={ct.category} className="ml-xxs size-4 shrink-0" />
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-label">{ct.name}</span>
-          <span className="block text-caption text-muted-foreground">
+          <span className="block truncate text-body-s font-heavy">
+            {ct.name}
+          </span>
+          <span className="block text-body-s text-muted-foreground">
             {ct.categoryName} · {ct.duration} min
           </span>
         </span>
@@ -149,7 +157,10 @@ export function ClassCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-lg bg-card edge ring-border transition-[box-shadow] hover:ring-border-strong",
+        "group relative flex flex-col overflow-hidden hairline",
+        "corner-m",
+        "bg-card ring-border transition-[box-shadow]",
+        "hover:ring-border-strong",
         className
       )}
     >
@@ -158,7 +169,7 @@ export function ClassCard({
         className="absolute inset-y-0 left-0 z-10 w-1"
         style={{ background: catColor(ct.category) }}
       />
-      <div className="p-2 pb-0 pl-3">
+      <div className="p-xs pb-zero pl-s">
         {/* The category's object, large and cut by the frame, on the category tint. */}
         <ObjectCrop
           id={categoryObject[ct.category]}
@@ -167,22 +178,28 @@ export function ClassCard({
           scale={0.62}
           x={0.42}
           y={0.22}
-          className="rounded-sm"
+          className="corner-xs"
         />
       </div>
-      <div className="flex flex-1 flex-col gap-2 p-4 pl-5">
+      <div className="flex flex-1 flex-col gap-xs p-m pl-l">
         <CategoryBadge id={ct.category} name={ct.categoryName} />
-        <h3 className="font-display-wide text-h3">
+        <h3 className="font-display-wide text-body-l font-medium">
           <Link href={href} className="after:absolute after:inset-0">
             {ct.name}
           </Link>
         </h3>
-        <p className="text-body text-muted-foreground">{ct.blurb}</p>
-        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-caption">
+        <p className="text-body-m text-muted-foreground">{ct.blurb}</p>
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-x-m gap-y-xxs",
+            "mt-auto pt-xs",
+            "text-body-s"
+          )}
+        >
           <span className="tabular">{ct.duration} min</span>
           <IntensityRibs level={ct.intensity} categoryId={ct.category} />
         </div>
-        <p className="flex items-center gap-1.5 text-caption text-foreground">
+        <p className="flex items-center gap-xs text-body-s text-foreground">
           {ct.firstTimer ? (
             <>
               <Check className="size-3.5 text-success" aria-hidden="true" />
@@ -199,7 +216,7 @@ export function ClassCard({
           </span>
         </p>
         {next ? (
-          <p className="tabular text-caption font-medium">Next: {next}</p>
+          <p className="tabular text-body-s font-medium">Next: {next}</p>
         ) : null}
       </div>
     </article>
@@ -271,7 +288,13 @@ function ScheduleRow({
       type="button"
       onClick={() => onOpen(s)}
       aria-haspopup="dialog"
-      className="min-h-11 rounded-sm text-left text-body-strong underline-offset-4 outline-offset-2 after:absolute after:inset-0 after:content-[''] hover:underline"
+      className={cn(
+        "min-h-11",
+        "corner-xs",
+        "text-left text-body-m underline-offset-4 font-heavy",
+        "outline-offset-2",
+        "after:absolute after:inset-0 after:content-[''] hover:underline"
+      )}
     >
       {title}
     </button>
@@ -280,7 +303,7 @@ function ScheduleRow({
       href={
         hideClass ? `/clubs/${s.clubSlug}` : classHref({ slug: s.classSlug })
       }
-      className="inline-flex min-h-11 items-center text-body-strong underline-offset-4 hover:underline"
+      className="inline-flex min-h-11 items-center text-body-m underline-offset-4 hover:underline font-heavy"
     >
       {title}
     </Link>
@@ -300,7 +323,12 @@ function ScheduleRow({
     s.coach && s.coachSlug && s.coachProfile ? (
       <Link
         href={`/coaches/${s.coachSlug}`}
-        className="relative z-10 -my-1 inline-block py-1 underline-offset-4 hover:text-foreground hover:underline"
+        className={cn(
+          "relative z-10 inline-block",
+          "-my-xxs py-xxs",
+          "underline-offset-4",
+          "hover:text-foreground hover:underline"
+        )}
       >
         {who}
       </Link>
@@ -308,9 +336,15 @@ function ScheduleRow({
       who
     )
   return (
-    <li className="relative grid grid-cols-[76px_minmax(0,1fr)_auto] items-center gap-x-3 py-2 rule-b @min-[620px]:grid-cols-[80px_minmax(0,1fr)_auto_104px]">
+    <li
+      className={cn(
+        "relative grid grid-cols-[76px_minmax(0,1fr)_auto] items-center gap-x-s rule-b",
+        "py-xs",
+        "@min-[620px]:grid-cols-[80px_minmax(0,1fr)_auto_104px]"
+      )}
+    >
       {onOpen ? null : <RowOpen s={s} />}
-      <div className="tabular text-body whitespace-nowrap">
+      <div className="tabular text-body-m whitespace-nowrap">
         {showTime ? (
           fmtTime(s.start)
         ) : (
@@ -319,7 +353,7 @@ function ScheduleRow({
       </div>
       <div className="min-w-0">
         {onOpen ? Title : <span className="relative z-10">{Title}</span>}
-        <p className="truncate text-caption text-muted-foreground">
+        <p className="truncate text-body-s text-muted-foreground">
           {whoNode}
           {rest ? ` · ${rest}` : ""}
         </p>
@@ -330,7 +364,7 @@ function ScheduleRow({
             <Skeleton className="ml-auto h-4 w-14" label="Loading spots" />
           )
         ) : s.left === 0 ? (
-          <span className="text-caption font-semibold">
+          <span className="text-body-s font-heavy">
             Full{s.waitlist ? ` · ${s.waitlist} waiting` : ""}
           </span>
         ) : s.left <= 5 ? (
@@ -364,16 +398,19 @@ export function CoachCard({
       <Link
         href={href}
         className={cn(
-          "group flex items-center gap-3 rounded-lg bg-card p-3 edge ring-border hover:ring-border-strong",
+          "group flex items-center gap-s hairline",
+          "corner-m p-s",
+          "bg-card ring-border",
+          "hover:ring-border-strong",
           className
         )}
       >
         <CoachAvatar slug={coach.slug} name={coach.name} size={48} />
         <span>
-          <span className="block text-label group-hover:underline">
+          <span className="block text-body-s group-hover:underline font-heavy">
             {coach.name}
           </span>
-          <span className="block text-caption text-muted-foreground">
+          <span className="block text-body-s text-muted-foreground">
             {line}
           </span>
         </span>
@@ -384,7 +421,7 @@ export function CoachCard({
     return (
       <Link
         href={href}
-        className={cn("group flex flex-col items-start gap-3", className)}
+        className={cn("group flex flex-col items-start gap-s", className)}
       >
         <CoachAvatar
           slug={coach.slug}
@@ -392,10 +429,12 @@ export function CoachCard({
           className="size-24 md:size-28"
         />
         <span>
-          <span className="block text-label group-hover:underline">
+          <span className="block text-body-s group-hover:underline font-heavy">
             {coach.name}
           </span>
-          <span className="block text-body text-muted-foreground">{line}</span>
+          <span className="block text-body-m text-muted-foreground">
+            {line}
+          </span>
         </span>
       </Link>
     )
@@ -403,7 +442,7 @@ export function CoachCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col items-start gap-4",
+        "group relative flex flex-col items-start gap-m",
         className
       )}
     >
@@ -413,12 +452,12 @@ export function CoachCard({
         className="size-24 md:size-28"
       />
       <div>
-        <h3 className="font-display-wide text-h3">
+        <h3 className="font-display-wide text-body-l font-medium">
           <Link href={href} className="after:absolute after:inset-0">
             {coach.name}
           </Link>
         </h3>
-        <p className="text-body text-muted-foreground">{line}</p>
+        <p className="text-body-m text-muted-foreground">{line}</p>
       </div>
     </article>
   )

@@ -17,7 +17,16 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="input-group"
       role="group"
       className={cn(
-        "group/input-group relative flex min-h-11 w-full min-w-0 items-center rounded-md bg-card edge ring-input transition-[box-shadow] hover:ring-input-hover has-disabled:bg-muted has-disabled:ring-border/20 has-[[data-slot=input-group-control]:focus-visible]:ring-accent has-[[data-slot][aria-invalid=true]]:ring-destructive! motion-reduce:transition-none has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
+        "group/input-group relative flex min-h-11 w-full min-w-0 items-center hairline",
+        "corner-s",
+        "bg-card ring-input transition-[box-shadow]",
+        "hover:ring-input-hover",
+        "has-disabled:bg-muted has-disabled:ring-border/20",
+        "has-[[data-slot=input-group-control]:focus-visible]:ring-accent",
+        "has-[[data-slot][aria-invalid=true]]:ring-destructive!",
+        "motion-reduce:transition-none",
+        "has-[>[data-align=inline-end]]:[&>input]:pr-xs",
+        "has-[>[data-align=inline-start]]:[&>input]:pl-xs",
         className
       )}
       {...props}
@@ -26,12 +35,12 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const inputGroupAddonVariants = cva(
-  "flex h-auto cursor-text items-center justify-center gap-1 py-1 text-label text-muted-foreground select-none group-has-disabled/input-group:opacity-50 [&>svg:not([class*='size-'])]:size-4",
+  "flex h-auto cursor-text items-center justify-center gap-xxs py-xxs text-body-s text-muted-foreground select-none group-has-disabled/input-group:opacity-50 [&>svg:not([class*='size-'])]:size-4 font-heavy",
   {
     variants: {
       align: {
-        "inline-start": "order-first pl-3 has-[>button]:pl-1",
-        "inline-end": "order-last pr-3 has-[>button]:pr-1",
+        "inline-start": "order-first pl-s has-[>button]:pl-xxs",
+        "inline-end": "order-last pr-s has-[>button]:pr-xxs",
       },
     },
     defaultVariants: {
@@ -65,7 +74,7 @@ function InputGroupAddon({
 const inputGroupButtonVariants = cva("", {
   variants: {
     size: {
-      sm: "min-h-9 px-3 py-0",
+      sm: "min-h-9 px-s py-zero",
       "icon-sm": "size-9",
     },
   },
@@ -104,7 +113,10 @@ function InputGroupInput({
     <Input
       data-slot="input-group-control"
       className={cn(
-        "flex-1 rounded-none bg-transparent py-2 shadow-none ring-transparent hover:ring-transparent focus-visible:ring-transparent disabled:bg-transparent aria-invalid:ring-transparent",
+        "flex-1",
+        "corner-zero py-xs",
+        "bg-transparent shadow-none ring-transparent",
+        "hover:ring-transparent focus-visible:ring-transparent disabled:bg-transparent aria-invalid:ring-transparent",
         className
       )}
       {...props}

@@ -173,8 +173,8 @@ function DOB({
   }
   return (
     <fieldset>
-      <legend className="text-label">{label}</legend>
-      <div className="mt-1.5 grid grid-cols-[1.4fr_1fr_1fr] gap-2">
+      <legend className="text-body-s font-heavy">{label}</legend>
+      <div className="mt-xs grid grid-cols-[1.4fr_1fr_1fr] gap-xs">
         <SelectControl
           aria-label="Month"
           {...a11y}
@@ -211,7 +211,7 @@ function DOB({
       {/* Visible names for the three parts. A placeholder disappears once the visitor types. */}
       <div
         aria-hidden="true"
-        className="mt-1 grid grid-cols-[1.4fr_1fr_1fr] gap-2 text-caption text-muted-foreground"
+        className="mt-xxs grid grid-cols-[1.4fr_1fr_1fr] gap-xs text-body-s text-muted-foreground"
       >
         <span>Month</span>
         <span>Day</span>
@@ -220,7 +220,7 @@ function DOB({
       {err ? (
         <p
           id={errId}
-          className="mt-1.5 text-caption font-medium text-destructive"
+          className="mt-xs text-body-s font-medium text-destructive"
         >
           {err}
         </p>
@@ -241,19 +241,19 @@ function Row({
   editable: boolean
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 py-2">
-      <dt className="text-body">
+    <div className="flex items-baseline justify-between gap-s py-xs">
+      <dt className="text-body-m">
         {l}
         {editable && edit ? (
           <Link
             href={edit}
-            className="ml-2 text-caption text-link underline underline-offset-4"
+            className="ml-xs text-body-s text-link underline underline-offset-4"
           >
             Edit
           </Link>
         ) : null}
       </dt>
-      <dd className="tabular text-body font-semibold">{v}</dd>
+      <dd className="tabular text-body-m font-heavy">{v}</dd>
     </div>
   )
 }
@@ -297,13 +297,15 @@ function Summary({ j, editable = true }: { j: Join; editable?: boolean }) {
           l="Enrollment (fall offer, through Nov 30)"
           v="$0"
         />
-        <div className="flex items-baseline justify-between pt-3">
-          <dt className="text-body-strong">Today</dt>
-          <dd className="tabular font-data text-h2 font-bold">${t.today}</dd>
+        <div className="flex items-baseline justify-between pt-s">
+          <dt className="text-body-m font-heavy">Today</dt>
+          <dd className="tabular font-data text-body-xxl font-heavy">
+            ${t.today}
+          </dd>
         </div>
       </dl>
       {/* The one note under the summary: the monthly charge and the yearly fee. No sums or working. */}
-      <p className="pt-3 text-caption text-muted-foreground">
+      <p className="pt-s text-body-s text-muted-foreground">
         Then ${t.monthly} a month on the {t.billDay}, plus a $
         {cat.prices.facilityFee} facility fee each March.
       </p>
@@ -564,9 +566,9 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
       <main
         id="main"
         tabIndex={-1}
-        className="flex-1 pb-28 outline-none lg:pb-0"
+        className="flex-1 pb-[calc(var(--space-xxl)*7/3)] outline-none lg:pb-zero"
       >
-        <Container className="grid gap-8 py-8 lg:grid-cols-12 lg:py-12">
+        <Container className="grid gap-xl py-xl lg:grid-cols-12 lg:py-xxl">
           <div className="md:hidden lg:col-span-12">
             <StepBar step={n} total={5} label={LABEL[n - 1]} />
           </div>
@@ -591,7 +593,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
               e.preventDefault()
               if (!busy) onContinue(e.currentTarget)
             }}
-            className="relative flex max-w-[640px] flex-col gap-6 lg:col-span-7"
+            className="relative flex max-w-[640px] flex-col gap-l lg:col-span-7"
           >
             <ErrorSummary errors={errors} />
             <Honeypot />
@@ -601,17 +603,17 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   <h1
                     ref={head}
                     tabIndex={-1}
-                    className="font-display-wide text-h1 outline-none"
+                    className="font-display-wide text-display-m outline-none font-heavy"
                   >
                     Pick your plan.
                   </h1>
-                  <p className="mt-2 text-body text-muted-foreground">
+                  <p className="mt-xs text-body-m text-muted-foreground">
                     Month to month. Change it any time.
                   </p>
                 </div>
                 <RadioGroupBox
                   aria-label="Plan"
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-s"
                 >
                   {plans.map((p) => {
                     const on = j.plan === p.slug
@@ -624,25 +626,28 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         aria-checked={on}
                         onClick={() => setJ((q) => ({ ...q, plan: p.slug }))}
                         className={cn(
-                          "relative grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 rounded-lg bg-card p-4 text-left edge",
+                          "relative grid grid-cols-[1fr_auto] gap-x-m gap-y-xxs hairline",
+                          "corner-m p-m",
+                          "text-left",
+                          "bg-card",
                           on
                             ? "ring-2 ring-primary"
                             : "ring-border hover:ring-border-strong"
                         )}
                       >
-                        <span className="flex items-center gap-3">
-                          <span className="font-display-wide text-h3">
+                        <span className="flex items-center gap-s">
+                          <span className="font-display-wide text-body-l font-medium">
                             {p.name}
                           </span>
                           {p.badge ? (
-                            <span className="rounded-sm bg-accent px-2 py-0.5 text-label text-foreground">
+                            <span className="corner-xs bg-accent px-xs py-xxs text-body-s text-foreground font-heavy">
                               {p.badge}
                             </span>
                           ) : null}
                         </span>
-                        <span className="tabular flex items-center gap-2 font-data text-h3 font-bold">
+                        <span className="tabular flex items-center gap-xs font-data text-body-l font-heavy">
                           ${p.price}
-                          <span className="text-body font-normal text-muted-foreground">
+                          <span className="text-body-m font-regular text-muted-foreground">
                             /mo
                           </span>
                           {on ? (
@@ -653,7 +658,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                           ) : null}
                         </span>
                         {/* Name, price and who it is for. "Compare every detail" holds the feature list (REDESIGN.md goal 4). */}
-                        <span className="col-span-2 text-body text-muted-foreground">
+                        <span className="col-span-2 text-body-m text-muted-foreground">
                           {p.bestFor}
                         </span>
                       </button>
@@ -661,22 +666,22 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   })}
                 </RadioGroupBox>
                 <Overlay>
-                  <OverlayTrigger className="min-h-11 self-start text-label text-link underline-offset-4 hover:underline">
+                  <OverlayTrigger className="min-h-11 self-start text-body-s text-link underline-offset-4 hover:underline font-heavy">
                     Compare every detail
                   </OverlayTrigger>
                   <OverlayPopup className="w-[min(860px,calc(100vw-32px))]!">
-                    <OverlayTitle className="pr-8">Compare plans</OverlayTitle>
+                    <OverlayTitle className="pr-xl">Compare plans</OverlayTitle>
                     <div className="overflow-y-auto">
                       <PlanComparisonTable />
                     </div>
                   </OverlayPopup>
                 </Overlay>
-                <p className="text-body text-muted-foreground">
+                <p className="text-body-m text-muted-foreground">
                   Not ready?{" "}
                   <TextLink href="/tour" className="inline-flex">
                     Book a free tour
                   </TextLink>{" "}
-                  <TextLink href="/trial" className="ml-3 inline-flex">
+                  <TextLink href="/trial" className="ml-s inline-flex">
                     Try a free 3-day pass
                   </TextLink>
                 </p>
@@ -688,11 +693,11 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   <h1
                     ref={head}
                     tabIndex={-1}
-                    className="font-display-wide text-h1 outline-none"
+                    className="font-display-wide text-display-m outline-none font-heavy"
                   >
                     Pick your home club.
                   </h1>
-                  <p className="mt-2 text-body text-muted-foreground">
+                  <p className="mt-xs text-body-m text-muted-foreground">
                     {j.plan === "trailhead"
                       ? "Trailhead works at one club. Pick the one that has what you need."
                       : "Your home club is where you start. You can train at all 5."}
@@ -700,7 +705,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                 </div>
                 <RadioGroupBox
                   aria-label="Home club"
-                  className="flex flex-col gap-3"
+                  className="flex flex-col gap-s"
                 >
                   {clubs.map((c) => {
                     const on = club === c.slug
@@ -713,7 +718,10 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         aria-checked={on}
                         onClick={() => setJ((q) => ({ ...q, club: c.slug }))}
                         className={cn(
-                          "flex items-center gap-4 rounded-lg bg-card p-3 text-left edge",
+                          "flex items-center gap-m hairline",
+                          "corner-m p-s",
+                          "text-left",
+                          "bg-card",
                           on
                             ? "ring-2 ring-primary"
                             : "ring-border hover:ring-border-strong"
@@ -723,17 +731,17 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                           slug={c.slug}
                           ratio="4/3"
                           detail="simple"
-                          className="w-24 shrink-0 overflow-hidden rounded-sm"
+                          className="w-24 shrink-0 overflow-hidden corner-xs"
                         />
                         <span className="min-w-0 flex-1">
-                          <span className="block text-body-strong">
+                          <span className="block text-body-m font-heavy">
                             {c.name}
                           </span>
-                          <span className="block text-body text-muted-foreground">
+                          <span className="block text-body-m text-muted-foreground">
                             {c.city}
                           </span>
                           {j.plan === "trailhead" && !c.has.pool ? (
-                            <span className="mt-1 block text-body font-semibold">
+                            <span className="mt-xxs block text-body-m font-heavy">
                               No pool at this club.
                             </span>
                           ) : null}
@@ -756,11 +764,11 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   <h1
                     ref={head}
                     tabIndex={-1}
-                    className="font-display-wide text-h1 outline-none"
+                    className="font-display-wide text-display-m outline-none font-heavy"
                   >
                     Tell us about you.
                   </h1>
-                  <p className="mt-2 text-body text-muted-foreground">
+                  <p className="mt-xs text-body-m text-muted-foreground">
                     We use this to set up your membership. We do not sell your
                     information.{" "}
                     <Link href="/legal/privacy" className="underline">
@@ -768,7 +776,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                     </Link>
                   </p>
                 </div>
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-l sm:grid-cols-2">
                   <TextField
                     label="First name"
                     value={j.first}
@@ -810,7 +818,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   help="We text only if you say yes. Example: (480) 555-0100"
                   autoComplete="tel"
                 />
-                <div className="grid gap-5 sm:grid-cols-[2fr_1fr]">
+                <div className="grid gap-l sm:grid-cols-[2fr_1fr]">
                   <DOB
                     label="Date of birth"
                     v={j}
@@ -851,18 +859,18 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   <h1
                     ref={head}
                     tabIndex={-1}
-                    className="font-display-wide text-h1 outline-none"
+                    className="font-display-wide text-display-m outline-none font-heavy"
                   >
                     Add your family.
                   </h1>
-                  <p className="mt-2 text-body text-muted-foreground">
+                  <p className="mt-xs text-body-m text-muted-foreground">
                     Same access as your plan. {kidsCostLine(cat.prices.child)}{" "}
                     Teens 13 to 17 follow the teen rules.
                   </p>
                 </div>
                 <RadioGroupBox
                   aria-label="Who is joining"
-                  className="flex w-fit rounded-md edge ring-border-strong"
+                  className="flex w-fit corner-s hairline ring-border-strong"
                 >
                   {(["solo", "family"] as const).map((m) => (
                     // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
@@ -873,7 +881,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       aria-checked={j.mode === m}
                       onClick={() => setJ((q) => ({ ...q, mode: m }))}
                       className={cn(
-                        "min-h-11 px-5 text-label first:rounded-l-md last:rounded-r-md",
+                        "min-h-11 px-l text-body-s first:corner-l-s last:corner-r-s font-heavy",
                         j.mode === m && "bg-night text-night-foreground"
                       )}
                     >
@@ -887,19 +895,26 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       <fieldset
                         // biome-ignore lint/suspicious/noArrayIndexKey: person rows have no id; fields are controlled from the join state
                         key={i}
-                        className="flex flex-col gap-4 rounded-lg bg-card p-4 edge ring-border"
+                        className={cn(
+                          "flex flex-col gap-m hairline",
+                          "corner-m p-m",
+                          "bg-card ring-border"
+                        )}
                       >
                         {/* A visible legend sits on the card border, so the legend is for screen readers and the title is a row inside the card. */}
                         <legend className="sr-only">
                           Adult {i + 1}, plus ${prices.adult} a month
                         </legend>
-                        <p aria-hidden="true" className="text-label">
+                        <p
+                          aria-hidden="true"
+                          className="text-body-s font-heavy"
+                        >
                           Adult {i + 1}{" "}
-                          <span className="font-normal text-muted-foreground">
+                          <span className="font-regular text-muted-foreground">
                             +${prices.adult}/mo
                           </span>
                         </p>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-m sm:grid-cols-2">
                           <TextField
                             label="First name"
                             value={a.first}
@@ -949,18 +964,25 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         <fieldset
                           // biome-ignore lint/suspicious/noArrayIndexKey: person rows have no id; fields are controlled from the join state
                           key={i}
-                          className="flex flex-col gap-4 rounded-lg bg-card p-4 edge ring-border"
+                          className={cn(
+                            "flex flex-col gap-m hairline",
+                            "corner-m p-m",
+                            "bg-card ring-border"
+                          )}
                         >
                           <legend className="sr-only">
                             Child {i + 1}, plus ${prices.child} a month
                           </legend>
-                          <p aria-hidden="true" className="text-label">
+                          <p
+                            aria-hidden="true"
+                            className="text-body-s font-heavy"
+                          >
                             Child {i + 1}{" "}
-                            <span className="font-normal text-muted-foreground">
+                            <span className="font-regular text-muted-foreground">
                               +${prices.child}/mo
                             </span>
                           </p>
-                          <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="grid gap-m sm:grid-cols-2">
                             <TextField
                               label="First name"
                               value={a.first}
@@ -981,7 +1003,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             err={errors[`k${i}d`]}
                           />
                           {ag !== null && ag >= 13 && ag <= 17 ? (
-                            <p className="text-body text-muted-foreground">
+                            <p className="text-body-m text-muted-foreground">
                               Teens book classes marked Teen OK. A parent
                               manages billing and can allow courts and lap lanes
                               (lanes from age 14).
@@ -996,7 +1018,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                                 Needs kids club
                               </CheckRow>
                             ) : (
-                              <p className="text-body text-muted-foreground">
+                              <p className="text-body-m text-muted-foreground">
                                 Kids club is at {kidsClubNames}.
                               </p>
                             )
@@ -1010,7 +1032,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             </CheckRow>
                           ) : null}
                           {errors[`k${i}p`] ? (
-                            <p className="text-caption font-medium text-destructive">
+                            <p className="text-body-s font-medium text-destructive">
                               {errors[`k${i}p`]}
                             </p>
                           ) : null}
@@ -1048,7 +1070,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         </fieldset>
                       )
                     })}
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-s">
                       <Button
                         type="button"
                         variant="outline"
@@ -1078,12 +1100,12 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         <Plus aria-hidden="true" />
                         Add a child
                       </Button>
-                      <span className="tabular text-body" aria-live="polite">
+                      <span className="tabular text-body-m" aria-live="polite">
                         Family add-ons +${t.fam}/mo
                       </span>
                     </div>
                     {j.adults.length >= 4 || j.kids.length >= 6 ? (
-                      <p className="text-body text-muted-foreground">
+                      <p className="text-body-m text-muted-foreground">
                         Need more? Call (480) 555-0142.
                       </p>
                     ) : null}
@@ -1097,28 +1119,28 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   <h1
                     ref={head}
                     tabIndex={-1}
-                    className="font-display-wide text-h1 outline-none"
+                    className="font-display-wide text-display-m outline-none font-heavy"
                   >
                     Pay and join.
                   </h1>
-                  <p className="mt-2 text-body text-muted-foreground">
+                  <p className="mt-xs text-body-m text-muted-foreground">
                     Then ${t.monthly} a month on the {t.billDay}. Month to
                     month. Cancel or freeze with 30 days&apos; notice. A $49
                     annual facility fee is charged in March.
                   </p>
-                  <p className="mt-2 rounded-md bg-muted p-3 text-caption">
+                  <p className="mt-xs corner-s bg-muted p-s text-body-s">
                     This is a sample checkout. No card is charged and nothing
                     leaves your browser. Use any made-up number; one ending in
                     0002 shows the declined state.
                   </p>
                 </div>
-                <div className="rounded-lg bg-card p-4 edge ring-border lg:hidden">
+                <div className="corner-m bg-card p-m hairline ring-border lg:hidden">
                   <Summary j={{ ...j, club }} editable={false} />
                 </div>
                 {declined ? (
                   <p
                     role="alert"
-                    className="rounded-md bg-danger-subtle p-3 text-caption font-semibold"
+                    className="corner-s bg-danger-subtle p-s text-body-s font-heavy"
                   >
                     {declined}
                   </p>
@@ -1131,7 +1153,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   autoComplete="cc-number"
                   error={errors.num}
                 />
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-m sm:grid-cols-3">
                   <TextField
                     label="Expiry (MM/YY)"
                     value={card.exp}
@@ -1188,7 +1210,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   </Link>
                 </CheckRow>
                 {errors.agree ? (
-                  <p className="text-caption font-medium text-destructive">
+                  <p className="text-body-s font-medium text-destructive">
                     {errors.agree}
                   </p>
                 ) : null}
@@ -1196,16 +1218,16 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
             ) : null}
             <div
               data-action-bar
-              className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 bg-card px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t lg:static lg:z-auto lg:bg-transparent lg:p-0 lg:rule-none"
+              className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-s bg-card px-m py-s pb-[max(12px,env(safe-area-inset-bottom))] rule-t lg:static lg:z-auto lg:bg-transparent lg:p-zero lg:rule-none"
             >
               {back ? (
                 <LinkButton href={back} variant="ghost">
                   Back
                 </LinkButton>
               ) : null}
-              <span className="tabular font-data text-h3 font-bold lg:hidden">
+              <span className="tabular font-data text-body-l font-heavy lg:hidden">
                 ${t.today}
-                <span className="block text-caption font-normal text-muted-foreground">
+                <span className="block text-body-s font-regular text-muted-foreground">
                   today
                 </span>
               </span>
@@ -1213,15 +1235,17 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                 type="submit"
                 size="lg"
                 loading={busy}
-                className="ml-auto lg:ml-0"
+                className="ml-auto lg:ml-zero"
               >
                 {primaryLabel}
               </Button>
             </div>
           </form>
           <aside className="hidden lg:col-span-5 lg:block">
-            <div className="sticky top-8 rounded-lg bg-card p-6 edge ring-border">
-              <h2 className="font-display-wide mb-2 text-h3">Your plan</h2>
+            <div className="sticky top-8 corner-m bg-card p-l hairline ring-border">
+              <h2 className="font-display-wide mb-xs text-body-l font-medium">
+                Your plan
+              </h2>
               <Summary j={{ ...j, club }} editable={step !== "payment"} />
             </div>
           </aside>
@@ -1239,11 +1263,11 @@ export function JoinConfirmed() {
   const c = cat.clubBySlug(j.club)
   if (!j.done || !c)
     return (
-      <Container className="py-16">
-        <h1 className="font-display-wide text-h1">
+      <Container className="py-section">
+        <h1 className="font-display-wide text-display-m font-heavy">
           No membership started yet.
         </h1>
-        <LinkButton href="/join/plan" className="mt-4">
+        <LinkButton href="/join/plan" className="mt-m">
           Pick your plan
         </LinkButton>
       </Container>
@@ -1254,20 +1278,26 @@ export function JoinConfirmed() {
       ? "6 am–8 pm weekends"
       : "4:30 am–10 pm weekdays"
   return (
-    <Container className="py-10 lg:py-16">
+    <Container className="py-xxl lg:py-section">
       <CircleCheck className="size-12 text-success" aria-hidden="true" />
-      <h1 className="font-display-wide mt-3 text-h1 lg:text-display">
+      <h1 className="font-display-wide mt-s text-display-m lg:text-display-xl font-heavy lg:font-heavy">
         You&apos;re in{j.first ? `, ${j.first}` : ""}.
       </h1>
-      <p className="mt-2 max-w-[56ch] text-body">
+      <p className="mt-xs max-w-[56ch] text-body-m">
         Welcome to Cactus Peak. Your membership starts today at {c.name}.
       </p>
-      <p className="text-body text-muted-foreground">
+      <p className="text-body-m text-muted-foreground">
         We emailed your receipt to {j.email || "your email"}.
       </p>
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card p-5 edge ring-border">
-        <p className="text-body">
-          <span className="font-semibold">
+      <div
+        className={cn(
+          "flex flex-wrap items-center justify-between gap-s hairline",
+          "mt-l corner-m p-l",
+          "bg-card ring-border"
+        )}
+      >
+        <p className="text-body-m">
+          <span className="font-heavy">
             {t.plan.name}
             {j.mode === "family" && j.adults.length
               ? ` + ${j.adults.length} adult${j.adults.length > 1 ? "s" : ""}`
@@ -1277,53 +1307,59 @@ export function JoinConfirmed() {
               : ""}
           </span>{" "}
           · {c.name}
-          <span className="block text-caption text-muted-foreground">
+          <span className="block text-body-s text-muted-foreground">
             Next bill ${t.monthly} on the {t.billDay}. {c.cross}. Open {hours}.
           </span>
         </p>
         <button
           type="button"
           onClick={() => window.print()}
-          className="min-h-11 text-label text-link underline-offset-4 hover:underline"
+          className="min-h-11 text-body-s text-link underline-offset-4 hover:underline font-heavy"
         >
           Print receipt
         </button>
       </div>
-      <ol className="mt-8 grid gap-4 lg:grid-cols-3">
-        <li className="rounded-lg bg-card p-5 edge ring-border">
-          <h2 className="font-display-wide text-h3">Set up your sign-in.</h2>
-          <p className="mt-1 text-body text-muted-foreground">
+      <ol className="mt-xl grid gap-m lg:grid-cols-3">
+        <li className="corner-m bg-card p-l hairline ring-border">
+          <h2 className="font-display-wide text-body-l font-medium">
+            Set up your sign-in.
+          </h2>
+          <p className="mt-xxs text-body-m text-muted-foreground">
             Create a password or a passkey to use the app.
           </p>
-          <Button className="mt-4" variant="outline">
+          <Button className="mt-m" variant="outline">
             Create sign-in
           </Button>
         </li>
-        <li className="rounded-lg bg-card p-5 edge ring-border">
-          <h2 className="font-display-wide text-h3">Get the app.</h2>
-          <p className="mt-1 text-body text-muted-foreground">
+        <li className="corner-m bg-card p-l hairline ring-border">
+          <h2 className="font-display-wide text-body-l font-medium">
+            Get the app.
+          </h2>
+          <p className="mt-xxs text-body-m text-muted-foreground">
             Your check-in pass is waiting.
           </p>
-          <LinkButton href="/app" variant="outline" className="mt-4">
+          <LinkButton href="/app" variant="outline" className="mt-m">
             Get the app
           </LinkButton>
         </li>
-        <li className="rounded-lg bg-card p-5 edge ring-border">
-          <h2 className="font-display-wide text-h3">Book your first class.</h2>
-          <p className="mt-1 text-body text-muted-foreground">
+        <li className="corner-m bg-card p-l hairline ring-border">
+          <h2 className="font-display-wide text-body-l font-medium">
+            Book your first class.
+          </h2>
+          <p className="mt-xxs text-body-m text-muted-foreground">
             Pick a class for this week.
           </p>
-          <LinkButton href={scheduleUrl({ club: c.slug })} className="mt-4">
+          <LinkButton href={scheduleUrl({ club: c.slug })} className="mt-m">
             See this week&apos;s classes
           </LinkButton>
-          <p className="mt-2">
+          <p className="mt-xs">
             <TextLink href="/contact?topic=orientation">
               Add a free orientation with a coach
             </TextLink>
           </p>
         </li>
       </ol>
-      <LinkButton href="/" variant="outline" className="mt-8">
+      <LinkButton href="/" variant="outline" className="mt-xl">
         Done
       </LinkButton>
     </Container>

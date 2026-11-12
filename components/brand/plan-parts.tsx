@@ -23,7 +23,7 @@ export function PlanComparisonTable({
       className={cn("relative rule-y rule-ink", className)}
       aria-label="Plan comparison"
     >
-      <table className="w-full border-collapse text-caption max-md:hidden">
+      <table className="w-full border-collapse text-body-s max-md:hidden">
         <caption className="sr-only">
           Compare Trailhead, Ridge and Summit
         </caption>
@@ -36,7 +36,7 @@ export function PlanComparisonTable({
           <tr>
             <th
               scope="col"
-              className="w-[28%] p-4 text-left align-bottom text-caption font-semibold text-muted-foreground"
+              className="w-[28%] p-m text-left align-bottom text-body-s font-heavy text-muted-foreground"
             >
               What you get
             </th>
@@ -45,20 +45,20 @@ export function PlanComparisonTable({
                 key={p.slug}
                 scope="col"
                 className={cn(
-                  "p-4 text-left align-bottom",
+                  "p-m text-left align-bottom",
                   p.badge && "bg-accent/40"
                 )}
               >
                 {/* The badge goes above the name, so the names and prices line up across the columns. */}
                 {p.badge ? (
-                  <span className="mb-1 block text-caption font-semibold">
+                  <span className="mb-xxs block text-body-s font-heavy">
                     {p.badge}
                   </span>
                 ) : null}
-                <span className="font-display-wide block text-h3">
+                <span className="font-display-wide block text-body-l font-medium">
                   {p.name}
                 </span>
-                <span className="tabular block font-data text-label">
+                <span className="tabular block font-data text-body-s font-heavy">
                   ${p.price}/mo
                 </span>
               </th>
@@ -68,14 +68,14 @@ export function PlanComparisonTable({
         <tbody>
           {comparison.map((r) => (
             <tr key={r.row} className="[&>*]:rule-t">
-              <th scope="row" className="p-4 text-left font-medium">
+              <th scope="row" className="p-m text-left font-medium">
                 {r.row}
               </th>
               {r.vals.map((v, i) => (
                 <td
                   // biome-ignore lint/suspicious/noArrayIndexKey: each cell lines up with a plan column; the table is static
                   key={i}
-                  className={cn("p-4", plans[i].badge && "bg-accent/40")}
+                  className={cn("p-m", plans[i].badge && "bg-accent/40")}
                 >
                   {v === "–" ? (
                     <>
@@ -92,7 +92,7 @@ export function PlanComparisonTable({
                     <span>
                       <span
                         aria-hidden="true"
-                        className="mr-2 inline-block size-2 rounded-full bg-foreground align-middle"
+                        className="mr-xs inline-block size-2 corner-full bg-foreground align-middle"
                       />
                       Included
                     </span>
@@ -108,16 +108,16 @@ export function PlanComparisonTable({
 
       <dl className="md:hidden">
         {comparison.map((r) => (
-          <div key={r.row} className="py-4 rule-t first:rule-t-0">
-            <dt className="text-body-strong">{r.row}</dt>
-            <dd className="mt-2 grid grid-cols-3 gap-3">
+          <div key={r.row} className="py-m rule-t first:rule-t-0">
+            <dt className="text-body-m font-heavy">{r.row}</dt>
+            <dd className="mt-xs grid grid-cols-3 gap-s">
               {r.vals.map((v, i) => (
                 <p
                   // biome-ignore lint/suspicious/noArrayIndexKey: each value lines up with a plan; the list is static
                   key={i}
-                  className="min-w-0 text-body text-pretty"
+                  className="min-w-0 text-body-m text-pretty"
                 >
-                  <span className="block text-caption text-muted-foreground">
+                  <span className="block text-body-s text-muted-foreground">
                     {plans[i].name}
                   </span>
                   {v === "–" ? (

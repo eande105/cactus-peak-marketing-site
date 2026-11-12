@@ -31,11 +31,14 @@ export function Field({
     [help ? `${id}-h` : "", error ? `${id}-e` : ""].filter(Boolean).join(" ") ||
     undefined
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="text-label">
+    <div className={cn("flex flex-col gap-xs", className)}>
+      <label htmlFor={id} className="text-body-s font-heavy">
         {label}
         {required ? (
-          <span className="font-normal text-muted-foreground"> (required)</span>
+          <span className="font-regular text-muted-foreground">
+            {" "}
+            (required)
+          </span>
         ) : null}
       </label>
       {children({
@@ -45,16 +48,16 @@ export function Field({
         ...(required ? { required: true } : {}),
       })}
       {help ? (
-        <p id={`${id}-h`} className="text-caption text-muted-foreground">
+        <p id={`${id}-h`} className="text-body-s text-muted-foreground">
           {help}
         </p>
       ) : null}
       {error ? (
         <p
           id={`${id}-e`}
-          className="flex items-start gap-1.5 text-caption font-medium text-destructive"
+          className="flex items-start gap-xs text-body-s font-medium text-destructive"
         >
-          <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+          <AlertCircle className="mt-xxs size-4 shrink-0" aria-hidden="true" />
           {error}
         </p>
       ) : null}
@@ -161,13 +164,13 @@ export function ErrorSummary({
     <div
       tabIndex={-1}
       id="error-summary"
-      className="rounded-lg bg-danger-subtle p-4 text-caption edge ring-destructive"
+      className="corner-m bg-danger-subtle p-m text-body-s hairline ring-destructive"
     >
-      <p className="font-semibold">
+      <p className="font-heavy">
         Fix {list.length === 1 ? "1 thing" : `${list.length} things`} to
         continue.
       </p>
-      <ul className="mt-1 list-disc pl-5">
+      <ul className="mt-xxs list-disc pl-l">
         {list.map((e) => (
           <li key={e}>
             {/* Each item goes to its field, so the visitor fixes it without hunting for it. */}
@@ -196,19 +199,19 @@ export function StepBar({
   return (
     // biome-ignore lint/a11y/useSemanticElements: role=group on a non-form control group; fieldset adds default min-inline-size and a legend that would change the layout
     <div role="group" aria-label={`Step ${step} of ${total}: ${label}`}>
-      <div className="flex gap-1.5" aria-hidden="true">
+      <div className="flex gap-xs" aria-hidden="true">
         {Array.from({ length: total }, (_, i) => (
           <span
             // biome-ignore lint/suspicious/noArrayIndexKey: step dots are a fixed-length list that never reorders
             key={i}
             className={cn(
-              "h-2 flex-1 rounded-full",
+              "h-2 flex-1 corner-full",
               i < step ? "bg-primary" : "bg-border"
             )}
           />
         ))}
       </div>
-      <p className="tabular mt-2 text-caption font-medium">
+      <p className="tabular mt-xs text-body-s font-medium">
         Step {step} of {total}: {label}
       </p>
     </div>

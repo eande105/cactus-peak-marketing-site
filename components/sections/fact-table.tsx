@@ -67,7 +67,7 @@ export function FactStack({
     <ul
       aria-label={caption}
       className={cn(
-        framed ? "grid gap-4 md:grid-cols-2" : "rule-y rule-heavy",
+        framed ? "grid gap-m md:grid-cols-2" : "rule-y rule-heavy",
         className
       )}
     >
@@ -76,23 +76,23 @@ export function FactStack({
           key={r.key}
           className={cn(
             framed
-              ? "rounded-lg bg-card p-5 edge ring-border"
-              : "py-5 rule-t first:rule-t-0"
+              ? "corner-m bg-card p-l hairline ring-border"
+              : "py-l rule-t first:rule-t-0"
           )}
         >
           <h3>
             <RowTitle
               row={r}
-              className="font-display-wide inline-flex min-h-11 items-center text-h3"
+              className="font-display-wide inline-flex min-h-11 items-center text-body-l font-medium"
             />
           </h3>
           {r.sub ? (
-            <p className="text-caption text-muted-foreground">{r.sub}</p>
+            <p className="text-body-s text-muted-foreground">{r.sub}</p>
           ) : null}
-          <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
+          <dl className="mt-s grid grid-cols-2 gap-x-m gap-y-s">
             {r.values.map((v, i) => (
               <div key={columns[i].label} className="min-w-0">
-                <dt className="flex items-center gap-2 text-caption text-muted-foreground">
+                <dt className="flex items-center gap-xs text-body-s text-muted-foreground">
                   {columns[i].icon ? (
                     <GymObject
                       id={columns[i].icon}
@@ -103,7 +103,7 @@ export function FactStack({
                 </dt>
                 <dd
                   className={cn(
-                    "mt-0.5 text-body text-pretty",
+                    "mt-xxs text-body-m text-pretty",
                     columns[i].numeric && "tabular-nums"
                   )}
                 >
@@ -153,19 +153,19 @@ export function FactTable({
         className={cn(
           shown[breakpoint],
           framed
-            ? "overflow-hidden rounded-lg bg-card edge ring-border"
+            ? "overflow-hidden corner-m bg-card hairline ring-border"
             : "rule-y rule-heavy"
         )}
       >
-        <table className="w-full border-collapse text-left text-body">
+        <table className="w-full border-collapse text-left text-body-m">
           <caption className="sr-only">{caption}</caption>
           <thead>
             <tr className="align-bottom">
               <th
                 scope="col"
                 className={cn(
-                  "py-4 pr-4 text-caption font-semibold text-muted-foreground",
-                  framed ? "pl-6" : "pl-3"
+                  "py-m pr-m text-body-s font-heavy text-muted-foreground",
+                  framed ? "pl-l" : "pl-s"
                 )}
               >
                 {corner}
@@ -174,10 +174,10 @@ export function FactTable({
                 <th
                   key={c.label}
                   scope="col"
-                  className="px-3 py-4 text-caption font-semibold text-muted-foreground"
+                  className="px-s py-m text-body-s font-heavy text-muted-foreground"
                 >
                   {c.icon ? (
-                    <GymObject id={c.icon} className="mb-2 block size-7" />
+                    <GymObject id={c.icon} className="mb-xs block size-7" />
                   ) : null}
                   {c.label}
                 </th>
@@ -190,16 +190,16 @@ export function FactTable({
                 <th
                   scope="row"
                   className={cn(
-                    "py-4 pr-4 font-normal",
-                    framed ? "pl-6" : "pl-3"
+                    "py-m pr-m font-regular",
+                    framed ? "pl-l" : "pl-s"
                   )}
                 >
                   <RowTitle
                     row={r}
-                    className="font-display-wide block text-h3 whitespace-nowrap"
+                    className="font-display-wide block text-body-l whitespace-nowrap font-medium"
                   />
                   {r.sub ? (
-                    <span className="mt-0.5 block text-caption text-muted-foreground">
+                    <span className="mt-xxs block text-body-s text-muted-foreground">
                       {r.sub}
                     </span>
                   ) : null}
@@ -208,7 +208,7 @@ export function FactTable({
                   <td
                     key={columns[i].label}
                     className={cn(
-                      "px-3 py-4 text-pretty",
+                      "px-s py-m text-pretty",
                       columns[i].numeric && "tabular-nums"
                     )}
                   >

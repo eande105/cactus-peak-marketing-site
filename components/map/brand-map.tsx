@@ -254,7 +254,7 @@ export function BrandMap<P extends MapPin>({
         className="brand-map absolute inset-0"
       />
       {status === "error" ? (
-        <div className="absolute inset-0 grid place-items-center p-4">
+        <div className="absolute inset-0 grid place-items-center p-m">
           {fallback ?? <p>Map unavailable. Use the address instead.</p>}
         </div>
       ) : null}
@@ -295,7 +295,7 @@ export function BrandPin({
   return (
     <span
       className={cn(
-        "flex origin-bottom flex-col items-center gap-1 transition-transform motion-reduce:transition-none",
+        "flex origin-bottom flex-col items-center gap-xxs transition-transform motion-reduce:transition-none",
         active && "scale-108"
       )}
     >

@@ -230,8 +230,8 @@ export function SelectBox<V extends string>({
       className={cn(
         "min-w-0",
         inline
-          ? cn("inline-flex items-center", roomy ? "gap-4" : "gap-2")
-          : "flex flex-col gap-1.5",
+          ? cn("inline-flex items-center", roomy ? "gap-m" : "gap-xs")
+          : "flex flex-col gap-xs",
         className
       )}
     >
@@ -270,7 +270,15 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
     <textarea
       data-slot="textarea"
       className={cn(
-        "w-full min-w-0 rounded-md bg-card px-3 py-3 text-body leading-(--line-s) text-foreground edge ring-input transition-[box-shadow] placeholder:text-muted-foreground hover:ring-input-hover focus-visible:ring-accent disabled:pointer-events-none disabled:bg-muted disabled:text-disabled-foreground disabled:ring-border/20 aria-invalid:ring-destructive",
+        "w-full min-w-0 hairline",
+        "corner-s px-s py-s",
+        "text-body-m",
+        "bg-card text-foreground ring-input transition-[box-shadow]",
+        "placeholder:text-muted-foreground",
+        "hover:ring-input-hover",
+        "focus-visible:ring-accent",
+        "disabled:pointer-events-none disabled:bg-muted disabled:text-disabled-foreground disabled:ring-border/20",
+        "aria-invalid:ring-destructive",
         className
       )}
       {...props}

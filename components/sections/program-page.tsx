@@ -16,7 +16,7 @@ export const quietLink =
   "underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] decoration-from-font underline-offset-4 hover:decoration-current"
 
 /** The lit fill: Copper with white text (4.9:1). The theme clears Tailwind's palette, so `text-white` does nothing. */
-export const litFill = "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+export const litFill = "bg-[var(--cat-strength)] text-neutral-1"
 /** The Night fill for the unlit parts of a hero picture. */
 export const nightFill = "bg-night text-night-foreground"
 
@@ -66,9 +66,9 @@ export function ProgramHero({
       <p className="lede max-w-[38ch] text-pretty text-muted-foreground">
         {lede}
       </p>
-      <div className="mt-8 flex flex-wrap items-center gap-3">{actions}</div>
+      <div className="mt-xl flex flex-wrap items-center gap-s">{actions}</div>
       {note ? (
-        <p className="mt-6 text-body text-muted-foreground">{note}</p>
+        <p className="mt-l text-body-m text-muted-foreground">{note}</p>
       ) : null}
     </div>
   )
@@ -77,12 +77,14 @@ export function ProgramHero({
     // The picture has no space under it: it stands on the section's bottom rule.
     return (
       <section aria-labelledby={id} className="overflow-hidden rule-b">
-        <Container className="pt-8 lg:pt-14">
-          <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-16">
+        <Container className="pt-xl lg:pt-section">
+          <div className="grid gap-l lg:grid-cols-12 lg:items-end lg:gap-section">
             {heading("max-w-[11ch] lg:col-span-7")}
-            {body("lg:col-span-5 lg:pb-2")}
+            {body("lg:col-span-5 lg:pb-xs")}
           </div>
-          <div className="mt-10 min-w-0 lg:mt-14">{picture}</div>
+          <div className="mt-xxl min-w-0 lg:mt-section">
+            {picture}
+          </div>
         </Container>
       </section>
     )
@@ -92,9 +94,9 @@ export function ProgramHero({
     // The headline runs across the full column on as few lines as it can; the copy keeps a narrow column.
     return (
       <section aria-labelledby={id} className="rule-b">
-        <Container className="pt-8 pb-10 lg:pt-14 lg:pb-16">
+        <Container className="pt-xl pb-xxl lg:pt-section lg:pb-section">
           {heading("max-w-[18ch]")}
-          <div className="mt-8 grid gap-10 lg:mt-12 lg:grid-cols-12 lg:gap-16">
+          <div className="mt-xl grid gap-xxl lg:mt-xxl lg:grid-cols-12 lg:gap-section">
             {body("lg:col-span-5")}
             <div className="min-w-0 lg:col-span-7">{picture}</div>
           </div>
@@ -106,12 +108,19 @@ export function ProgramHero({
   if (layout === "panel") {
     // One inset tint panel holds the hero, a quiet room on the Sand page.
     return (
-      <section aria-labelledby={id} className="py-2 sm:py-3">
+      <section aria-labelledby={id} className="py-xs sm:py-s">
         <Container>
-          <div className="grid gap-10 rounded-2xl bg-muted px-5 py-8 sm:px-8 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-14 lg:py-16">
+          <div
+            className={cn(
+              "grid gap-xxl",
+              "corner-xl px-l py-xl",
+              "bg-muted",
+              "sm:px-xl lg:grid-cols-12 lg:items-center lg:gap-xxl lg:px-section lg:py-section"
+            )}
+          >
             <div className="lg:col-span-5">
               {heading("max-w-[10ch]")}
-              {body("mt-5 lg:mt-6")}
+              {body("mt-l lg:mt-l")}
             </div>
             <div className="min-w-0 lg:col-span-7">{picture}</div>
           </div>
@@ -123,10 +132,16 @@ export function ProgramHero({
   const mirror = layout === "mirror"
   return (
     <section aria-labelledby={id} className="rule-b">
-      <Container className="grid gap-10 pt-8 pb-10 lg:grid-cols-12 lg:items-center lg:gap-16 lg:pt-14 lg:pb-14">
+      <Container
+        className={cn(
+          "grid gap-xxl",
+          "pt-xl pb-xxl",
+          "lg:grid-cols-12 lg:items-center lg:gap-section lg:pt-section lg:pb-section"
+        )}
+      >
         <div className={cn("lg:col-span-6", mirror && "lg:order-2")}>
           {heading("max-w-[12ch]")}
-          {body("mt-5 lg:mt-6")}
+          {body("mt-l lg:mt-l")}
         </div>
         <div className={cn("min-w-0 lg:col-span-6", mirror && "lg:order-1")}>
           {picture}
@@ -152,24 +167,27 @@ export function NumberedSteps({
   return (
     <ol
       className={cn(
-        "grid gap-x-8 gap-y-10 sm:grid-cols-2",
+        "grid gap-x-xl gap-y-xxl sm:grid-cols-2",
         steps.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4",
         className
       )}
     >
       {steps.map((s, i) => (
-        <li key={s.title} className="pt-5 rule-t rule-heavy">
-          <div className="flex items-center justify-between gap-4">
-            <span aria-hidden="true" className="tabular font-data text-figure">
+        <li key={s.title} className="pt-l rule-t rule-heavy">
+          <div className="flex items-center justify-between gap-m">
+            <span
+              aria-hidden="true"
+              className="tabular font-data text-display-l font-heavy"
+            >
               {String(i + 1).padStart(2, "0")}
             </span>
             {s.icon ? <GymObject id={s.icon} className="size-9" /> : null}
           </div>
-          <h3 className="font-display-wide mt-6 text-h3 text-balance">
+          <h3 className="font-display-wide mt-l text-body-l text-balance font-medium">
             {s.title}
           </h3>
           {s.text ? (
-            <p className="mt-2 text-body text-pretty text-muted-foreground">
+            <p className="mt-xs text-body-m text-pretty text-muted-foreground">
               {s.text}
             </p>
           ) : null}
@@ -205,12 +223,12 @@ export function ProgramRows({
       {rows.map((r) => (
         <li
           key={r.key}
-          className="grid gap-x-12 gap-y-3 py-6 rule-t lg:grid-cols-12 lg:items-center"
+          className="grid gap-x-xxl gap-y-s py-l rule-t lg:grid-cols-12 lg:items-center"
         >
           {/* The object sits outside the heading, so the heading's name is only the title. */}
-          <div className="flex items-center gap-4 lg:col-span-4">
+          <div className="flex items-center gap-m lg:col-span-4">
             <GymObject id={r.icon} className="size-9 shrink-0" />
-            <h3 className="font-display-wide text-h3 text-balance">
+            <h3 className="font-display-wide text-body-l text-balance font-medium">
               {r.href ? (
                 <Link
                   href={r.href}
@@ -226,7 +244,7 @@ export function ProgramRows({
           {r.line ? (
             <div
               className={cn(
-                "text-body text-pretty",
+                "text-body-m text-pretty",
                 r.aside ? "lg:col-span-5" : "lg:col-span-8"
               )}
             >
@@ -236,7 +254,7 @@ export function ProgramRows({
           {r.aside ? (
             <div
               className={cn(
-                "text-body text-pretty text-muted-foreground lg:col-span-3",
+                "text-body-m text-pretty text-muted-foreground lg:col-span-3",
                 !r.line && "tabular lg:col-start-10 lg:text-right"
               )}
             >
@@ -279,7 +297,7 @@ export function OfferColumns({
   return (
     <ul
       className={cn(
-        "grid overflow-hidden rounded-lg bg-card edge ring-border",
+        "grid overflow-hidden corner-m bg-card hairline ring-border",
         offers.length === 4
           ? "md:grid-cols-2 lg:grid-cols-4"
           : "lg:grid-cols-3",
@@ -290,7 +308,7 @@ export function OfferColumns({
         <li
           key={o.key}
           className={cn(
-            "relative flex flex-col gap-3 p-6 lg:p-8",
+            "relative flex flex-col gap-s p-l lg:p-xl",
             // Dividers: a top rule between rows, a left rule between columns.
             four
               ? [
@@ -304,40 +322,52 @@ export function OfferColumns({
               "bg-[color-mix(in_oklab,var(--cat-strength)_5%,var(--card))] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-primary"
           )}
         >
-          <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-display-wide text-h2">{o.title}</h3>
+          <div className="flex items-baseline justify-between gap-s">
+            <h3 className="font-display-wide text-body-xxl font-heavy">
+              {o.title}
+            </h3>
             {o.badge ? (
-              <span className="rounded-sm bg-accent px-2 py-0.5 text-label whitespace-nowrap text-foreground">
+              <span
+                className={cn(
+                  "corner-xs px-xs py-xxs",
+                  "text-body-s whitespace-nowrap font-heavy",
+                  "bg-accent text-foreground"
+                )}
+              >
                 {o.badge}
               </span>
             ) : null}
           </div>
-          <p className="flex items-baseline gap-1">
-            <span className="tabular font-data text-figure-lg">{o.value}</span>
+          <p className="flex items-baseline gap-xxs">
+            <span className="tabular font-data text-display-xxl font-heavy">
+              {o.value}
+            </span>
             {o.unit ? (
-              <span className="text-body text-muted-foreground">{o.unit}</span>
+              <span className="text-body-m text-muted-foreground">
+                {o.unit}
+              </span>
             ) : null}
           </p>
           {o.sub ? (
-            <p className="-mt-1 text-caption text-muted-foreground tabular-nums">
+            <p className="-mt-xxs text-body-s text-muted-foreground tabular-nums">
               {o.sub}
             </p>
           ) : null}
           {o.icons?.length ? (
-            <span aria-hidden="true" className="flex flex-wrap gap-2">
+            <span aria-hidden="true" className="flex flex-wrap gap-xs">
               {o.icons.map((id) => (
                 <GymObject key={id} id={id} className="size-8" />
               ))}
             </span>
           ) : null}
           {o.lines?.length ? (
-            <ul className="flex flex-col gap-2 text-body text-pretty">
+            <ul className="flex flex-col gap-xs text-body-m text-pretty">
               {o.lines.map((l) => (
                 <li key={l}>{l}</li>
               ))}
             </ul>
           ) : null}
-          {o.action ? <div className="mt-auto pt-2">{o.action}</div> : null}
+          {o.action ? <div className="mt-auto pt-xs">{o.action}</div> : null}
         </li>
       ))}
     </ul>
@@ -356,14 +386,14 @@ export function RuleList({
 }) {
   return (
     <section className={className}>
-      <h3 className="font-display-wide text-h3">{title}</h3>
-      <ul className="mt-6 rule-t rule-heavy">
+      <h3 className="font-display-wide text-body-l font-medium">{title}</h3>
+      <ul className="mt-l rule-t rule-heavy">
         {items.map((t, i) => (
           <li
             // The items are fixed copy in a fixed order.
             // biome-ignore lint/suspicious/noArrayIndexKey: static list
             key={i}
-            className="py-3.5 text-body text-pretty rule-b"
+            className="py-m text-body-m text-pretty rule-b"
           >
             {t}
           </li>
@@ -389,7 +419,7 @@ export function ObjectTiles({
   return (
     <ul
       className={cn(
-        "grid grid-cols-2 gap-2 sm:gap-3",
+        "grid grid-cols-2 gap-xs sm:gap-s",
         tiles.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4",
         className
       )}
@@ -398,7 +428,9 @@ export function ObjectTiles({
         <li
           key={t.title}
           className={cn(
-            "flex aspect-[4/3] flex-col justify-between rounded-lg p-4 sm:rounded-2xl sm:p-6",
+            "flex aspect-[4/3] flex-col justify-between",
+            "corner-m p-m",
+            "sm:corner-xl sm:p-l",
             tiles.length === 3 &&
               i === 0 &&
               "max-lg:col-span-2 max-lg:aspect-[8/3]",
@@ -410,7 +442,7 @@ export function ObjectTiles({
             scheme={i === 0 ? "copper" : "night"}
             className="size-9 sm:size-12"
           />
-          <span className="font-display-wide text-label text-balance sm:text-h3">
+          <span className="font-display-wide text-body-s text-balance sm:text-body-l font-heavy sm:font-medium">
             {t.title}
           </span>
         </li>

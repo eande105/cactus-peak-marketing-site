@@ -17,9 +17,9 @@ export function LiveClubStatus({
 }) {
   const s = clubStatus(useClubNow())
   return (
-    <span className={cn("inline-flex items-center gap-1.5", className)}>
+    <span className={cn("inline-flex items-center gap-xs", className)}>
       {s.state === "open" ? (
-        <span aria-hidden="true" className="size-2 rounded-full bg-success" />
+        <span aria-hidden="true" className="size-2 corner-full bg-success" />
       ) : (
         <Clock
           className={cn(iconClassName, s.open && "text-warning")}
@@ -45,11 +45,11 @@ export function ClubsOpenStatus() {
         ? "Closing soon"
         : "Closed now"
   return (
-    <span className="inline-flex items-center gap-2 text-night-foreground">
+    <span className="inline-flex items-center gap-xs text-night-foreground">
       <span
         aria-hidden="true"
         className={cn(
-          "size-2 shrink-0 rounded-full",
+          "size-2 shrink-0 corner-full",
           s.state === "open" && "bg-success",
           s.state === "closingSoon" && "bg-warning",
           !s.open && "border-[1.5px] border-current"

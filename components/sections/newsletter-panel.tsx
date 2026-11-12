@@ -35,31 +35,42 @@ export function NewsletterPanel({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={cn(panelFrame, "scroll-mt-4 pt-2 sm:pt-3")}
+      className={cn(panelFrame, "scroll-mt-4 pt-xs sm:pt-s")}
     >
-      <div className="overflow-hidden rounded-2xl bg-night text-night-foreground">
-        <div className={cn(panelContent, "py-12 lg:py-20")}>
-          <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <div className="overflow-hidden corner-xl bg-night text-night-foreground">
+        <div
+          className={cn(
+            panelContent,
+            "py-xxl lg:py-[calc(var(--space-xxl)*5/3)]"
+          )}
+        >
+          <div className="grid items-center gap-xxl lg:grid-cols-12 lg:gap-section">
             <div className="lg:col-span-6">
               <span
                 aria-hidden="true"
-                className="grid size-14 place-items-center rounded-full bg-[var(--cat-strength)]"
+                className="grid size-14 place-items-center corner-full bg-[var(--cat-strength)]"
               >
                 <BrandMark scheme="copper" className="size-8" />
               </span>
-              <h2 id={`${id}-title`} className="display-lead mt-6 text-balance">
+              <h2 id={`${id}-title`} className="display-lead mt-l text-balance">
                 One good note a month.
               </h2>
-              <p className="mt-4 max-w-[44ch] text-lead text-pretty text-night-muted">
+              <p className="mt-m max-w-[44ch] text-body-l text-pretty text-night-muted">
                 Training notes from our coaches and news from the clubs, in your
                 inbox. Leave any time.
               </p>
-              <div className="mt-8 max-w-[34rem]">
+              <div className="mt-xl max-w-[34rem]">
                 <NewsletterStrip />
               </div>
-              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 pt-6 text-label rule-t rule-night">
+              <ul
+                className={cn(
+                  "flex flex-wrap gap-x-l gap-y-s rule-t rule-night",
+                  "mt-xl pt-l",
+                  "text-body-s font-heavy"
+                )}
+              >
                 {PERKS.map((p) => (
-                  <li key={p.title} className="flex items-center gap-2">
+                  <li key={p.title} className="flex items-center gap-xs">
                     <GymObject id={p.icon} scheme="night" className="size-6" />
                     {p.title}
                   </li>
@@ -70,10 +81,10 @@ export function NewsletterPanel({
             {lead ? (
               // The next email, as it would sit in an inbox: a card on a second card, tilted a little from lg.
               <div aria-hidden="true" className="relative lg:col-span-6">
-                <div className="absolute inset-x-6 top-6 -bottom-3 rounded-2xl bg-night-fill lg:rotate-3" />
-                <div className="relative rounded-2xl bg-card text-foreground shadow-[0_24px_60px_-20px_rgb(0_0_0/0.5)] lg:-rotate-1">
-                  <div className="flex items-center gap-3 px-5 py-4 rule-b">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-night">
+                <div className="absolute inset-x-6 top-6 -bottom-3 corner-xl bg-night-fill lg:rotate-3" />
+                <div className="relative corner-xl bg-card text-foreground shadow-[0_24px_60px_-20px_rgb(0_0_0/0.5)] lg:-rotate-1">
+                  <div className="flex items-center gap-s px-l py-m rule-b">
+                    <span className="grid size-10 shrink-0 place-items-center corner-full bg-night">
                       <GymObject
                         id="squat-rack"
                         scheme="night"
@@ -81,18 +92,20 @@ export function NewsletterPanel({
                       />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-label">Cactus Peak Journal</p>
-                      <p className="truncate text-caption text-muted-foreground">
+                      <p className="text-body-s font-heavy">
+                        Cactus Peak Journal
+                      </p>
+                      <p className="truncate text-body-s text-muted-foreground">
                         {lead.title}
                       </p>
                     </div>
-                    <span className="text-caption text-muted-foreground">
+                    <span className="text-body-s text-muted-foreground">
                       Monthly
                     </span>
                   </div>
-                  <div className="p-5">
-                    <div className="flex items-center gap-4 rounded-lg bg-muted p-4">
-                      <span className="grid size-16 shrink-0 place-items-center rounded-full bg-night">
+                  <div className="p-l">
+                    <div className="flex items-center gap-m corner-m bg-muted p-m">
+                      <span className="grid size-16 shrink-0 place-items-center corner-full bg-night">
                         <GymObject
                           id={journalObject(lead.slug)}
                           scheme="night"
@@ -100,30 +113,32 @@ export function NewsletterPanel({
                         />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-caption text-muted-foreground">
+                        <p className="text-body-s text-muted-foreground">
                           {lead.cat} · {lead.min} min read
                         </p>
-                        <p className="font-display-wide text-h3 text-balance">
+                        <p className="font-display-wide text-body-l text-balance font-medium">
                           {lead.title}
                         </p>
                       </div>
                     </div>
-                    <p className="mt-5 text-caption text-muted-foreground">
+                    <p className="mt-l text-body-s text-muted-foreground">
                       Also in this email
                     </p>
-                    <ul className="mt-2">
+                    <ul className="mt-xs">
                       {rest.slice(0, 3).map((n) => (
                         <li
                           key={n.slug}
-                          className="flex items-center gap-3 py-3 rule-t"
+                          className="flex items-center gap-s py-s rule-t"
                         >
-                          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-muted">
+                          <span className="grid size-8 shrink-0 place-items-center corner-full bg-muted">
                             <GymObject
                               id={journalObject(n.slug)}
                               className="size-5"
                             />
                           </span>
-                          <span className="truncate text-label">{n.title}</span>
+                          <span className="truncate text-body-s font-heavy">
+                            {n.title}
+                          </span>
                         </li>
                       ))}
                     </ul>

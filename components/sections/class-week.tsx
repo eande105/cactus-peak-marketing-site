@@ -206,26 +206,26 @@ export function ClassWeek({
             copy of a table cell: wider than tall, with the cell's fill and edge. A square would read as a checkbox. */}
             <ul
               aria-label="Key"
-              className="flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-muted-foreground"
+              className="flex flex-wrap items-center gap-x-l gap-y-xs text-body-s text-muted-foreground"
             >
-              <li className="flex items-center gap-2">
+              <li className="flex items-center gap-xs">
                 <span
                   aria-hidden="true"
-                  className="h-3.5 w-6 rounded-sm bg-muted ring-1 ring-border ring-inset"
+                  className="h-3.5 w-6 corner-xs bg-muted ring-1 ring-border ring-inset"
                 />
                 5 days a week or more
               </li>
-              <li className="flex items-center gap-2">
+              <li className="flex items-center gap-xs">
                 <span
                   aria-hidden="true"
-                  className="h-3.5 w-6 rounded-sm bg-card ring-1 ring-border-strong ring-inset"
+                  className="h-3.5 w-6 corner-xs bg-card ring-1 ring-border-strong ring-inset"
                 />
                 2 to 4 days
               </li>
-              <li className="flex items-center gap-2">
+              <li className="flex items-center gap-xs">
                 <span
                   aria-hidden="true"
-                  className="h-3.5 w-6 rounded-sm bg-card ring-1 ring-border ring-inset"
+                  className="h-3.5 w-6 corner-xs bg-card ring-1 ring-border ring-inset"
                 />
                 1 day
               </li>
@@ -235,15 +235,22 @@ export function ClassWeek({
       />
 
       {focus ? (
-        <div className="mt-6 flex items-start gap-4 rounded-lg bg-card p-4 edge ring-border sm:p-5">
+        <div
+          className={cn(
+            "flex items-start gap-m hairline",
+            "mt-l corner-m p-m",
+            "bg-card ring-border",
+            "sm:p-l"
+          )}
+        >
           <GymObject
             id={classObjects[focus.slug] ?? categoryObject[focus.category]}
-            className="mt-0.5 size-8 shrink-0"
+            className="mt-xxs size-8 shrink-0"
           />
           <div className="min-w-0 flex-1">
-            <p className="text-body-strong">Times for {focus.name}</p>
+            <p className="text-body-m font-heavy">Times for {focus.name}</p>
             {focusTimes.length ? (
-              <ul className="mt-1 grid gap-0.5 text-body text-muted-foreground">
+              <ul className="mt-xxs grid gap-xxs text-body-m text-muted-foreground">
                 {focusTimes.map((t) => (
                   <li key={t.club.slug}>
                     {club === "all" ? (
@@ -254,7 +261,7 @@ export function ClassWeek({
                 ))}
               </ul>
             ) : (
-              <p className="mt-1 text-body text-muted-foreground">
+              <p className="mt-xxs text-body-m text-muted-foreground">
                 Not on at {clubName}. Pick another club.
               </p>
             )}
@@ -266,14 +273,19 @@ export function ClassWeek({
               setFocusCat("")
             }}
             aria-label={`Hide the times for ${focus.name}`}
-            className="-m-2 grid size-11 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+            className={cn(
+              "grid size-11 shrink-0 place-items-center",
+              "-m-xs corner-s",
+              "text-muted-foreground",
+              "hover:bg-muted hover:text-foreground"
+            )}
           >
             <X className="size-4" aria-hidden="true" />
           </button>
         </div>
       ) : null}
 
-      <div className="mt-8 rounded-lg bg-card p-2 edge ring-border sm:p-4">
+      <div className="mt-xl corner-m bg-card p-xs hairline ring-border sm:p-m">
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">
             When each type of class runs at {clubName}, by part of the day
@@ -282,18 +294,14 @@ export function ClassWeek({
             <tr className="[&>*]:rule-b">
               <th
                 scope="col"
-                className="w-[30%] px-3 pb-3 text-label text-muted-foreground"
+                className="w-[30%] px-s pb-s text-body-s text-muted-foreground font-heavy"
               >
                 Class type
               </th>
               {PARTS.map((p) => (
-                <th
-                  key={p.key}
-                  scope="col"
-                  className="px-1.5 pb-3 align-bottom"
-                >
-                  <span className="block text-label">{p.name}</span>
-                  <span className="block text-caption font-normal text-muted-foreground">
+                <th key={p.key} scope="col" className="px-xs pb-s align-bottom">
+                  <span className="block text-body-s font-heavy">{p.name}</span>
+                  <span className="block text-body-s font-regular text-muted-foreground">
                     {p.hours}
                   </span>
                 </th>
@@ -307,36 +315,36 @@ export function ClassWeek({
                 <tr
                   key={cat.id}
                   className={cn(
-                    "max-md:grid max-md:grid-cols-4 max-md:gap-1 max-md:px-0 max-md:py-4 [&>*]:rule-b last:[&>*]:rule-b-0",
+                    "max-md:grid max-md:grid-cols-4 max-md:gap-xxs max-md:px-zero max-md:py-m [&>*]:rule-b last:[&>*]:rule-b-0",
                     on && "bg-background"
                   )}
                 >
                   <th
                     scope="row"
-                    className="px-3 py-3 font-normal max-md:col-span-4 max-md:px-1 max-md:pt-0 max-md:pb-2"
+                    className="px-s py-s font-regular max-md:col-span-4 max-md:px-xxs max-md:pt-zero max-md:pb-xs"
                   >
                     <a
                       href={`#type-${cat.id}`}
                       aria-current={on ? "true" : undefined}
-                      className="group flex items-center gap-3 no-underline"
+                      className="group flex items-center gap-s no-underline"
                     >
                       <CategoryTile
                         category={cat.id}
                         className="size-9 shrink-0"
                       />
                       <span className="min-w-0">
-                        <span className="flex flex-wrap items-center gap-x-2 text-body-strong">
+                        <span className="flex flex-wrap items-center gap-x-xs text-body-m font-heavy">
                           <span className="underline-offset-4 group-hover:underline">
                             {cat.name}
                           </span>
                           {/* The row a link opened is named in text too, not by its fill alone. */}
                           {on ? (
-                            <span className="rounded-sm bg-night px-1.5 text-caption text-night-foreground">
+                            <span className="corner-xs bg-night px-xs text-body-s text-night-foreground">
                               Selected
                             </span>
                           ) : null}
                         </span>
-                        <span className="block text-caption text-muted-foreground tabular-nums">
+                        <span className="block text-body-s text-muted-foreground tabular-nums">
                           {weekly} classes a week
                         </span>
                       </span>
@@ -346,10 +354,10 @@ export function ClassWeek({
                     const n = c.days.length
                     const part = PARTS[i]
                     return (
-                      <td key={part.key} className="p-0.5 md:p-1.5">
+                      <td key={part.key} className="p-xxs md:p-xs">
                         {/* Below md the column heads are hidden, so each cell names its part of the day. */}
                         <span
-                          className="mb-1 block text-caption text-muted-foreground md:hidden"
+                          className="mb-xxs block text-body-s text-muted-foreground md:hidden"
                           aria-hidden="true"
                         >
                           {part.name}
@@ -357,7 +365,9 @@ export function ClassWeek({
                         {n ? (
                           <span
                             className={cn(
-                              "flex min-h-11 flex-col justify-center rounded-md px-0.5 py-1.5 md:min-h-14 md:px-3 md:py-2",
+                              "flex min-h-11 flex-col justify-center",
+                              "corner-s px-xxs py-xs",
+                              "md:min-h-14 md:px-s md:py-xs",
                               n >= 5
                                 ? "bg-muted"
                                 : n >= 2
@@ -365,7 +375,7 @@ export function ClassWeek({
                                   : "ring-1 ring-border ring-inset"
                             )}
                           >
-                            <span className="text-label text-pretty">
+                            <span className="text-body-s text-pretty font-heavy">
                               <span className="whitespace-nowrap md:hidden">
                                 {daysShort(c.days)}
                               </span>
@@ -373,12 +383,12 @@ export function ClassWeek({
                                 {daysWord(c.days)}
                               </span>
                             </span>
-                            <span className="text-caption text-muted-foreground tabular-nums max-md:hidden">
+                            <span className="text-body-s text-muted-foreground tabular-nums max-md:hidden">
                               {startsWord(c.starts)}
                             </span>
                           </span>
                         ) : (
-                          <span className="flex min-h-11 items-center px-1.5 text-muted-foreground md:min-h-14 md:px-3">
+                          <span className="flex min-h-11 items-center px-xs text-muted-foreground md:min-h-14 md:px-s">
                             <span aria-hidden="true">–</span>
                             <span className="sr-only">Not on</span>
                           </span>

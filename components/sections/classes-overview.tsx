@@ -135,7 +135,7 @@ function ClassPick({
           The discs sit under the hero's scrims (-z-20 against their -z-10). */}
       <div className="absolute top-[calc(100%-var(--pick-down))] left-1/2 -z-20 size-0">
         <span
-          className="absolute grid size-[calc(var(--disc)*var(--focal))] -translate-1/2 place-items-center rounded-full bg-[var(--cat-strength)]"
+          className="absolute grid size-[calc(var(--disc)*var(--focal))] -translate-1/2 place-items-center corner-full bg-[var(--cat-strength)]"
           style={{ "--focal": PICK_FOCAL } as React.CSSProperties}
         >
           <BrandMark scheme="copper" className="size-[56%]" />
@@ -144,7 +144,7 @@ function ClassPick({
           <span
             key={key}
             className={cn(
-              "absolute grid -translate-1/2 place-items-center rounded-full",
+              "absolute grid -translate-1/2 place-items-center corner-full",
               pick ? "bg-night" : "bg-muted opacity-45"
             )}
             style={{
@@ -170,7 +170,11 @@ function ClassPick({
           <span
             key={t}
             className={cn(
-              "absolute left-0 -translate-x-1/2 rounded-full bg-card px-2.5 py-1 text-caption font-semibold whitespace-nowrap tabular-nums edge ring-border sm:px-3.5 sm:py-1.5 sm:text-label",
+              "absolute left-0 hairline",
+              "corner-full px-s py-xxs",
+              "text-body-s font-heavy whitespace-nowrap tabular-nums",
+              "-translate-x-1/2 bg-card ring-border",
+              "sm:px-m sm:py-xs sm:text-body-s",
               i === 0
                 ? "top-[calc(var(--disc)*-0.75-0.5rem)] -translate-y-full"
                 : "top-[calc(var(--disc)*0.75+0.5rem)]"
@@ -222,7 +226,7 @@ export function ClassesOverviewHero({
           aria-hidden="true"
           className="absolute inset-0 -z-10 bg-linear-to-b from-background/85 from-[calc(100%-16rem)] to-background/0 to-[calc(100%-12rem)] lg:bg-linear-to-r lg:from-background/85 lg:from-[34%] lg:via-background/70 lg:via-[46%] lg:to-background/0 lg:to-[60%]"
         />
-        <Container className="flex h-full flex-col justify-center pt-12 lg:pt-0">
+        <Container className="flex h-full flex-col justify-center pt-xxl lg:pt-zero">
           {/* From lg the copy keeps to the left 44% or so, so the Pick's anchor has clear space beside it. The hero
               size steps down there (the display class wins over utilities, so it takes !important). */}
           <div className="lg:max-w-[min(44vw,34rem)]">
@@ -232,7 +236,7 @@ export function ClassesOverviewHero({
             >
               A class for every kind of day.
             </h1>
-            <p className="lede mt-5 max-w-[34ch] text-pretty text-muted-foreground lg:mt-6">
+            <p className="lede mt-l max-w-[34ch] text-pretty text-muted-foreground lg:mt-l">
               {classTypes.length} classes, from a slow stretch to all-out
               intervals, in {categories.length} types at five clubs in Mesa and
               Gilbert.
@@ -241,7 +245,7 @@ export function ClassesOverviewHero({
                 {week} classes a week, the first at {first}.
               </span>
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-xl flex flex-wrap gap-s">
               <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
                 Book a free tour
               </LinkButton>
@@ -265,7 +269,7 @@ export function ClassesOverviewHero({
         {/* Below lg the focal point sits in this band under the copy, 8rem (10rem from sm) above the hero's foot. */}
         <div
           aria-hidden="true"
-          className="mt-6 h-[16rem] sm:h-[20rem] lg:hidden"
+          className="mt-l h-[16rem] sm:h-[20rem] lg:hidden"
         />
       </div>
     </section>
@@ -279,19 +283,22 @@ export function ClassesOverviewHero({
 function ClassLine({ c, blurb }: { c: ClassType; blurb?: boolean }) {
   return (
     <li
-      className={cn("flex gap-3 py-1", blurb ? "items-start" : "items-center")}
+      className={cn(
+        "flex gap-s py-xxs",
+        blurb ? "items-start" : "items-center"
+      )}
     >
       <GymObject
         id={classObjects[c.slug] ?? categoryObject[c.category]}
         className="size-6 shrink-0"
       />
       <div className="min-w-0 flex-1">
-        <Link href={classHref(c)} className={cn("text-body", quietLink)}>
+        <Link href={classHref(c)} className={cn("text-body-m", quietLink)}>
           {c.name}
         </Link>
         {/* The one line a visitor needs to tell the classes of a type apart, so most never open the type page. */}
         {blurb ? (
-          <p className="mt-0.5 text-caption text-pretty text-muted-foreground">
+          <p className="mt-xxs text-body-s text-pretty text-muted-foreground">
             {c.blurb}
           </p>
         ) : null}
@@ -300,7 +307,7 @@ function ClassLine({ c, blurb }: { c: ClassType; blurb?: boolean }) {
         level={c.intensity}
         categoryId={c.category}
         showLabel={false}
-        className={blurb ? "mt-1" : undefined}
+        className={blurb ? "mt-xxs" : undefined}
       />
     </li>
   )
@@ -324,7 +331,7 @@ export function ClassesByType({
   return (
     <ul
       className={cn(
-        "grid gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-4",
+        "grid gap-m sm:grid-cols-2 lg:gap-l xl:grid-cols-4",
         className
       )}
     >
@@ -333,22 +340,24 @@ export function ClassesByType({
         return (
           <li
             key={cat.id}
-            className="flex flex-col rounded-lg bg-card p-5 edge ring-border"
+            className="flex flex-col corner-m bg-card p-l hairline ring-border"
           >
             {/* Below sm the object sits beside the name, so eight cards stay short on a phone. */}
-            <div className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-4 sm:mb-5 sm:flex sm:flex-col">
+            <div className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-m sm:mb-l sm:flex sm:flex-col">
               <CategoryTile
                 category={cat.id}
                 cut
                 className="row-span-2 size-12 sm:size-14"
               />
-              <h3 className="font-display-wide text-h3 sm:mt-5">{cat.name}</h3>
-              <p className="mt-1 text-body text-pretty text-muted-foreground">
+              <h3 className="font-display-wide text-body-l sm:mt-l font-medium">
+                {cat.name}
+              </h3>
+              <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                 {cat.tagline}
               </p>
             </div>
             {/* The difficulty summary for the whole type. */}
-            <div className="mt-4 pt-4 rule-t">
+            <div className="mt-m pt-m rule-t">
               <IntensityRibs
                 level={categoryRange(list, cat.intensity)}
                 categoryId={cat.id}
@@ -356,10 +365,10 @@ export function ClassesByType({
             </div>
             {/* On a phone the eight cards keep to one line of class names, so the schedule stays close to the
                 top. The full list with blurbs is one tap away in "Class details". */}
-            <p className="mt-3 mb-5 text-body text-pretty text-muted-foreground sm:hidden">
+            <p className="mt-s mb-l text-body-m text-pretty text-muted-foreground sm:hidden">
               {list.map((c) => c.name).join(", ")}
             </p>
-            <ul className="mt-3 mb-5 grid gap-1 max-sm:hidden">
+            <ul className="mt-s mb-l grid gap-xxs max-sm:hidden">
               {list.map((c) => (
                 <ClassLine key={c.slug} c={c} blurb />
               ))}
@@ -395,7 +404,10 @@ export function EffortKey({ className }: { className?: string }) {
     <section
       aria-labelledby="effort-key-title"
       className={cn(
-        "grid gap-x-6 gap-y-6 rounded-lg bg-night p-5 text-night-foreground [--border-strong:color-mix(in_oklab,var(--night-foreground)_45%,transparent)] [--foreground:var(--night-foreground)] sm:p-6 lg:grid-cols-12 lg:p-8",
+        "grid gap-x-l gap-y-l [--border-strong:color-mix(in_oklab,var(--night-foreground)_45%,transparent)] [--foreground:var(--night-foreground)]",
+        "corner-m p-l",
+        "bg-night text-night-foreground",
+        "sm:p-l lg:grid-cols-12 lg:p-xl",
         className
       )}
     >
@@ -403,11 +415,11 @@ export function EffortKey({ className }: { className?: string }) {
         <h3 id="effort-key-title" className="display-quiet">
           How hard is it?
         </h3>
-        <p className="mt-2 text-body text-pretty text-night-muted">
+        <p className="mt-xs text-body-m text-pretty text-night-muted">
           New to classes? Start at 2 or 3.
         </p>
         {/* One worked range, so the outlined ribs on the cards read as "can go up to". */}
-        <p className="mt-4 flex items-center gap-3 text-caption">
+        <p className="mt-m flex items-center gap-s text-body-s">
           <RibMeter
             value={4}
             from={2}
@@ -423,11 +435,11 @@ export function EffortKey({ className }: { className?: string }) {
           </span>
         </p>
       </div>
-      <ol className="grid gap-4 sm:grid-cols-5 sm:gap-6 lg:col-span-9">
+      <ol className="grid gap-m sm:grid-cols-5 sm:gap-l lg:col-span-9">
         {levels.map((n) => (
           <li
             key={n}
-            className="flex items-center gap-4 sm:flex-col sm:items-start sm:gap-3"
+            className="flex items-center gap-m sm:flex-col sm:items-start sm:gap-s"
           >
             <RibMeter
               value={n}
@@ -439,10 +451,10 @@ export function EffortKey({ className }: { className?: string }) {
               decorative
             />
             <div>
-              <p className="text-body-strong">
+              <p className="text-body-m font-heavy">
                 <span className="tabular-nums">{n}</span> {LEVEL_WORD[n]}
               </p>
-              <p className="text-caption text-pretty text-night-muted">
+              <p className="text-body-s text-pretty text-night-muted">
                 {effort[n]}
               </p>
             </div>
@@ -485,20 +497,24 @@ export function ClassesFirstVisit({
     // From xl the picks take 8 of 12 columns and the steps the other 4, so each pitch stays on one line beside the
     // facts while the steps stay in view at the right. Below xl that leaves too little room, so the steps move under
     // the list, three across from md.
-    <div className={cn("grid gap-12 xl:grid-cols-12 xl:gap-x-10", className)}>
+    <div className={cn("grid gap-xxl xl:grid-cols-12 xl:gap-x-xxl", className)}>
       <ul className="rule-t xl:col-span-8">
         {list.map((c) => (
           <li
             key={c.slug}
-            className="group relative grid gap-x-6 gap-y-3 py-5 rule-b sm:grid-cols-[minmax(0,1fr)_15.5rem] sm:items-center"
+            className={cn(
+              "group relative grid gap-x-l gap-y-s rule-b",
+              "py-l",
+              "sm:grid-cols-[minmax(0,1fr)_15.5rem] sm:items-center"
+            )}
           >
-            <div className="flex min-w-0 items-start gap-4">
+            <div className="flex min-w-0 items-start gap-m">
               <CategoryTile
                 category={c.category}
-                className="mt-0.5 size-8 shrink-0"
+                className="mt-xxs size-8 shrink-0"
               />
               <div className="min-w-0">
-                <h3 className="font-display-wide text-h3">
+                <h3 className="font-display-wide text-body-l font-medium">
                   {/* The name is the one link. Its ::after covers the row, so the row is one target. */}
                   <Link
                     href={classHref(c)}
@@ -507,20 +523,20 @@ export function ClassesFirstVisit({
                     {c.name}
                   </Link>
                 </h3>
-                <p className="mt-1 text-body text-pretty text-muted-foreground">
+                <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                   {c.pick}
                 </p>
               </div>
             </div>
             {/* The two facts a first class turns on, one to a row: a quiet label, then the value in a column of
                 its own, so the values line up down the list. From sm a rule sets them apart from the pitch. */}
-            <dl className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-x-3 gap-y-1.5 max-sm:pl-12 sm:pl-6 sm:rule-l">
-              <dt className="text-caption text-muted-foreground">Length</dt>
-              <dd className="text-caption font-medium tabular-nums">
+            <dl className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-x-s gap-y-xs max-sm:pl-xxl sm:pl-l sm:rule-l">
+              <dt className="text-body-s text-muted-foreground">Length</dt>
+              <dd className="text-body-s font-medium tabular-nums">
                 {c.duration} min
               </dd>
-              <dt className="text-caption text-muted-foreground">Effort</dt>
-              <dd className="text-caption whitespace-nowrap">
+              <dt className="text-body-s text-muted-foreground">Effort</dt>
+              <dd className="text-body-s whitespace-nowrap">
                 <IntensityRibs level={c.intensity} categoryId={c.category} />
               </dd>
             </dl>
@@ -529,25 +545,30 @@ export function ClassesFirstVisit({
       </ul>
 
       <div className="xl:col-span-4">
-        <ol className="grid gap-6 md:max-xl:grid-cols-3">
+        <ol className="grid gap-l md:max-xl:grid-cols-3">
           {firstSteps.map((s, i) => (
-            <li key={s.title} className="flex gap-4">
+            <li key={s.title} className="flex gap-m">
               <span
                 aria-hidden="true"
-                className="grid size-8 shrink-0 place-items-center rounded-full text-label tabular-nums edge ring-border-strong"
+                className={cn(
+                  "grid size-8 shrink-0 place-items-center hairline",
+                  "corner-full",
+                  "text-body-s tabular-nums font-heavy",
+                  "ring-border-strong"
+                )}
               >
                 {i + 1}
               </span>
               <div>
-                <p className="text-body-strong">{s.title}</p>
-                <p className="mt-1 text-body text-pretty text-muted-foreground">
+                <p className="text-body-m font-heavy">{s.title}</p>
+                <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                   {s.text}
                 </p>
               </div>
             </li>
           ))}
         </ol>
-        <LinkButton href="/trial" variant="outline" className="mt-8">
+        <LinkButton href="/trial" variant="outline" className="mt-xl">
           Try a class with a free 3-day pass
         </LinkButton>
       </div>

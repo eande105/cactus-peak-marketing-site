@@ -82,45 +82,56 @@ export function TeensGuide({
 }) {
   const times = teenClass ? timesByClub(slots, teenClass.key, clubs) : []
   return (
-    <div className="flex flex-col gap-12">
-      <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+    <div className="flex flex-col gap-xxl">
+      <div className="grid gap-xl lg:grid-cols-12 lg:gap-xxl">
         {/* What opens up with age: rising steps, the last one lit (adult access). */}
         <section
           aria-labelledby="teen-ages"
-          className="rounded-lg bg-card p-6 edge ring-border lg:col-span-7 lg:p-8"
+          className="corner-m bg-card p-l hairline ring-border lg:col-span-7 lg:p-xl"
         >
-          <h3 id="teen-ages" className="font-display-wide text-h3">
+          <h3
+            id="teen-ages"
+            className="font-display-wide text-body-l font-medium"
+          >
             What opens up with age
           </h3>
-          <ol className="mt-6 flex flex-col gap-1.5 sm:grid sm:h-96 sm:grid-cols-4 sm:items-end sm:gap-2">
+          <ol
+            className={cn(
+              "flex flex-col gap-xs",
+              "mt-l",
+              "sm:grid sm:h-96 sm:grid-cols-4 sm:items-end sm:gap-xs"
+            )}
+          >
             {AGES.map((a, i) => {
               const lit = i === AGES.length - 1
               return (
                 <li key={a.age} className={cn("min-h-0", a.height, a.width)}>
                   <div
                     className={cn(
-                      "flex h-full items-center gap-4 rounded-md p-3 sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:rounded-t-2xl sm:rounded-b-md sm:p-4",
+                      "flex h-full items-center gap-m",
+                      "corner-s p-s",
+                      "sm:flex-col sm:items-stretch sm:justify-between sm:gap-zero sm:corner-t-xl sm:corner-b-s sm:p-m",
                       lit
-                        ? "bg-[var(--cat-strength)] text-[var(--neutral-1)]"
+                        ? "bg-[var(--cat-strength)] text-neutral-1"
                         : "bg-night text-night-foreground"
                     )}
                   >
-                    <span className="tabular w-10 shrink-0 font-data text-h2 leading-none font-bold sm:w-auto sm:text-h1">
+                    <span className="tabular w-10 shrink-0 font-data text-body-xxl leading-none font-heavy sm:w-auto sm:text-display-m">
                       {a.age}
                       <span className="sr-only">: </span>
                     </span>
-                    <ul className="flex flex-col gap-2">
+                    <ul className="flex flex-col gap-xs">
                       {a.items.map((it) => (
                         <li
                           key={it.text}
-                          className="flex items-center gap-2 sm:flex-col sm:items-start sm:gap-1.5"
+                          className="flex items-center gap-xs sm:flex-col sm:items-start sm:gap-xs"
                         >
                           <GymObject
                             id={it.icon}
                             scheme={lit ? "copper" : "night"}
                             className="size-6 sm:size-7"
                           />
-                          <span className="text-label font-semibold text-pretty">
+                          <span className="text-body-s font-heavy text-pretty">
                             {it.text}
                           </span>
                         </li>
@@ -137,12 +148,12 @@ export function TeensGuide({
         {teenClass ? (
           <section
             aria-labelledby="teen-class"
-            className="flex flex-col gap-5 lg:col-span-5"
+            className="flex flex-col gap-l lg:col-span-5"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-m">
               <span
                 aria-hidden="true"
-                className="grid size-14 shrink-0 place-items-center rounded-md bg-night"
+                className="grid size-14 shrink-0 place-items-center corner-s bg-night"
               >
                 <GymObject
                   id={classObjects[teenClass.slug] ?? "dumbbell"}
@@ -150,7 +161,10 @@ export function TeensGuide({
                   className="size-9"
                 />
               </span>
-              <h3 id="teen-class" className="font-display-wide text-h3">
+              <h3
+                id="teen-class"
+                className="font-display-wide text-body-l font-medium"
+              >
                 <Link
                   href={classHref(teenClass)}
                   className="no-underline underline-offset-4 hover:underline"
@@ -159,27 +173,28 @@ export function TeensGuide({
                 </Link>
               </h3>
             </div>
-            <p className="text-lead text-pretty">{teenClass.blurb}</p>
+            <p className="text-body-l text-pretty">{teenClass.blurb}</p>
             <dl className="grid grid-cols-3 rule-y">
               {[
                 { k: "Ages", v: "13–17" },
                 { k: "Class", v: `${teenClass.duration} min` },
                 { k: "Group", v: teenClass.group },
               ].map((f, i) => (
-                <div key={f.k} className={cn("py-4", i > 0 && "pl-4 rule-l")}>
-                  <dt className="text-label text-muted-foreground">{f.k}</dt>
-                  <dd className="font-display-wide mt-1 text-h3 tabular-nums">
+                <div key={f.k} className={cn("py-m", i > 0 && "pl-m rule-l")}>
+                  <dt className="text-body-s text-muted-foreground font-heavy">
+                    {f.k}
+                  </dt>
+                  <dd className="font-display-wide mt-xxs text-body-l tabular-nums font-medium">
                     {f.v}
                   </dd>
                 </div>
               ))}
             </dl>
             {times.length ? (
-              <ul className="flex flex-col gap-1 text-body">
+              <ul className="flex flex-col gap-xxs text-body-m">
                 {times.map((t) => (
                   <li key={t.club.slug} className="tabular-nums">
-                    <span className="font-semibold">{t.club.short}:</span>{" "}
-                    {t.text}
+                    <span className="font-heavy">{t.club.short}:</span> {t.text}
                   </li>
                 ))}
               </ul>
@@ -190,28 +205,31 @@ export function TeensGuide({
 
       {/* How a teen gets started. */}
       <section aria-labelledby="teen-start">
-        <h3 id="teen-start" className="font-display-wide text-h3">
+        <h3
+          id="teen-start"
+          className="font-display-wide text-body-l font-medium"
+        >
           Getting started
         </h3>
-        <ol className="mt-5 grid gap-6 sm:grid-cols-3">
+        <ol className="mt-l grid gap-l sm:grid-cols-3">
           {start(childPrice).map((s, i) => (
-            <li key={s.title} className="pt-3 rule-t rule-heavy">
+            <li key={s.title} className="pt-s rule-t rule-heavy">
               <span
                 aria-hidden="true"
-                className="tabular font-data text-h3 font-bold"
+                className="tabular font-data text-body-l font-heavy"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="mt-2 text-body-strong">{s.title}</p>
+              <p className="mt-xs text-body-m font-heavy">{s.title}</p>
               {s.text ? (
-                <p className="mt-1 text-body text-pretty text-muted-foreground">
+                <p className="mt-xxs text-body-m text-pretty text-muted-foreground">
                   {s.text}
                 </p>
               ) : null}
             </li>
           ))}
         </ol>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="mt-xl flex flex-wrap items-center gap-s">
           <LinkButton href="/tour?note=kids">Book a free tour</LinkButton>
           <ShareButton />
           <TextLink href="/legal/kids-club-policy">Teen rules</TextLink>

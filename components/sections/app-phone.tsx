@@ -17,37 +17,37 @@ export function AppPhone() {
   return (
     <div
       aria-hidden="true"
-      className="mx-auto w-[260px] rounded-[36px] border-[6px] border-night bg-card p-4 shadow-(--shadow-m)"
+      className="mx-auto w-[260px] rounded-[36px] border-[6px] border-night bg-card p-m shadow-m"
     >
-      <p className="tabular text-caption font-semibold">
-        {fmtTime(now.min, true)}
+      <p className="tabular text-body-s font-heavy">{fmtTime(now.min, true)}</p>
+      <p className="font-display-wide mt-s text-body-l font-medium">
+        {club.name}
       </p>
-      <p className="font-display-wide mt-3 text-h3">{club.name}</p>
-      <div className="mt-1">
+      <div className="mt-xxs">
         <BusynessMeter level={club.busyness} />
       </div>
-      <p className="eyebrow mt-4">Next up</p>
-      <ul className="mt-1">
+      <p className="eyebrow mt-m">Next up</p>
+      <ul className="mt-xxs">
         {rows.map((s) => {
           return (
             <li
               key={s.id}
-              className="flex items-baseline justify-between gap-2 py-2 text-caption rule-t"
+              className="flex items-baseline justify-between gap-xs py-xs text-body-s rule-t"
             >
-              <span className="tabular font-semibold">
+              <span className="tabular font-heavy">
                 {fmtTime(s.start, true)}
               </span>
               <span className="flex-1 truncate">{s.className}</span>
-              <span className="rounded-sm bg-night px-1.5 text-night-foreground">
+              <span className="corner-xs bg-night px-xs text-night-foreground">
                 Book
               </span>
             </li>
           )
         })}
       </ul>
-      <div className="mt-4 h-24 rounded-lg bg-muted p-3 text-caption">
+      <div className="mt-m h-24 corner-m bg-muted p-s text-body-s">
         <p className="eyebrow">Pass</p>
-        <p className="tabular font-data text-h3 font-bold">4821 7730</p>
+        <p className="tabular font-data text-body-l font-heavy">4821 7730</p>
       </div>
     </div>
   )

@@ -46,16 +46,16 @@ export default function AppPage() {
       />
       <Band tone="tint" id="features">
         <SectionHead title="What the app does." />
-        <ol className="mt-8 grid gap-6 pt-6 rule-t rule-heavy lg:mt-12 lg:grid-cols-3">
+        <ol className="mt-xl grid gap-l pt-l rule-t rule-heavy lg:mt-xxl lg:grid-cols-3">
           {FEATURES.map(([t, icon], i) => (
             <li key={t}>
-              <span className="flex items-end justify-between gap-4">
-                <span className="tabular font-data text-h1 font-bold">
+              <span className="flex items-end justify-between gap-m">
+                <span className="tabular font-data text-display-m font-heavy">
                   {i + 1}
                 </span>
                 <GymObject id={icon} className="size-12" />
               </span>
-              <p className="font-display-wide text-h3">{t}</p>
+              <p className="font-display-wide text-body-l font-medium">{t}</p>
             </li>
           ))}
         </ol>

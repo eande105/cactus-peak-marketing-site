@@ -36,12 +36,12 @@ export default async function ClubsPage() {
 
       <Band id="find">
         <SectionHead size="lead" title="Find your club." />
-        <ClubsDirectory clubs={clubs} className="mt-10" />
+        <ClubsDirectory clubs={clubs} className="mt-xxl" />
       </Band>
 
       <Band tone="tint" id="compare">
         <SectionHead size="lead" title="What's at each club." />
-        <ClubsOfferings clubs={clubs} coaches={coaches} className="mt-12" />
+        <ClubsOfferings clubs={clubs} coaches={coaches} className="mt-xxl" />
       </Band>
 
       <Band>
@@ -50,7 +50,7 @@ export default async function ClubsPage() {
           title="Where your plan takes you."
           action={<TextLink href="/membership#compare">Compare plans</TextLink>}
         />
-        <div className="mt-12">
+        <div className="mt-xxl">
           <ClubsPlanCards
             plans={plans}
             clubs={clubs}
@@ -66,7 +66,7 @@ export default async function ClubsPage() {
         <ClubsGoals
           testimonials={testimonials}
           clubs={clubs}
-          className="mt-12"
+          className="mt-xxl"
         />
       </Band>
 
