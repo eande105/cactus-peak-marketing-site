@@ -12,6 +12,7 @@ import type {
   Job,
   JournalEntry,
   LegalPage,
+  Level,
   Pack,
   Plan,
   Prices,
@@ -72,6 +73,18 @@ export function toClientData(d: CatalogData): ClientCatalogData {
 export const runsAt = (c: ClassType, club: ClubSlug) =>
   c.clubs === "all" || c.clubs.includes(club)
 
+/** The lowest and highest effort across a type's classes. Falls back to the stored range for an empty list. */
+export function categoryRange(
+  list: ClassType[],
+  fallback: [Level, Level]
+): [Level, Level] {
+  if (!list.length) return fallback
+  return [
+    Math.min(...list.map((c) => c.intensity[0])) as Level,
+    Math.max(...list.map((c) => c.intensity[1])) as Level,
+  ]
+}
+
 export const initials = (n: string) =>
   n
     .split(" ")
@@ -129,7 +142,8 @@ export function buildSessions(
   cat: Pick<Catalog, "slots" | "clubBySlug" | "classByKey" | "coachById">,
   today: number,
   counts?: SessionCounts,
-  days = 7
+  days = 7,
+  countsFailed = false
 ): Session[] {
   const out: Session[] = []
   for (let i = 0; i < days; i++) {
@@ -161,9 +175,12 @@ export function buildSessions(
         room: slot.studio,
         coach: coach?.name ?? null,
         coachSlug: coach?.slug ?? null,
+        coachProfile: coach?.profile ?? false,
         capacity: ct.capacity,
         left: Math.max(0, ct.capacity - (c?.booked ?? 0)),
         waitlist: c?.waitlisted ?? 0,
+        live: counts !== undefined,
+        countsFailed: counts === undefined && countsFailed,
       })
     }
   }

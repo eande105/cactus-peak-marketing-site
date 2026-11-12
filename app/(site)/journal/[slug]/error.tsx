@@ -10,10 +10,6 @@ export default function ErrorPage({
   retry: () => void
 }) {
   return (
-    <RouteError
-      error={error}
-      retry={retry}
-      title="This article did not load."
-    />
+    <RouteError error={error} retry={retry} title="This note did not load." />
   )
 }

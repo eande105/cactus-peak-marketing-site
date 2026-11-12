@@ -14,7 +14,7 @@ export function CookiePrefs() {
     on: boolean,
     set?: (v: boolean) => void
   ) => (
-    <div className="flex items-center justify-between gap-4 border-b border-border py-4">
+    <div className="flex items-center justify-between gap-4 py-4 rule-b">
       <div>
         <p className="text-label">{label}</p>
         <p className="text-body text-muted-foreground">{desc}</p>

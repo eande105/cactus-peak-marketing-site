@@ -3,13 +3,14 @@
  * Nothing in this file is a color, size, or font chosen by hand. The owning values live in GUI.md,
  * components/graphical/theme.ts, and the variables that components/theme-variables.tsx (first paint) and
  * GraphicalProvider (runtime) write from that document. Those variables change with the color mode, so the
- * aliases below need no separate .dark block: --neutral-1 is white in light mode and the dark canvas in dark mode.
+ * aliases below need no separate .dark block (except --border, see below): --neutral-3 is Sand in light mode and the
+ * dark canvas in dark mode.
  *
- * ROLE MAP (shadcn variable -> Graphical token; the iOS theme generator reads this table)
+ * ROLE MAP (shadcn variable -> Graphical token -> brand colour name where one exists)
  *
- *   --background            neutral-1                canvas
+ *   --background            neutral-3                canvas (Sand)
  *   --foreground            neutral-10               text
- *   --card                  neutral-2                surface
+ *   --card                  neutral-1                surface (white)
  *   --card-foreground       neutral-10
  *   --popover               neutral-1                dialog, drawer, select popup (Graphical popover parts)
  *   --popover-foreground    neutral-10
@@ -17,19 +18,19 @@
  *   --primary-foreground    cte-accent-text          automatic contrast foreground on color-1 (white in light, black in dark)
  *   --secondary             neutral-3                Button secondary fill
  *   --secondary-foreground  neutral-10
- *   --muted                 neutral-3                surface-muted
- *   --muted-foreground      neutral-7                text-muted, description text
+ *   --muted                 neutral-4                surface-muted
+ *   --muted-foreground      neutral-8                text-muted, description text (BUILD-NOTES: grey text wall)
  *   --accent                color-1-transparent      selected and active fill (color-1 at the theme's 20% translucency)
  *   --accent-foreground     neutral-10
  *   --destructive           error                    Button danger fill, error text
- *   --border                neutral-4                hairline edges and dividers
+ *   --border                neutral-5 (dark: neutral-4) hairline edges and dividers (Caliche)
  *   --input                 neutral-6                Input and Checkbox edge
  *   --ring                  color-5                  focus ring on every component
  *
  *   Roles the app uses that shadcn has no slot for (variable here, @theme inline entry below):
  *   --input-hover           neutral-8                Input hover edge
  *   --hover                 neutral-3-transparent    Button outline hover fill
- *   --secondary-hover       neutral-4                Button secondary and ghost hover fill
+ *   --secondary-hover       neutral-5                Button secondary and ghost hover fill
  *   --primary-hover         color-6                  Button primary hover fill
  *   --destructive-hover     color-7                  Button danger hover fill
  *   --border-strong         neutral-6                Button secondary and outline edge
@@ -39,6 +40,16 @@
  *   --warning-subtle        warning-transparent      status fill
  *   --danger-subtle         error-transparent        status fill
  *   success, warning        the theme's own --success and --warning, used directly as text-success, text-warning
+ *   --night                 color-2                  Saguaro Night bands (footer, hero cards)
+ *   --night-foreground      neutral-3                Sand text on Saguaro Night (12.0:1)
+ *   --night-muted           neutral-5                Caliche text on Saguaro Night (9.0:1)
+ *   --link                  color-6                  Copper Deep, copper text and links on light (5.6:1 on Sand)
+ *
+ *   Brand palette (brand-guidelines.md section 4) -> theme token, light / dark:
+ *   Arizona Copper color-1 #b5532c / Dawn Copper #e0804f · Saguaro Night color-2 #1c3328 · Sand neutral-3 #f6f1e8
+ *   Ink neutral-10 #1d1b17 · Stone neutral-7 #6b6457 / #a69f92 · Caliche neutral-5 #ddd2c1
+ *   Copper Deep color-6 #9e4522 / #ee9a6e · Palo Verde success · Monsoon Amber warning · Chili error
+ *   Monsoon Sky color-5, focus ring only. Headlines: Archivo 700-800 at width 112. Body and UI: Inter 400-600.
  *
  *   Type roles (text-display .. text-caption) alias the theme's size, line, and letter-spacing
  *   steps plus a font role weight. Radii, spacing, and motion alias --radius-*, --space-*, and --motion-*.
@@ -48,6 +59,9 @@
 /* Graphical runtime stylesheet, imported once. It sits in the base layer so Tailwind utilities still win over
    its zero-specificity reset and component defaults. */
 @import "../components/graphical/styles.css" layer(base);
+/* MapLibre's marker and control CSS (components/map/brand-map.tsx). In the components layer, so utilities and the
+   brand map rules at the end of this file override it by layer order. */
+@import "maplibre-gl/dist/maplibre-gl.css" layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
@@ -85,7 +99,17 @@
   --night: var(--color-2);
   --night-foreground: var(--neutral-3);
   --night-muted: var(--neutral-5);
+  /* Dividers on Saguaro Night: Sand at the theme's 20% translucency. */
+  --night-rule: var(--neutral-3-transparent);
+  /* Fills on Saguaro Night: a quiet fill at rest, and the stronger step for hover and the filled part of a track. */
+  --night-fill: color-mix(in oklab, var(--night-foreground) 10%, transparent);
+  --night-fill-strong: var(--neutral-3-transparent);
   --link: var(--color-6);
+}
+/* The one role that changes step with the mode. Brand Caliche, the divider colour, is neutral-5 in light
+   (#ddd2c1) and neutral-4 in dark (#34423a), per brand-guidelines.md section 4. */
+.dark {
+  --border: var(--neutral-4);
 }
 
 /* Category tokens (spec 01-shared-brand-components section 2.2). Fill = stripe, icon, solid badge. Text = label colour on tint. */
@@ -172,6 +196,9 @@
   --color-night: var(--night);
   --color-night-foreground: var(--night-foreground);
   --color-night-muted: var(--night-muted);
+  --color-night-rule: var(--night-rule);
+  --color-night-fill: var(--night-fill);
+  --color-night-fill-strong: var(--night-fill-strong);
   --color-link: var(--link);
   --color-focus: var(--ring);
   --color-border-hover: var(--border-strong);
@@ -217,6 +244,21 @@
   --text-lead: 1.125rem;
   --text-lead--line-height: 1.75rem;
   --text-lead--font-weight: var(--weight-ui-regular);
+  /* Figures: stat numbers, prices and counts set at display size, in the data face. Three steps replace the
+     nine one-off sizes the pages used. Line height 1 keeps a figure on the baseline of the label beside it. */
+  --text-figure: 2.75rem;
+  --text-figure--line-height: 1;
+  --text-figure--font-weight: var(--weight-data-heavy);
+  --text-figure-lg: 3.5rem;
+  --text-figure-lg--line-height: 1;
+  --text-figure-lg--font-weight: var(--weight-data-heavy);
+  --text-figure-xl: clamp(3.5rem, 8vw, 7rem);
+  --text-figure-xl--line-height: 1;
+  --text-figure-xl--font-weight: var(--weight-data-heavy);
+  /* Lede: the first paragraph under a page title (.lede). One step above lead, because the page lede and a
+     section's lead line must differ. */
+  --text-lede: 1.25rem;
+  --text-lede--line-height: 1.75rem;
   --text-body: var(--size-m);
   --text-body--line-height: var(--line-m);
   --text-body--letter-spacing: var(--letter-spacing-m);
@@ -269,17 +311,130 @@
     var(--tw-shadow, 0 0 #0000);
 }
 
-/* Dividers are one-sided inset shadows (gui/foundations.md). rule-t draws the top edge, rule-b the bottom edge,
-   and rule-rows draws a top edge between sibling rows. */
+/* Dividers are one-sided inset shadows (gui/foundations.md), never native borders. Each side is its own
+   custom property, and every rule utility draws all four, so sides combine (rule-t with md:rule-l) and turn off
+   per breakpoint (sm:rule-t-0) the way border sides do. The properties do not inherit, so a parent's rule never
+   reaches its children. The colour is --border; rule-strong, rule-night and rule-heavy change it on the same
+   element. rule-rows and rule-cols draw a rule between sibling rows or columns. Dashed edges keep native
+   borders: a shadow cannot dash. */
+@property --rule-t {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --rule-r {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --rule-b {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --rule-l {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+/* No initial value: an unset width or colour falls back to the theme's --border-s and --border. */
+@property --rule-w {
+  syntax: "*";
+  inherits: false;
+}
+@property --rule-c {
+  syntax: "*";
+  inherits: false;
+}
 @utility rule-t {
-  box-shadow: inset 0 var(--border-s) 0 var(--border);
+  --rule-t: inset 0 var(--rule-w, var(--border-s)) 0
+    var(--rule-c, var(--border));
+  box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
 }
 @utility rule-b {
-  box-shadow: inset 0 calc(var(--border-s) * -1) 0 var(--border);
+  --rule-b: inset 0 calc(var(--rule-w, var(--border-s)) * -1) 0
+    var(--rule-c, var(--border));
+  box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+}
+@utility rule-l {
+  --rule-l: inset var(--rule-w, var(--border-s)) 0 0
+    var(--rule-c, var(--border));
+  box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+}
+@utility rule-r {
+  --rule-r: inset calc(var(--rule-w, var(--border-s)) * -1) 0 0
+    var(--rule-c, var(--border));
+  box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+}
+@utility rule-y {
+  --rule-t: inset 0 var(--rule-w, var(--border-s)) 0
+    var(--rule-c, var(--border));
+  --rule-b: inset 0 calc(var(--rule-w, var(--border-s)) * -1) 0
+    var(--rule-c, var(--border));
+  box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+}
+@utility rule-t-0 {
+  --rule-t: 0 0 #0000;
+}
+@utility rule-b-0 {
+  --rule-b: 0 0 #0000;
+}
+@utility rule-l-0 {
+  --rule-l: 0 0 #0000;
+}
+@utility rule-none {
+  --rule-t: 0 0 #0000;
+  --rule-r: 0 0 #0000;
+  --rule-b: 0 0 #0000;
+  --rule-l: 0 0 #0000;
+}
+@utility rule-strong {
+  --rule-c: var(--border-strong);
+}
+@utility rule-night {
+  --rule-c: var(--night-rule);
+}
+/* Quiet fills mixed from the text colour, for parts that sit on Night or on Copper: a track, a tile, a bar. */
+@utility fill-quiet {
+  background-color: color-mix(in oklab, currentColor 12%, transparent);
+}
+@utility fill-quiet-strong {
+  background-color: color-mix(in oklab, currentColor 28%, transparent);
+}
+@utility rule-ink {
+  --rule-c: var(--foreground);
+}
+/* The quote bar on a coach page: Copper at twice the large border width. */
+@utility rule-accent {
+  --rule-w: calc(var(--border-l) * 2);
+  --rule-c: var(--primary);
+}
+/* Heavy rules: the theme's large border width in the text colour. They open a ruled list or table (REDESIGN.md). */
+@utility rule-heavy {
+  --rule-w: var(--border-l);
+  --rule-c: var(--foreground);
 }
 @utility rule-rows {
   & > :where(:not(:first-child)) {
-    box-shadow: inset 0 var(--border-s) 0 var(--border);
+    --rule-t: inset 0 var(--border-s) 0 var(--border);
+    box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+  }
+}
+@utility rule-cols {
+  & > :where(:not(:first-child)) {
+    --rule-l: inset var(--border-s) 0 0 var(--border);
+    box-shadow: var(--rule-t), var(--rule-r), var(--rule-b), var(--rule-l);
+  }
+}
+/* Turn sibling rules off at a breakpoint, for a list that changes from rows to columns. */
+@utility rule-rows-0 {
+  & > :where(:not(:first-child)) {
+    --rule-t: 0 0 #0000;
+  }
+}
+@utility rule-cols-0 {
+  & > :where(:not(:first-child)) {
+    --rule-l: 0 0 #0000;
   }
 }
 
@@ -291,7 +446,8 @@
     text-decoration-thickness: from-font;
     text-underline-offset: 4px;
     text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
-    transition: text-decoration-color 150ms ease-out;
+    transition: text-decoration-color var(--motion-duration)
+      var(--motion-easing);
   }
   main :where(a, button).text-link:hover {
     text-decoration-color: currentColor;
@@ -307,8 +463,39 @@
     @apply border-border;
   }
   html {
-    /* Keeps a focused or anchored element out from under the sticky header (WCAG 2.4.11). */
-    @apply scroll-pt-20 font-sans;
+    /* The heights of the bars that stick to the top. Sticky offsets and scroll targets read these, so a
+       jump lands right under the bars and one bar never sits under another. A bar is 56 px plus a 1 px
+       rule above and below. */
+    --header-height: 4rem;
+    --section-nav-height: 58px;
+    /* The bottom of the sticky stack at the top of the page. */
+    --sticky-top: var(--header-height);
+    /* Keeps a focused or anchored element out from under the sticky stack (WCAG 2.4.11). The padding is the
+       whole offset: targets add a scroll margin only for a small gap, never for the header again. */
+    scroll-padding-top: var(--sticky-top);
+    @apply font-sans;
+  }
+  /* A page with the section nav has a taller stack at the top: the header and the nav. */
+  html:has(nav[aria-label="On this page"]) {
+    --sticky-top: calc(var(--header-height) + var(--section-nav-height));
+  }
+  /* The join flow's action bar is fixed below 1024 px, so focused fields stay above it up to that width. */
+  @media (width < 64rem) {
+    html:has([data-action-bar]) {
+      @apply scroll-pb-24;
+    }
+  }
+  /* Phones have the quick-actions bar at the bottom, so keep focused items above it too. */
+  @media (width < 48rem) {
+    html {
+      @apply scroll-pb-24;
+    }
+  }
+  /* On a short window the section nav is not sticky (see SectionNav), so less room is needed at the top. */
+  @media (max-height: 32rem) {
+    html:has(nav[aria-label="On this page"]) {
+      --sticky-top: var(--header-height);
+    }
   }
   body {
     @apply bg-background text-body text-foreground;
@@ -332,10 +519,10 @@
   }
 }
 
-/* Archivo is a variable font with a width axis. Display type uses the expanded cut (brand guide section 5). */
+/* Archivo is a variable font with a width axis. Headlines use the expanded cut, width 112 (brand guide section 5). */
 .font-display-wide {
   font-family: var(--font-brand);
-  font-variation-settings: "wdth" 112;
+  font-stretch: 112%;
   letter-spacing: -0.02em;
 }
 .tabular {
@@ -347,7 +534,7 @@
 @layer components {
   .eyebrow {
     font-family: var(--font-ui);
-    font-weight: 600;
+    font-weight: var(--weight-ui-heavy);
     font-size: 0.875rem;
     line-height: 1.25rem;
     color: var(--muted-foreground);
@@ -355,15 +542,15 @@
 }
 /* Lede: the first paragraph under a page title. 20/28, not in the base scale because body and lede must differ. */
 .lede {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: var(--text-lede);
+  line-height: var(--text-lede--line-height);
   max-width: 58ch;
 }
 /* Display sizes. Hero: 3 lines at most. Lead: the one section per page that leads. Quiet: utility sections. */
 .display-hero {
   font-family: var(--font-brand);
-  font-weight: 800;
-  font-variation-settings: "wdth" 112;
+  font-weight: var(--weight-brand-heavy);
+  font-stretch: 112%;
   font-size: clamp(2.75rem, 7.4vw, 6rem);
   line-height: 0.98;
   letter-spacing: -0.035em;
@@ -371,16 +558,32 @@
 }
 .display-lead {
   font-family: var(--font-brand);
-  font-weight: 800;
-  font-variation-settings: "wdth" 112;
+  font-weight: var(--weight-brand-heavy);
+  font-stretch: 112%;
   font-size: clamp(2.25rem, 4.6vw, 4.25rem);
   line-height: 1;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
+/* Hero in a narrow column (the classes hero shares its row with the timetable), from lg. */
+@media (width >= 64rem) {
+  .display-hero-narrow {
+    font-size: clamp(3rem, 5.2vw, 5.25rem);
+  }
+}
+/* Poster: one short word set across the full width (the journal hero). The one display size above the hero. */
+.display-poster {
+  font-family: var(--font-brand);
+  font-weight: var(--weight-brand-heavy);
+  font-stretch: 112%;
+  font-size: clamp(2.5rem, 10.5vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
 .display-quiet {
   font-family: var(--font-brand);
-  font-weight: 700;
+  font-weight: var(--weight-brand-medium);
+  font-stretch: 112%;
   font-size: 1.5rem;
   line-height: 1.875rem;
   text-wrap: balance;
@@ -431,14 +634,16 @@
   transition: none;
 }
 .nav-popup {
-  transition-property: opacity, transform, width, height;
+  /* background-color: the popup changes surface when the bar turns solid with a menu open. */
+  transition-property: opacity, transform, width, height, background-color;
   transition-duration: var(--motion-large-duration, 300ms);
   transition-timing-function: var(--motion-large-easing, ease);
 }
 .nav-panel {
   width: max-content;
   transition:
-    opacity calc(var(--motion-large-duration, 300ms) / 2) ease,
+    opacity calc(var(--motion-large-duration, 300ms) / 2)
+    var(--motion-large-easing, ease),
     translate var(--motion-large-duration, 300ms)
     var(--motion-large-easing, ease);
 }
@@ -469,11 +674,6 @@
   .grid > * {
     min-width: 0;
   }
-}
-
-/* Visually hidden text is absolutely positioned. Inside a sideways scroller it can sit beyond the viewport edge and widen the page, so the page clips it. */
-body {
-  overflow-x: clip;
 }
 
 /* Eyebrows on Saguaro Night use the night-muted tone. */
@@ -560,5 +760,24 @@ footer .eyebrow,
     background-image: none;
     color: var(--background);
     font-weight: var(--weight-ui-heavy);
+  }
+}
+
+/* Brand map chrome (components/map/brand-map.tsx). MapLibre ships its attribution and gesture hint in fixed white
+   and black. These rules sit after MapLibre's CSS in the same layer, so they win and follow the theme. */
+@layer components {
+  .brand-map .maplibregl-ctrl-attrib {
+    @apply bg-card/85 text-muted-foreground;
+  }
+  .brand-map .maplibregl-ctrl-attrib a {
+    @apply text-muted-foreground;
+  }
+  .brand-map .maplibregl-ctrl-attrib-button {
+    @variant dark {
+      @apply invert;
+    }
+  }
+  .brand-map .maplibregl-cooperative-gesture-screen {
+    @apply bg-night/70 text-body;
   }
 }

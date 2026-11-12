@@ -34,12 +34,12 @@ The site reads and writes the shared Supabase project. Schema, seed and policies
 - **Env.** `.env.local` holds `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_MEMBER_APP_URL` (the member web app, `http://localhost:3200` in dev; "Member sign in" goes to `<url>/sign-in`). No secret key.
 - **Reads.** `lib/catalog/server.ts` `getCatalog()` loads every catalog table in one parallel batch through a cookie-less client (`lib/supabase/public.ts`). Each request sits in the Next.js data cache for 1 hour with the tag `catalog` (previous caching model, no `cacheComponents`). React `cache` shares one load per render. `lib/catalog/map.ts` maps rows to the types in `lib/types.ts`.
 - **Client data.** The root layout passes a trimmed copy (`toClientData`, no article bodies) to `CatalogProvider` (`components/site/catalog-context.tsx`). Client components call `useCatalog()`. Server pages call `await getCatalog()`.
-- **Static pages.** 112 pages prerender at build and revalidate hourly. Dynamic routes use `generateStaticParams` from the database and `dynamicParams = false`, so an unknown slug is a 404. `/clubs`, `/classes`, `/coaches`, `/contact` and `/schedule` read `searchParams`, so they render per request (they did before too).
+- **Static pages.** 112 pages prerender at build and revalidate hourly. Dynamic routes use `generateStaticParams` from the database and `dynamicParams = false`, so an unknown slug is a 404. `/clubs`, `/coaches`, `/contact` and `/schedule` read `searchParams`, so they render per request (they did before too).
 - **Sessions.** Class times come from `class_schedules` (weekly rows). `buildSessions()` makes dated sessions for the next 7 days with the member apps' id format. Live spots come from the `session_counts` RPC, fetched once per page in the browser. Until it answers, rows show no spot count.
 - **Clock.** `lib/time.ts` uses real Arizona time (UTC-7, no DST). `useClubNow()` renders the build-time clock first, then the live clock, so hydration matches. Open, closing soon (last hour) and closed use the hours in `00-foundation.md` §2, which live in `lib/time.ts` because the database has no hours table.
 - **Forms.** `lib/forms/actions.ts` holds the server actions: tour, 3-day pass, join, contact, newsletter and job alerts. Each validates again on the server, drops posts that fill the hidden `company` honeypot, and inserts without `.select()` (anon can insert, not read). Codes and refs are made on the server. Personal data stays out of URLs. The confirmation pages read from sessionStorage in the same tab.
 - **Join payment** is still a demo. The card is checked in the browser (a number ending in 0002 is declined) and is never sent. Only the plan, club and people go to `join_requests`.
-- **States.** Data routes have `loading.tsx` and `error.tsx` (with `retry`). `app/global-error.tsx` covers a failed catalog load in the root layout. Club, class and coach slugs have their own `not-found.tsx`.
+- **States.** Pages have no `loading.tsx`: every page is static and cached (1 hour), so no page-level skeleton is needed. `/schedule`, `/coaches` and `/contact` read their query string on the client (`components/sections/url-init.tsx`) to stay static. The only skeleton is `components/ui/skeleton.tsx`, used for the live spot counts that the browser loads from Supabase. Data routes have `error.tsx` (with `retry`). `app/global-error.tsx` covers a failed catalog load in the root layout. Club, class and coach slugs have their own `not-found.tsx`.
 - **Still fixed or fake.** Busyness meters (`clubs.demo_busyness`), tour availability (a stable pattern in `tour-flow.tsx`, not a table), the Fall climb dates, and the club hours.
 
 ## Route table
@@ -48,7 +48,7 @@ The site reads and writes the shared Supabase project. Schema, seed and policies
 | `/` | 03 §1 Home (13 sections) | complete |
 | `/clubs` | §2 Clubs index (filters, SVG map + list split, compare table) | complete |
 | `/clubs/[slug]` (5) | §3 Club detail | complete |
-| `/classes` | §4 Classes index | complete |
+| `/classes` | §4 Classes index (rebuilt Nov 2, 2026 as a landing page: `components/sections/classes-overview.tsx`; class data aligned the same day, see "Class data" below) | complete |
 | `/classes/category/[category]` (8) | §4.7 Category landing | complete |
 | `/classes/[slug]` (28) | §5 Class detail | complete |
 | `/schedule` | §6 Schedule (filters, day strip, list, week grid, detail panel, sign-in hand-off) | complete |
@@ -73,7 +73,7 @@ The site reads and writes the shared Supabase project. Schema, seed and policies
 
 ## Components
 Brand (`components/brand/`): RibMeter, IntensityRibs, BusynessMeter, CapacityIndicator, CategoryBadge, AmenityChip, ClubCard (compact, feature, grid, list-row, map-callout), HoursTable, StatusLine, ClubContact, ClubMap + pins (SVG), ClassCard (card, compact), ScheduleRow, ClassPhotoTile, InstructorChip, CoachCard (headshot, card, compact), PlanCard, PlanComparisonTable, PhotoSlot, PhotoThumb, LinkButton, TextLink, SectionHead, YesNo.
-Sections (`components/sections/`): HeroSplit, PageHead, Band, Breadcrumbs, TourCTABand (with pass email row), TourTimeline, FaqList/FaqSection, StatTile, EmptyState, AmenityBento, CategoryRail, ClubFinderGrid, ClubStrip, TestimonialRail, ScheduleTeaser, ScheduleDayStrip, ScheduleBoard (filters, week grid, class panel), PopularTimesChart, SectionNav (scroll-spy), Gallery (lightbox), FamilyCalculator, ClubFinderSplit, ClubComparisonTable, flows (TourFlow, TrialFlow, JoinFlow), ContactForm, CoachGrid, JournalIndex, FaqExplorer, JobList, SearchResults.
+Sections (`components/sections/`): HeroSplit, Band, Breadcrumbs, TourCTABand (with pass email row), TourTimeline, FaqList/FaqSection, StatTile, EmptyState, AmenityBento, CategoryRail, ClubFinderGrid, ClubStrip, TestimonialRail, ScheduleTeaser, ScheduleDayStrip, ScheduleBoard (filters, week grid, class panel), PopularTimesChart, SectionNav (scroll-spy), Gallery (lightbox), FamilyCalculator, ClubFinderSplit, ClubsCompare, flows (TourFlow, TrialFlow, JoinFlow), ContactForm, CoachGrid, JournalIndex, FaqExplorer, JobList, SearchResults.
 Site shell (`components/site/`): SiteHeader (promo bar, utility bar, sticky header, Clubs and Classes mega menus), MobileDrawer (two-level full-screen), BottomActionBar, SiteFooter, SearchDialog, ClubSwitcher, MinimalCheckoutHeader, SkipLinks, BookingProvider (sign-in hand-off dialog).
 Graphical first: the converted Graphical `Button`, `Input`, `Accordion`, `Separator` from `components/ui/`, the Graphical theme runtime and tokens. Where Graphical has no part (cards, tables, badges, chips, meters) I built on theme tokens.
 
@@ -90,7 +90,7 @@ Graphical first: the converted Graphical `Button`, `Input`, `Accordion`, `Separa
 - **Club page.** The sticky booking card sticks only beside the hero and quick facts, not through all tab sections. The sections below use the full width so the schedule list and its side card fit.
 - **Classes index.** The "first-timers" switch lives in the filter row, not the page header.
 - **Class intensity** on schedule rows shows the middle of the class range.
-- **Schedule teaser default** is Gilbert – Val Vista when no club is set (spec copy is written for it).
+- **Schedule teaser default** is Val Vista & Warner when no club is set (spec copy is written for it).
 - **Tour confirmation** downloads a minimal `.ics`. The Google and Outlook items are not built.
 
 ## Known gaps
@@ -182,3 +182,13 @@ Lucide is replaced by Nucleo Pro (`ui` family, outline, 18 px) everywhere outsid
 - `components/ui/` wrappers that import Lucide directly (for example the accordion chevron) are unchanged on purpose.
 - The guides and skills (`GUI.md`, `gui/assets.md`, `gui/base-ui.md`, the theme file, the Graphical skills, the
   shadcn icon rule, `AGENTS.md`) carry the Nucleo override.
+
+## Class data (Nov 2, 2026)
+The seed source (`../supabase/seed-data/`) and the live project were changed together, so `/classes`, the category pages and the class pages tell the truth:
+- `class_types.club_slugs` now lists exactly the clubs where `class_schedules` runs each class (null only when all five run it). Before, many classes said "All 5 clubs" but ran at one to three.
+- Six timetable rows give times to the four bookable classes that had none: Breathwork, Tennis Drills, Hoops Run and Junior Pickleball.
+- `first_timer_shelf` lists one first-timer class from each type. Rhythm Ride left it: its `first_timer_ok` is false.
+- The four time slots (`bookable` false) have their own `gear`. Their class pages show "When you can book it." and the clubs, not an empty timetable.
+- `ClassType` has `minAge` (from `min_age`), so a page can tell a children's class from an adult one.
+- The live rows were changed with targeted SQL, not a full reseed, so the demo households kept their state. `seed.sql` is regenerated and matches.
+

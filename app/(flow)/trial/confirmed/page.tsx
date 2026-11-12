@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { TrialConfirmed } from "@/components/sections/trial-flow"
 import { MinimalCheckoutHeader } from "@/components/site/chrome"
 export const metadata: Metadata = {
-  title: "Your pass — Cactus Peak Athletic",
+  title: "Your pass — Cactus Peak",
+  description: "Your 3-day pass and what to bring.",
   robots: { index: false },
 }
 export default function Page() {

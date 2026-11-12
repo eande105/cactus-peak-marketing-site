@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { JoinConfirmed } from "@/components/sections/join-flow"
 import { MinimalCheckoutHeader } from "@/components/site/chrome"
 export const metadata: Metadata = {
-  title: "Welcome — Cactus Peak Athletic",
+  title: "Welcome — Cactus Peak",
+  description: "Your membership has started.",
   robots: { index: false },
 }
 export default function Page() {

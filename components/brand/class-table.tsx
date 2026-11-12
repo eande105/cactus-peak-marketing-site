@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Check } from "@/components/icons"
 import { useCatalog, useSessions } from "@/components/site/catalog-context"
 import { runsAt } from "@/lib/catalog"
+import { classHref } from "@/lib/links"
 import { dayInfo, fmtTime } from "@/lib/time"
 import type { ClassType, ClubSlug, Session } from "@/lib/types"
 import { CategoryIcon, catColor } from "./icons"
@@ -30,7 +31,7 @@ function nextFor(
 export function ClassTable({
   items,
   grouped = true,
-  club = "gilbert-val-vista",
+  club = "val-vista-warner",
 }: {
   items: ClassType[]
   grouped?: boolean
@@ -43,16 +44,12 @@ export function ClassTable({
     : [null]
   return (
     // biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean)
-    <div
-      role="table"
-      aria-label="Classes"
-      className="border-t-2 border-foreground"
-    >
+    <div role="table" aria-label="Classes" className="rule-t rule-heavy">
       {/* biome-ignore lint/a11y/useFocusableInteractive: ARIA table rows and cells are not focusable by design; the audit approved the keyboard path through the links inside */}
       {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
       <div
         role="row"
-        className={`hidden gap-x-4 border-b border-border py-2 text-caption font-semibold text-muted-foreground md:grid ${COLS}`}
+        className={`hidden gap-x-4 py-2 text-caption font-semibold text-muted-foreground rule-b md:grid ${COLS}`}
       >
         {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
         {/* biome-ignore lint/a11y/useFocusableInteractive: ARIA table rows and cells are not focusable by design; the audit approved the keyboard path through the links inside */}
@@ -82,7 +79,7 @@ export function ClassTable({
             // biome-ignore lint/a11y/useFocusableInteractive: ARIA table rows and cells are not focusable by design; the audit approved the keyboard path through the links inside
             <div
               role="row"
-              className="border-b border-border bg-muted py-3 pl-3"
+              className="bg-muted py-3 pl-3 rule-b"
               style={{ boxShadow: `inset 4px 0 0 ${catColor(cat.id)}` }}
             >
               {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
@@ -105,12 +102,12 @@ export function ClassTable({
               <div
                 key={c.slug}
                 role="row"
-                className={`grid items-center gap-x-4 gap-y-1 border-b border-border py-3 pl-3 ${COLS}`}
+                className={`grid items-center gap-x-4 gap-y-1 py-3 pl-3 rule-b ${COLS}`}
               >
                 {/* biome-ignore lint/a11y/useSemanticElements: ARIA table keeps the responsive grid layout; native table elements would break the md grid. Approved in the a11y audit (axe clean) */}
                 <div role="cell" className="min-w-0">
                   <Link
-                    href={`/classes/${c.slug}`}
+                    href={classHref(c)}
                     className="font-display-wide inline-flex min-h-11 items-center text-h3 hover:underline"
                   >
                     {c.name}

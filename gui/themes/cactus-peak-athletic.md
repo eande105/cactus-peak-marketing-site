@@ -85,7 +85,7 @@ These foundations describe the captured theme resolved by the bundled GraphicalP
       "family": "\"Archivo\", sans-serif",
       "weights": {
         "heavy": 800,
-        "medium": 600,
+        "medium": 700,
         "regular": 500
       }
     },

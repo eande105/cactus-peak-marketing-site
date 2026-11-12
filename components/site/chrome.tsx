@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { LinkButton } from "@/components/brand/atoms"
 import { cn } from "@/lib/utils"
+import { useCatalog } from "./catalog-context"
 import { useMyClub } from "./club-context"
 import { Logo } from "./logo"
 
@@ -31,6 +32,7 @@ export function SkipLinks({ club }: { club?: boolean }) {
 export function BottomActionBar() {
   const path = usePathname()
   const { club } = useMyClub()
+  const { clubBySlug } = useCatalog()
   const [show, setShow] = useState(false)
   const sentinel = useRef<HTMLDivElement>(null)
   // biome-ignore lint/correctness/useExhaustiveDependencies: path is the trigger; re-observe the sentinel after each route change
@@ -52,20 +54,19 @@ export function BottomActionBar() {
   const clubMatch = path.match(/^\/clubs\/([^/]+)$/)
   if (clubMatch) {
     primary = { label: "Tour this club", href: `/tour?club=${clubMatch[1]}` }
+    // Dial the club on this page, not the visitor's saved club.
+    const pageClub = clubBySlug(clubMatch[1])
     secondary = {
-      label: "Call the club",
-      href: `tel:${club?.tel ?? "+14805550100"}`,
+      // Short, so both actions fit side by side at 320 px without the page scrolling sideways.
+      label: "Call club",
+      href: `tel:${pageClub?.tel ?? "+14805550100"}`,
     }
-  } else if (
-    path.startsWith("/classes/") &&
-    !path.startsWith("/classes/category")
-  )
-    secondary = { label: "See times", href: "#times" }
+  } else if (path === "/classes")
+    secondary = { label: "See times", href: "#schedule" }
   else if (path === "/membership") {
     primary = { label: "Join Ridge", href: "/join/plan?plan=ridge" }
     secondary = { label: "Book a free tour", href: "/tour" }
-  } else if (path.startsWith("/coaches/"))
-    secondary = { label: "Book a free tour", href: "/tour" }
+  }
   if (path.startsWith("/legal") || path === "/search") return null
   return (
     <>
@@ -78,7 +79,7 @@ export function BottomActionBar() {
       <section
         aria-label="Quick actions"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 flex gap-3 border-t border-border bg-card px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] transition-transform duration-300 motion-reduce:transition-none md:hidden",
+          "fixed inset-x-0 bottom-0 z-50 flex gap-3 bg-card px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t transition-transform duration-(--motion-large-duration) ease-(--motion-large-easing) motion-reduce:transition-none md:hidden",
           show ? "translate-y-0" : "translate-y-full"
         )}
         inert={!show}
@@ -106,9 +107,11 @@ export function MinimalCheckoutHeader({
   saveExit?: boolean
 }) {
   return (
-    <header className="border-b border-border bg-card">
+    <header className="bg-card rule-b">
       <div className="mx-auto flex min-h-16 w-full max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Logo width={160} />
+        {/* The horizontal logo needs 200 px (brand minimum). Below 360 px the exit link leaves less, so the symbol shows. */}
+        <Logo width={200} className="shrink-0 max-[359px]:hidden" />
+        <Logo width={40} symbolOnly className="min-[360px]:hidden" />
         <div className="hidden flex-1 md:block">{children}</div>
         <div className="flex items-center gap-4 text-caption">
           <span className="hidden sm:inline">
@@ -122,7 +125,7 @@ export function MinimalCheckoutHeader({
           </span>
           {saveExit ? (
             <LinkButton href="/" variant="ghost" size="sm">
-              Save and exit
+              Exit
             </LinkButton>
           ) : null}
         </div>

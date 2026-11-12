@@ -1,26 +1,40 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { LinkButton, SectionHead } from "@/components/brand/atoms"
+import { LinkButton, SectionHead, TextLink } from "@/components/brand/atoms"
 import { HoursTable } from "@/components/brand/club-parts"
 import { ObjectRack, spaceObjects } from "@/components/brand/graphics"
-import { Minus } from "@/components/icons"
 import { ClubClassTable } from "@/components/sections/club-class-table"
+import { SectionNav } from "@/components/sections/club-detail-client"
+import { Band, FaqSection, TourCTABand } from "@/components/sections/common"
+import { FactTable } from "@/components/sections/fact-table"
 import {
-  Band,
-  Breadcrumbs,
-  ClosingRow,
-  FaqSection,
-  HeroSplit,
-} from "@/components/sections/common"
+  type PoolColumn,
+  PoolGauge,
+} from "@/components/sections/program-heroes"
+import { ProgramHero, RuleList } from "@/components/sections/program-page"
 import { LaneGrid } from "@/components/sections/slot-grid"
 import { HandoffButton } from "@/components/sections/small-client"
+import { SwimSchoolGuide } from "@/components/sections/swim-school"
 import { getCatalog } from "@/lib/catalog/server"
+import { SWIM } from "@/lib/labels"
+import { scheduleUrl } from "@/lib/links"
+import type { Club } from "@/lib/types"
 
 export const metadata: Metadata = {
   title: "Aquatics at Cactus Peak — 3 pools, lanes and a warm-water pool",
   description:
-    "Lap lanes, a warm-water pool, a splash pad and swim school at three clubs. Pools close 30 min before the club.",
+    "Lap lanes, a warm-water pool, a splash pad at pool clubs, and swim school at Val Vista & Warner. Pools close 30 min before the club.",
 }
+
+/** The page's sections, in order. */
+const SECTIONS = [
+  { id: "pools", label: "Pools" },
+  { id: "warm-pool", label: "Warm pool" },
+  { id: "classes", label: "Classes" },
+  { id: "swim-school", label: "Swim school" },
+  { id: "lanes", label: "Lanes" },
+  { id: "questions", label: "Questions" },
+]
+
 const faq = [
   {
     id: "a1",
@@ -37,185 +51,252 @@ const faq = [
     q: "Can my child swim alone?",
     a: "Children under 12 need a parent at the pool.",
   },
+  {
+    id: "a4",
+    q: "Which plans include the pools?",
+    a: "Every plan includes the pool at your home club, if it has one. Ridge and Summit include all three pools.",
+  },
 ]
+
+// The water temperatures, in °F. The lap pools and the therapy pool keep these ranges at every club.
+const LAP = { top: 82, range: "80–82°F" }
+const WARM = { top: 92, range: "90–92°F" }
+
+/** "8 lanes, 25 yd, outdoor". */
+const poolLine = (c: Club) =>
+  c.pool
+    ? `${c.pool.lanes} lanes, 25 ${c.pool.unit}${c.pool.outdoor ? ", outdoor" : ""}`
+    : ""
+
+/**
+ * Aquatics. It answers, in order, where the pools are, what the warm pool is for, the swim classes, swim school
+ * and how to book a lane. It shares the membership page's parts: a hero with a picture made for the claim and
+ * the section nav, lead-size heads, alternating bands and the Copper tour panel. The pool facts
+ * come from the club data, so the hero and the table agree with the club pages.
+ */
 export default async function Aquatics() {
-  const { classBySlug, clubBySlug } = await getCatalog()
+  const { classBySlug, clubs } = await getCatalog()
+  const pools = clubs.filter((c) => c.pool)
+  const warm = pools.find((c) => c.pool?.therapy)
+  const lanes = pools.reduce((n, c) => n + (c.pool?.lanes ?? 0), 0)
+  const noPool = clubs.filter((c) => !c.pool).map((c) => c.short)
+  const gauge: PoolColumn[] = [
+    ...pools.map((c) => ({
+      key: c.slug,
+      name: c.short,
+      line: poolLine(c),
+      temp: LAP.top,
+      range: `${LAP.top}°`,
+      icon: c.pool?.outdoor ? ("sun" as const) : ("pool" as const),
+    })),
+    ...(warm
+      ? [
+          {
+            key: "warm",
+            name: "Warm-water pool",
+            line: warm.short,
+            temp: WARM.top,
+            range: `${WARM.top}°`,
+            icon: "wave" as const,
+            lit: true,
+          },
+        ]
+      : []),
+  ]
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Aquatics" }]} />
-      <HeroSplit
+      <ProgramHero
+        id="aquatics-hero-title"
         title="Water at any pace."
-        support="Three clubs with pools. Lap lanes, warm water, a splash pad and swim school."
+        lede={`${lanes} lap lanes at ${pools.length} clubs, a warm pool for sore days, and swim school for kids 3 to 12.`}
         actions={
           <>
-            <LinkButton href="/tour" size="lg">
+            <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
               Book a free tour
             </LinkButton>
             <LinkButton
-              href="/schedule?category=aqua"
+              href={scheduleUrl({ category: "aqua" })}
               variant="outline"
               size="lg"
+              className="max-sm:flex-1"
             >
               See swim times
             </LinkButton>
           </>
         }
-        fact={{
-          icon: "pool",
-          value: "3 pools",
-          label: "25 yd and 25 m lap lanes, a warm-water pool, a splash pad",
-        }}
+        layout="band"
+        picture={<PoolGauge pools={gauge} />}
       />
-      <Band tone="muted">
-        <SectionHead title="Pools by club." className="mb-6" />
-        <div className="relative overflow-x-auto border-y-2 border-foreground">
-          <table className="w-full min-w-[720px] text-left text-body">
-            <caption className="sr-only">Pools at each club</caption>
-            <thead className="text-caption text-muted-foreground">
-              <tr>
-                {[
-                  "Club",
-                  "Pool",
-                  "Lanes",
-                  "Water",
-                  "Lap lane booking",
-                  "Pool hours (weekday)",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    scope="col"
-                    className="p-3 font-semibold whitespace-nowrap"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                [
-                  "mesa-dobson",
-                  "25-yd + warm-water",
-                  "8",
-                  "80–82°F, therapy pool 90–92°F",
-                  "45-min slots",
-                  "4:30 a.m.–9:30 p.m.",
-                ],
-                [
-                  "mesa-red-mountain",
-                  "Outdoor 25-m, shade sails",
-                  "8",
-                  "80–82°F",
-                  "45-min slots",
-                  "4:30 a.m.–9:30 p.m.",
-                ],
-                [
-                  "gilbert-val-vista",
-                  "25-yd + splash pad",
-                  "6",
-                  "80–82°F",
-                  "45-min slots",
-                  "4:30 a.m.–9:30 p.m.",
-                ],
-              ].map(([s, a, b, c, d, e]) => (
-                <tr key={s} className="border-t border-border">
-                  <th scope="row" className="font-display-wide p-3 text-h3">
-                    <Link className="hover:underline" href={`/clubs/${s}`}>
-                      {clubBySlug(s)!.name}
-                    </Link>
-                  </th>
-                  <td className="p-3">{a}</td>
-                  <td className="tabular p-3">{b}</td>
-                  <td className="tabular p-3">{c}</td>
-                  <td className="p-3">{d}</td>
-                  <td className="tabular p-3">{e}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+      <SectionNav items={SECTIONS} />
+
+      <Band tone="tint" id="pools">
+        <SectionHead
+          size="lead"
+          title="Three pools, one membership."
+          lede="Every plan swims at its home club. Ridge and Summit swim at all three."
+          action={
+            <TextLink href="/membership#clubs">What each plan opens</TextLink>
+          }
+        />
+        {/* A table from lg, one block for each club below it, so nothing scrolls sideways. */}
+        <div className="mt-12">
+          <FactTable
+            caption="Pools at each club"
+            corner="Club"
+            breakpoint="lg"
+            columns={[
+              { label: "Pool" },
+              { label: "Lanes", numeric: true },
+              { label: "Water", numeric: true },
+              { label: "Aqua Fit pool" },
+              { label: "Lap lanes" },
+            ]}
+            rows={pools.map((c) => ({
+              key: c.slug,
+              title: c.short,
+              sub: c.city,
+              href: `/clubs/${c.slug}`,
+              values: [
+                c.pool?.label ?? "",
+                String(c.pool?.lanes ?? ""),
+                c.pool?.therapy
+                  ? `${LAP.range}, warm pool ${WARM.range}`
+                  : LAP.range,
+                c.pool?.therapy
+                  ? "Warm-water pool"
+                  : c.pool?.outdoor
+                    ? "Outdoor pool"
+                    : "Lap pool",
+                "45-min slots",
+              ],
+            }))}
+          />
         </div>
-        <p className="mt-4 flex items-center gap-2 text-caption text-muted-foreground">
-          <Minus className="size-4" aria-hidden="true" />
-          No pool at Mesa – Downtown or Gilbert – Heritage. Ridge and Summit
-          members can swim at the other three.
+        <p className="mt-6 max-w-[62ch] text-body text-pretty text-muted-foreground">
+          No pool at {noPool.join(" or ")}. Ridge and Summit members swim at the
+          other three.
         </p>
       </Band>
-      <Band>
-        <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-6">
-            {/* A hub around warm water: what the therapy pool is for. */}
-            <ObjectRack
-              ratio="3/2"
-              layout="hub"
-              scheme="sand"
-              focus={spaceObjects["warm-pool"].lead}
-              ids={spaceObjects["warm-pool"].around}
-              className="rounded-lg edge ring-border"
-            />
+
+      {warm ? (
+        <Band id="warm-pool">
+          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-6">
+              {/* A hub around warm water: what the therapy pool is for. */}
+              <ObjectRack
+                ratio="3/2"
+                layout="hub"
+                scheme="sand"
+                focus={spaceObjects["warm-pool"].lead}
+                ids={spaceObjects["warm-pool"].around}
+                className="rounded-lg edge ring-border"
+              />
+            </div>
+            <div className="lg:col-span-6">
+              <p className="tabular font-data text-figure-xl">{WARM.top}°F</p>
+              <h2 className="display-lead mt-4 max-w-[16ch] text-balance">
+                A warm pool for stiff joints.
+              </h2>
+              <p className="mt-5 max-w-[48ch] text-lead text-pretty text-muted-foreground">
+                The therapy pool at {warm.short} stays at 90 to 92°F. The water
+                holds you up, so many members use it after surgery or on sore
+                days. Ask your doctor first. A coach can help you plan your
+                first week.
+              </p>
+              <LinkButton
+                href={`/tour?club=${warm.slug}&note=warm-pool`}
+                className="mt-8"
+              >
+                Ask about the warm pool
+              </LinkButton>
+            </div>
           </div>
-          <div className="lg:col-span-5 lg:col-start-8">
-            <h2 className="font-display-wide text-h2 lg:text-h1">
-              A warm pool for stiff joints.
-            </h2>
-            <p className="mt-4 text-body">
-              The warm-water therapy pool at Mesa – Dobson stays at 90 to 92°F.
-              The water holds you up. Many members use it after surgery or on
-              sore days. Ask your doctor first. Our coaches can help you plan a
-              first week.
-            </p>
-            <LinkButton
-              href="/tour?club=mesa-dobson&note=warm-pool"
-              className="mt-6"
-            >
-              Ask about the warm pool
-            </LinkButton>
-          </div>
+        </Band>
+      ) : null}
+
+      <Band tone="tint" id="classes">
+        <SectionHead
+          size="lead"
+          title="Four ways into the water."
+          lede="From open lanes to a coached workout. Pick your club to see its times."
+        />
+        <div className="mt-12">
+          <ClubClassTable
+            items={["lap-swim", "aqua-fit", "swim-school", "masters-swim"]
+              .map((x) => classBySlug(x))
+              .filter((c) => c !== undefined)}
+            grouped={false}
+          />
         </div>
       </Band>
-      <Band className="py-10 lg:py-14">
-        <SectionHead size="quiet" title="Four swim classes." className="mb-4" />
-        <ClubClassTable
-          items={["lap-swim", "aqua-fit", "swim-school", "masters-swim"].map(
-            (x) => classBySlug(x)!
-          )}
-          grouped={false}
+
+      <Band id="swim-school">
+        <SectionHead
+          size="lead"
+          title="Swim school, ages 3 to 12."
+          lede="Five levels, taught by Red Cross-certified coaches."
         />
+        <SwimSchoolGuide className="mt-12" />
       </Band>
-      <Band>
-        <div className="grid gap-10 lg:grid-cols-12">
+
+      <Band tone="tint" id="lanes">
+        <SectionHead
+          size="lead"
+          title="Your lane, 45 minutes at a time."
+          lede="Members book a lane in the app. Up to 2 swimmers share a lane."
+        />
+        <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <SectionHead
-              title="Lanes in 45-minute slots."
-              lede="Members book a lane in the app. Up to 2 swimmers share a lane."
-              className="mb-6"
-            />
-            <LaneGrid />
-            <div className="mt-4">
+            <h3 className="font-display-wide text-h3">
+              Open lanes this morning
+            </h3>
+            <p className="mt-1 text-body text-muted-foreground">
+              A sample at {SWIM.clubName}.
+            </p>
+            <div className="mt-6">
+              <LaneGrid />
+            </div>
+            <div className="mt-6">
               <HandoffButton
                 label="Book a lane"
                 classSlug="lap-swim"
-                club="gilbert-val-vista"
+                club="val-vista-warner"
                 start={360}
+                variant="primary"
               />
             </div>
           </div>
-          <div className="lg:col-span-5">
-            <h3 className="font-display-wide mb-4 text-h3">Pool hours</h3>
-            <HoursTable pool />
-            <p className="mt-1 text-caption text-muted-foreground">
-              Pools close 30 minutes before the club.
-            </p>
-            <p className="mt-6 max-w-[48ch] text-body text-muted-foreground">
-              Shower first. Wear a swim cap if your hair is long. No glass. Kids
-              swim with a parent. A lifeguard is always on duty.
-            </p>
+          <div className="flex flex-col gap-10 lg:col-span-5">
+            <section>
+              <h3 className="font-display-wide mb-4 text-h3">Pool hours</h3>
+              <HoursTable pool />
+              <p className="mt-2 text-body text-muted-foreground">
+                Pools close 30 minutes before the club.
+              </p>
+            </section>
+            <RuleList
+              title="Pool rules"
+              items={[
+                "Shower first",
+                "Wear a swim cap if your hair is long",
+                "No glass",
+                "Kids swim with a parent",
+                "A lifeguard is always on duty",
+              ]}
+            />
           </div>
         </div>
       </Band>
-      <div className="border-t border-border">
-        <FaqSection items={faq} title="Pool questions." />
-      </div>
-      <ClosingRow title="Test the water." />
+
+      <FaqSection id="questions" title="Pool questions." items={faq} />
+
+      <TourCTABand
+        night
+        title="Test the water on a tour."
+        support="A coach shows you the lanes, the warm pool and swim school, and you can ask about times for your family. No card."
+        passEmail
+      />
     </>
   )
 }

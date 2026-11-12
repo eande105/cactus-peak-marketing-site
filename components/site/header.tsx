@@ -35,71 +35,74 @@ const BarLink = themePart(
 
 // A link row inside a menu panel. The Graphical link part owns the radius, type and hover fill.
 // closeOnClick closes the panel when the visitor follows the link.
-function MenuLink({ item }: { item: NavItem }) {
+function MenuLink({ item, arrow }: { item: NavItem; arrow?: boolean }) {
   return (
     <NavigationMenu.Link
       closeOnClick
       render={<Link href={item.href} />}
-      className="min-h-11 justify-start gap-3 px-3 py-2"
+      // On the Sand popup the theme's Sand hover fill does not show, so the row takes the next step down.
+      className="min-h-11 justify-start gap-2 px-3 py-2 group-data-[solid=true]/popup:hover:bg-muted"
     >
       <NavItemBody item={item} />
+      {arrow ? (
+        <span aria-hidden="true" className="text-muted-foreground">
+          →
+        </span>
+      ) : null}
     </NavigationMenu.Link>
   )
 }
 
 /**
- * One menu panel: a short list per section, then the callout. Lists come first so the panel reads as
- * a directory; the callout closes the row as the one thing to do next (references: Intercom's product
- * menu and the shadcn navigation-menu list).
+ * One menu panel: plain page names under a small label, then the callout. The overview link comes
+ * first because the trigger opens the menu and does not go to the page. Text only, so the panel
+ * reads as one list (references: the shadcn "simple list" menu, and Faire and lululemon on Mobbin).
  */
 function MenuPanel({ group }: { group: NavGroup }) {
   return (
     <div className="flex gap-4 p-3">
-      {group.sections.map((s) => (
-        <div
-          key={s.label ?? group.id}
-          className={cn(
-            "flex flex-col",
-            s.cols === 2
-              ? "w-96"
-              : s.items.some((i) => i.desc)
-                ? "w-64"
-                : "w-48"
-          )}
+      <div className="flex flex-col">
+        <MenuLink item={group.overview} arrow />
+        {group.sections.map((s) => (
+          <div
+            key={s.label ?? group.id}
+            // A list of names takes its longest name, so no name (or the "Your club" badge) wraps.
+            className="flex w-max min-w-52 flex-col"
+          >
+            {s.label ? (
+              <p className="px-3 pt-2 pb-1 text-caption text-muted-foreground">
+                {s.label}
+              </p>
+            ) : null}
+            <ul>
+              {s.items.map((i) => (
+                <li key={i.title}>
+                  <MenuLink item={i} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      {group.callout ? (
+        <BaseNavigationMenu.Link
+          closeOnClick
+          render={<Link href={group.callout.href} />}
+          className="flex w-60 shrink-0 rounded-lg"
         >
-          {s.label ? (
-            <p className="px-3 pt-2 pb-1 text-caption text-muted-foreground">
-              {s.label}
-            </p>
-          ) : null}
-          <ul className={cn(s.cols === 2 && "grid grid-cols-2")}>
-            {s.items.map((i) => (
-              <li key={i.title}>
-                <MenuLink item={i} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-      <BaseNavigationMenu.Link
-        closeOnClick
-        render={<Link href={group.callout.href} />}
-        className="flex w-60 shrink-0 rounded-lg"
-      >
-        <NavCalloutBody callout={group.callout} className="w-full" />
-      </BaseNavigationMenu.Link>
+          <NavCalloutBody callout={group.callout} className="w-full" />
+        </BaseNavigationMenu.Link>
+      ) : null}
     </div>
   )
 }
 
 /** The path a group owns, so its trigger can mark the current section. */
 const inGroup = (g: NavGroup, path: string) =>
-  g.sections.some((s) =>
-    s.items.some((i) => {
-      const base = i.href.split(/[?#]/)[0]
-      return path === base || path.startsWith(`${base}/`)
-    })
-  )
+  [g.overview, ...g.sections.flatMap((s) => s.items)].some((i) => {
+    const base = i.href.split(/[?#]/)[0]
+    return path === base || path.startsWith(`${base}/`)
+  })
 
 export function SiteHeader() {
   const pathname = usePathname()
@@ -108,24 +111,22 @@ export function SiteHeader() {
   const [menu, setMenu] = useState<NavGroupId | null>(null)
   const [drawer, setDrawer] = useState(false)
   const [search, setSearch] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const solid = scrolled || menu !== null
+  // Only the scroll position sets the bar's surface. An open menu does not, so the bar stays bare at the top.
+  const [solid, setSolid] = useState(false)
 
   useEffect(() => {
-    const read = () => setScrolled(window.scrollY > 8)
+    // The bar turns solid past 8px and bare again only at the very top, so a small bounce near the
+    // threshold does not make it flicker.
+    const read = () =>
+      setSolid((was) => (was ? window.scrollY > 0 : window.scrollY > 8))
     read()
     window.addEventListener("scroll", read, { passive: true })
     return () => window.removeEventListener("scroll", read)
   }, [])
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement
-      const typing =
-        t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable
-      if (
-        (e.key === "k" && (e.metaKey || e.ctrlKey)) ||
-        (e.key === "/" && !typing)
-      ) {
+      // No single-key shortcut: it would fire for speech-input and keyboard users by accident (WCAG 2.1.4).
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setSearch(true)
       }
@@ -136,19 +137,23 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* One row: the brand, five top items (two menus and three pages), then search, sign in and the tour
+      {/* One row: the brand, five top items (one menu and four pages), then search, sign in and the tour
           (references: Ramp, Claude and Coda on Mobbin). */}
       {/* At the top of the page the bar sits on the page itself, with no surface or rule. Once the page
-          scrolls (or a menu opens over it) the bar takes the card surface and a 1px rule, so it stays
+          scrolls, the bar takes the card surface and a 1px rule, so it stays
           readable over the content that passes under it. */}
       <header
         data-solid={solid}
         className={cn(
-          "group/header sticky top-0 z-50 transition-[background-color,box-shadow] duration-150 motion-reduce:transition-none",
-          solid ? "bg-card shadow-[0_1px_0_0_var(--border)]" : "bg-transparent"
+          // The surface and the rule change together on the theme's large motion. The bare state keeps a
+          // transparent rule of the same shape, so only its colour animates.
+          "group/header sticky top-0 z-50 transition-[background-color,box-shadow] duration-(--motion-large-duration) ease-(--motion-large-easing) motion-reduce:transition-none",
+          solid
+            ? "bg-card shadow-[0_var(--border-s)_0_0_var(--border)]"
+            : "bg-transparent shadow-[0_var(--border-s)_0_0_transparent]"
         )}
       >
-        {/* The bar collapses in steps, each set from the measured widths of its parts (logo 180, symbol 40, nav 554,
+        {/* The bar collapses in steps, each set from the measured widths of its parts (logo 200, the brand minimum; symbol 40; nav 554,
             search 44, sign in 99, tour 158; gaps 8 to 16):
             - below 768: menu, logo (the symbol below 640), search. The phone action bar carries the tour and Join,
               and the drawer carries sign in.
@@ -156,7 +161,7 @@ export function SiteHeader() {
             - 1024 to 1279: the nav fits only beside the symbol.
             - 1280 and up: the full logo comes back.
             The drawer holds the full tree, sign in and the tour, so nothing is lost at any step. */}
-        <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-2 px-4 sm:px-6 md:gap-4 xl:px-8">
+        <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-2 px-4 sm:px-6 md:gap-4 lg:px-8">
           <Button
             variant="ghost"
             size="icon"
@@ -165,9 +170,9 @@ export function SiteHeader() {
             onClick={() => setDrawer(true)}
             className="-ml-2 size-11 md:-ml-3 lg:hidden"
           >
-            <Menu className="size-5" aria-hidden="true" />
+            <Menu className="size-4.5" aria-hidden="true" />
           </Button>
-          <Logo width={180} className="max-sm:hidden lg:max-xl:hidden" />
+          <Logo width={200} className="max-sm:hidden lg:max-xl:hidden" />
           <Logo width={40} symbolOnly className="sm:max-lg:hidden xl:hidden" />
           {/* Graphical NavigationMenu on Base UI. The primitive owns hover intent, arrow keys between triggers,
               Escape, focus return and outside dismissal. The popup follows the open trigger and takes the size
@@ -185,9 +190,11 @@ export function SiteHeader() {
                 <NavigationMenu.Item key={g.id} value={g.id}>
                   <NavigationMenu.Trigger
                     className={cn(
-                      "gap-1",
-                      // The trigger's hover fill is Sand, the page colour. On the bare bar it takes the card colour instead.
-                      "group-data-[solid=false]/header:hover:bg-card",
+                      // Five top items, so the items sit 4px closer than the Graphical default to leave the logo its width.
+                      "gap-1 px-2",
+                      // The trigger's hover and open fills are Sand, the page colour. On the bare bar they take the
+                      // card colour instead, so the open menu's trigger still reads as open.
+                      "group-data-[solid=false]/header:hover:bg-card group-data-[solid=false]/header:data-popup-open:bg-card",
                       // The underline marks the current section. It is a pseudo-element, so it does not touch
                       // the Graphical trigger surface.
                       inGroup(g, pathname) &&
@@ -216,7 +223,7 @@ export function SiteHeader() {
                       render={<Link href={n.href} />}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "group-data-[solid=false]/header:hover:bg-card",
+                        "px-2 group-data-[solid=false]/header:hover:bg-card",
                         active &&
                           "relative after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:bg-primary"
                       )}
@@ -237,8 +244,15 @@ export function SiteHeader() {
                 className="nav-positioner z-50"
               >
                 {/* The panels are wider than the 420 px dropdown cap in the Graphical spec. Surface, edge,
-                    shadow and motion stay Graphical. */}
-                <NavigationMenu.Popup className="nav-popup h-(--popup-height) max-h-none w-(--popup-width) max-w-(--available-width) overflow-hidden">
+                    shadow and motion stay Graphical. The solid bar is the card colour, so under it the popup
+                    takes Sand and reads as its own layer. On the bare bar it keeps the card colour. */}
+                <NavigationMenu.Popup
+                  data-solid={solid}
+                  className={cn(
+                    "nav-popup group/popup h-(--popup-height) max-h-none w-(--popup-width) max-w-(--available-width) overflow-hidden",
+                    solid && "bg-background"
+                  )}
+                >
                   <NavigationMenu.Viewport className="relative size-full overflow-hidden" />
                 </NavigationMenu.Popup>
               </NavigationMenu.Positioner>
@@ -253,23 +267,34 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               aria-label="Search clubs and classes"
-              title="Search (/)"
+              title="Search (Ctrl K or ⌘ K)"
               onClick={() => setSearch(true)}
               className="size-11"
             >
-              <Search className="size-5" aria-hidden="true" />
+              <Search className="size-4.5" aria-hidden="true" />
             </Button>
+            {/* Phones: a plain text link. Members sign in often, and the drawer was the only place for it. */}
+            <a
+              href={MEMBER_SIGN_IN_URL}
+              target="_blank"
+              rel="noopener"
+              aria-label="Member sign in"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-2 text-label text-link underline-offset-4 hover:underline md:hidden"
+            >
+              Sign in
+            </a>
             <LinkButton
               href={MEMBER_SIGN_IN_URL}
               external
               variant="ghost"
               aria-label="Member sign in"
               // The soft fill is one step darker than the card; on the bare page it takes the card colour,
-              // so it still reads as a button against the Sand.
-              className="hidden group-data-[solid=false]/header:bg-card md:inline-flex"
+              // so it still reads as a button against the Sand. It changes on the bar's motion.
+              className="hidden duration-(--motion-large-duration) ease-(--motion-large-easing) group-data-[solid=false]/header:bg-card md:inline-flex"
             >
-              <User aria-hidden="true" />
-              Sign in
+              <User className="size-4.5" aria-hidden="true" />
+              {/* From 1024 to 1279 the five top items leave no room for the word, so the icon stands alone. */}
+              <span className="lg:max-xl:sr-only">Sign in</span>
             </LinkButton>
             <LinkButton
               href={club ? `/tour?club=${club.slug}` : "/tour"}
@@ -281,12 +306,14 @@ export function SiteHeader() {
         </div>
         {/* Dims the page under an open panel. It lives inside the sticky header so it starts at the header's lower
             edge and stays behind the header. A press on it is an outside press, so the menu closes. */}
-        {menu ? (
-          <div
-            aria-hidden="true"
-            className="absolute inset-x-0 top-full -z-10 h-dvh bg-night/20 transition-opacity duration-(--motion-duration) motion-reduce:transition-none starting:opacity-0"
-          />
-        ) : null}
+        {/* It stays mounted and fades both ways with the panel; closed, it takes no pointer events. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-x-0 top-full -z-10 h-dvh bg-night/20 transition-opacity duration-(--motion-large-duration) ease-(--motion-large-easing) motion-reduce:transition-none",
+            menu ? "opacity-100" : "pointer-events-none opacity-0"
+          )}
+        />
       </header>
       <MobileDrawer
         open={drawer}

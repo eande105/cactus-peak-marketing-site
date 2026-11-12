@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { Check } from "@/components/icons"
 import { BookingStateButton, RowOpen } from "@/components/site/booking"
+import { Skeleton } from "@/components/ui/skeleton"
 import { initials } from "@/lib/catalog"
+import { classHref } from "@/lib/links"
 import { fmtTime } from "@/lib/time"
 import type { ClassType, Coach, Session } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -54,6 +56,7 @@ export function InstructorChip({
   showName = true,
   className,
   empty = "Self-guided",
+  href,
 }: {
   name: string | null
   /** Coach slug, for the coach mark. */
@@ -62,6 +65,8 @@ export function InstructorChip({
   showName?: boolean
   className?: string
   empty?: string
+  /** Set only when the coach has a public profile page. */
+  href?: string
 }) {
   if (!name)
     return (
@@ -71,14 +76,31 @@ export function InstructorChip({
     )
   const [given, family] = name.split(" ")
   const short = family ? `${given} ${family[0]}.` : given
-  return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
+  const body = (
+    <>
       <CoachAvatar slug={slug} name={name} size={size} />
       {showName ? (
         <span className="text-caption">{short}</span>
       ) : (
         <span className="sr-only">{name}</span>
       )}
+    </>
+  )
+  if (href)
+    return (
+      <Link
+        href={href}
+        className={cn(
+          "inline-flex min-h-11 items-center gap-2 hover:underline",
+          className
+        )}
+      >
+        {body}
+      </Link>
+    )
+  return (
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      {body}
     </span>
   )
 }
@@ -94,7 +116,7 @@ export function ClassCard({
   next?: string
   className?: string
 }) {
-  const href = `/classes/${ct.slug}`
+  const href = classHref(ct)
   if (variant === "compact") {
     return (
       <Link
@@ -145,7 +167,7 @@ export function ClassCard({
           scale={0.62}
           x={0.42}
           y={0.22}
-          className="rounded-md"
+          className="rounded-sm"
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4 pl-5">
@@ -206,7 +228,7 @@ export function ScheduleList({
       <ul
         aria-label={label}
         className={cn(
-          "border-t border-border",
+          "rule-t",
           mobileFour && "max-sm:[&>li:nth-child(n+5)]:hidden"
         )}
       >
@@ -228,7 +250,7 @@ export function ScheduleList({
     </div>
   )
 }
-export function ScheduleRow({
+function ScheduleRow({
   s,
   showTime = true,
   showClub,
@@ -242,17 +264,22 @@ export function ScheduleRow({
   onOpen?: (s: Session) => void
 }) {
   const title = hideClass ? s.clubName : s.className
+  // With onOpen, the title button is the one control for the row. Its ::after stretches over the whole
+  // row, so any tap opens the details. The coach link and Book button sit above it (relative z-10).
   const Title = onOpen ? (
     <button
       type="button"
       onClick={() => onOpen(s)}
-      className="min-h-11 rounded-sm text-left text-body-strong underline-offset-4 hover:underline"
+      aria-haspopup="dialog"
+      className="min-h-11 rounded-sm text-left text-body-strong underline-offset-4 outline-offset-2 after:absolute after:inset-0 after:content-[''] hover:underline"
     >
       {title}
     </button>
   ) : (
     <Link
-      href={hideClass ? `/clubs/${s.clubSlug}` : `/classes/${s.classSlug}`}
+      href={
+        hideClass ? `/clubs/${s.clubSlug}` : classHref({ slug: s.classSlug })
+      }
       className="inline-flex min-h-11 items-center text-body-strong underline-offset-4 hover:underline"
     >
       {title}
@@ -265,12 +292,24 @@ export function ScheduleRow({
       : s.category === "court"
         ? "Open play"
         : "Self-guided")
-  const meta = [who, s.room, showClub && !hideClass ? s.clubShort : null]
+  const rest = [s.room, showClub && !hideClass ? s.clubShort : null]
     .filter(Boolean)
     .join(" · ")
+  // Link the coach only when the coach has a public profile page.
+  const whoNode =
+    s.coach && s.coachSlug && s.coachProfile ? (
+      <Link
+        href={`/coaches/${s.coachSlug}`}
+        className="relative z-10 -my-1 inline-block py-1 underline-offset-4 hover:text-foreground hover:underline"
+      >
+        {who}
+      </Link>
+    ) : (
+      who
+    )
   return (
-    <li className="relative grid grid-cols-[76px_minmax(0,1fr)_auto] items-center gap-x-3 border-b border-border py-2 @min-[620px]:grid-cols-[80px_minmax(0,1fr)_auto_104px]">
-      <RowOpen s={s} onOpen={onOpen} />
+    <li className="relative grid grid-cols-[76px_minmax(0,1fr)_auto] items-center gap-x-3 py-2 rule-b @min-[620px]:grid-cols-[80px_minmax(0,1fr)_auto_104px]">
+      {onOpen ? null : <RowOpen s={s} />}
       <div className="tabular text-body whitespace-nowrap">
         {showTime ? (
           fmtTime(s.start)
@@ -279,11 +318,18 @@ export function ScheduleRow({
         )}
       </div>
       <div className="min-w-0">
-        <span className="relative z-10">{Title}</span>
-        <p className="truncate text-caption text-muted-foreground">{meta}</p>
+        {onOpen ? Title : <span className="relative z-10">{Title}</span>}
+        <p className="truncate text-caption text-muted-foreground">
+          {whoNode}
+          {rest ? ` · ${rest}` : ""}
+        </p>
       </div>
       <div className="text-right whitespace-nowrap">
-        {s.left === 0 ? (
+        {!s.live ? (
+          s.countsFailed ? null : (
+            <Skeleton className="ml-auto h-4 w-14" label="Loading spots" />
+          )
+        ) : s.left === 0 ? (
           <span className="text-caption font-semibold">
             Full{s.waitlist ? ` · ${s.waitlist} waiting` : ""}
           </span>

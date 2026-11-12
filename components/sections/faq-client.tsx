@@ -12,25 +12,40 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input"
+import { FAQ_GROUPS as KNOWN_GROUPS } from "@/lib/labels"
 import { useMedia } from "@/lib/use-media"
-
-const groups = ["Getting started", "Memberships", "Kids and teens"] as const
 
 export function FaqExplorer() {
   const { faqs } = useCatalog()
-  const [group, setGroup] = useState<(typeof groups)[number]>("Getting started")
+  const groups = useMemo(
+    () => [
+      ...KNOWN_GROUPS,
+      ...[...new Set(faqs.map((f) => f.group))].filter(
+        (g) => !KNOWN_GROUPS.includes(g)
+      ),
+    ],
+    [faqs]
+  )
+  const [group, setGroup] = useState<string>("Getting started")
   const [q, setQ] = useState("")
   const [open, setOpen] = useState<string[]>(["card"])
   const wide = useMedia("(min-width: 1024px)")
-  // Syncs from the URL hash, an external system, once after mount.
+  // Syncs from the URL hash, an external system: after mount, and each time the hash changes, so the question
+  // links in the hero open their answer on the same page.
   useEffect(() => {
-    const h = window.location.hash.slice(1)
-    const f = faqs.find((x) => x.id === h)
-    if (f) {
-      setGroup(f.group as (typeof groups)[number])
-      setOpen([f.id])
-      setTimeout(() => document.getElementById(h)?.scrollIntoView(), 50)
+    const sync = () => {
+      const h = window.location.hash.slice(1)
+      const f = faqs.find((x) => x.id === h)
+      if (f) {
+        setQ("")
+        setGroup(f.group)
+        setOpen([f.id])
+        setTimeout(() => document.getElementById(h)?.scrollIntoView(), 50)
+      }
     }
+    sync()
+    window.addEventListener("hashchange", sync)
+    return () => window.removeEventListener("hashchange", sync)
   }, [faqs])
   const list = useMemo(
     () =>
@@ -71,9 +86,9 @@ export function FaqExplorer() {
           onValueChange={(v) => {
             if (!v[0]) return
             setQ("")
-            setGroup(v[0] as (typeof groups)[number])
+            setGroup(v[0])
           }}
-          className="max-w-full scrollbar-none overflow-x-auto lg:sticky lg:top-24 lg:col-span-4 lg:flex-col lg:items-stretch lg:self-start"
+          className="max-w-full overflow-x-auto lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)] lg:col-span-4 lg:flex-col lg:items-stretch lg:self-start"
         >
           {groups.map((g) => (
             <Toggle
@@ -88,7 +103,7 @@ export function FaqExplorer() {
             </Toggle>
           ))}
         </ToggleGroup>
-        <div className="lg:col-span-8" aria-live="polite">
+        <div className="lg:col-span-8">
           <h2 className="sr-only">{q ? "Search results" : group}</h2>
           {list.length ? (
             <Accordion
@@ -97,14 +112,14 @@ export function FaqExplorer() {
                 setOpen(v as string[])
                 if (v.length) history.replaceState(null, "", `#${v[0]}`)
               }}
-              className="border-t border-border"
+              className="rule-t"
             >
               {list.map((f) => (
                 <AccordionItem
                   key={f.id}
                   value={f.id}
                   id={f.id}
-                  className="scroll-mt-24 border-b border-border shadow-none"
+                  className="scroll-mt-8 rule-b"
                 >
                   <AccordionTrigger className="font-display-wide text-h3 hover:no-underline">
                     {f.q}

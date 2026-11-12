@@ -215,7 +215,7 @@ Lengths are pixels, letter spacing is em, motion durations are milliseconds, and
     },
     "brand": {
       "family": "\"Archivo\", sans-serif",
-      "weights": { "heavy": 800, "medium": 600, "regular": 500 }
+      "weights": { "heavy": 800, "medium": 700, "regular": 500 }
     },
     "editorial": {
       "family": "\"Sidebar Inter\", sans-serif",
@@ -378,6 +378,8 @@ No separate icon weight is set; icons follow the surrounding text weight.
     "button:primary:part:control:focus": { "focusRing": { "color": "color-5", "width": 2, "opacity": 100 } },
     "button:primary:part:control:hover": { "background": "color-6" },
     "combobox:default:part:input:focus": { "focusRing": { "color": "color-5", "width": 2, "opacity": 100 } },
+    "select:default:part:control:rest": { "borderColor": "neutral-6" },
+    "select:default:part:control:hover": { "borderColor": "neutral-8" },
     "select:default:part:control:focus": { "focusRing": { "color": "color-5", "width": 2, "opacity": 100 } },
     "switch:default:part:control:focus": { "focusRing": { "color": "color-5", "width": 2, "opacity": 100 } },
     "toggle:default:part:control:focus": { "focusRing": { "color": "color-5", "width": 2, "opacity": 100 } },

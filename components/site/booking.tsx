@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   createContext,
   type ReactNode,
@@ -10,6 +11,7 @@ import {
 } from "react"
 import { CategoryBadge, LinkButton } from "@/components/brand/atoms"
 import { InstructorChip } from "@/components/brand/class-parts"
+import { IntensityKeyDetails } from "@/components/brand/intensity-key"
 import { CapacityIndicator, IntensityRibs } from "@/components/brand/meters"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,7 +20,9 @@ import {
   OverlayPopup,
   OverlayTitle,
 } from "@/components/ui/overlay"
-import { MEMBER_SIGN_IN_URL } from "@/lib/links"
+import { Skeleton } from "@/components/ui/skeleton"
+import { countOf } from "@/lib/labels"
+import { classHref, MEMBER_SIGN_IN_URL } from "@/lib/links"
 import { dayInfo, fmtTime } from "@/lib/time"
 import type { Session } from "@/lib/types"
 import { useCatalog, useClubNow } from "./catalog-context"
@@ -26,8 +30,16 @@ import { useCatalog, useClubNow } from "./catalog-context"
 type Ctx = {
   open: (s: Session, kind: "book" | "waitlist") => void
   openPanel: (s: Session) => void
+  closePanel: () => void
+  /** The session whose details panel is open, so a page can keep it in the URL. */
+  panel: Session | null
 }
-const C = createContext<Ctx>({ open: () => {}, openPanel: () => {} })
+const C = createContext<Ctx>({
+  open: () => {},
+  openPanel: () => {},
+  closePanel: () => {},
+  panel: null,
+})
 export const useBooking = () => useContext(C)
 
 /** Signed-out hand-off dialog (spec 03 section 6.6). */
@@ -42,7 +54,11 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     []
   )
   const openPanel = useCallback((s: Session) => setPanel(s), [])
-  const v = useMemo(() => ({ open, openPanel }), [open, openPanel])
+  const closePanel = useCallback(() => setPanel(null), [])
+  const v = useMemo(
+    () => ({ open, openPanel, closePanel, panel }),
+    [open, openPanel, closePanel, panel]
+  )
   const now = useClubNow()
   const s = state?.s
   const d = s ? dayInfo(s.day, now.dayNum) : null
@@ -51,7 +67,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       {children}
       <ClassPanel s={panel} onClose={() => setPanel(null)} />
       <Overlay open={!!state} onOpenChange={(o) => !o && setState(null)}>
-        <OverlayPopup label="Sign in to book">
+        <OverlayPopup>
           {/* The title keeps XL space at its end for the corner close (dialog.md). */}
           <OverlayTitle className="pr-8">
             {state?.kind === "waitlist"
@@ -80,7 +96,13 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             </LinkButton>
           </div>
           <p className="text-caption text-muted-foreground">
-            Members book up to 7 days ahead. Summit members book 9.
+            Members book up to 7 days ahead. Summit members book 9.{" "}
+            <Link
+              href="/app"
+              className="text-link underline underline-offset-4"
+            >
+              Members book in the app.
+            </Link>
           </p>
         </OverlayPopup>
       </Overlay>
@@ -136,9 +158,10 @@ function ClassPanel({
   s: Session | null
   onClose: () => void
 }) {
-  const { classBySlug } = useCatalog()
+  const { classBySlug, clubBySlug } = useCatalog()
   const now = useClubNow()
   const ct = s ? classBySlug(s.classSlug) : null
+  const pool = s ? clubBySlug(s.clubSlug)?.pool : undefined
   const d = s ? dayInfo(s.day, now.dayNum) : null
   return (
     <Overlay
@@ -151,7 +174,7 @@ function ClassPanel({
       <OverlayPopup
         label="Class details"
         className="p-0"
-        closeClassName="text-night-foreground hover:bg-night-foreground/10"
+        closeClassName="text-night-foreground hover:bg-night-fill"
       >
         {s && ct && d ? (
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
@@ -174,7 +197,7 @@ function ClassPanel({
               <p className="text-caption">
                 {s.clubName}, {s.room}
               </p>
-              <dl className="grid grid-cols-3 gap-3 border-y border-border py-3">
+              <dl className="grid grid-cols-3 gap-3 py-3 rule-y">
                 <div>
                   <dt className="eyebrow text-muted-foreground">Duration</dt>
                   <dd className="tabular text-label">{ct.duration} min</dd>
@@ -188,7 +211,13 @@ function ClassPanel({
                 <div>
                   <dt className="eyebrow text-muted-foreground">Spots</dt>
                   <dd>
-                    {s.left > 5 ? (
+                    {!s.live ? (
+                      s.countsFailed ? (
+                        <span className="text-caption">Ask the desk</span>
+                      ) : (
+                        <Skeleton className="h-4 w-14" label="Loading spots" />
+                      )
+                    ) : s.left > 5 ? (
                       "Plenty"
                     ) : (
                       <CapacityIndicator
@@ -200,15 +229,49 @@ function ClassPanel({
                   </dd>
                 </div>
               </dl>
-              <InstructorChip name={s.coach} slug={s.coachSlug} size={40} />
+              <IntensityKeyDetails className="-mt-2" />
+              <InstructorChip
+                name={s.coach}
+                slug={s.coachSlug}
+                size={40}
+                href={
+                  s.coachProfile && s.coachSlug
+                    ? `/coaches/${s.coachSlug}`
+                    : undefined
+                }
+              />
               <p className="text-body">{ct.blurb}</p>
+              {ct.category === "aqua" ? (
+                <p className="text-caption">
+                  {/pool/i.test(s.room)
+                    ? /warm/i.test(s.room)
+                      ? `This class is in the warm-water pool (90–92°F) at ${s.clubName}.`
+                      : `This class is in the ${s.room.toLowerCase()} at ${s.clubName}. The warm-water pool (90–92°F) is at Dobson & Southern only.`
+                    : `${
+                        pool
+                          ? `Pool at ${s.clubName}: ${pool.label.toLowerCase()}, ${countOf(pool.lanes, "lane")}. `
+                          : ""
+                      }The warm-water pool (90–92°F) is at Dobson & Southern only.`}
+                </p>
+              ) : null}
               <p className="text-caption text-muted-foreground">
-                Bring: {ct.gear} Cancel free up to 2 hours before.
+                Bring:{" "}
+                {(ct.bring.length ? ct.bring.join(", ") : ct.gear).replace(
+                  /\.$/,
+                  ""
+                )}
+                . Cancel free up to 2 hours before.
               </p>
               <div className="flex flex-wrap items-center gap-3">
-                <LinkButton href={`/classes/${ct.slug}`} variant="ghost">
-                  View class page
+                <LinkButton href={classHref(ct)} variant="ghost">
+                  See class details
                 </LinkButton>
+                <Link
+                  href="/app"
+                  className="inline-flex min-h-11 items-center text-label text-link underline-offset-4 hover:underline"
+                >
+                  How booking in the app works
+                </Link>
               </div>
             </div>
           </div>

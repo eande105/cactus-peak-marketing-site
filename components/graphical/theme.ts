@@ -57,7 +57,7 @@ export const theme: ThemeDocument = {
         "family": "\"Archivo\", sans-serif",
         "weights": {
           "heavy": 800,
-          "medium": 600,
+          "medium": 700,
           "regular": 500
         }
       },
@@ -980,6 +980,12 @@ export const theme: ThemeDocument = {
         "width": 2,
         "opacity": 100
       }
+    },
+    "select:default:part:control:rest": {
+      "borderColor": "neutral-6"
+    },
+    "select:default:part:control:hover": {
+      "borderColor": "neutral-8"
     },
     "select:default:part:control:focus": {
       "focusRing": {

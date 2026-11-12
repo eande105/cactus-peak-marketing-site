@@ -38,6 +38,7 @@ const ICONS = {
   CalendarPlus: ["calendar-plus"],
   Check: ["check"],
   CheckCircle2: ["circle-check"],
+  ChildHead: ["child-head"],
   ChevronDown: ["chevron-down"],
   ChevronLeft: ["chevron-left"],
   ChevronRight: ["chevron-right"],

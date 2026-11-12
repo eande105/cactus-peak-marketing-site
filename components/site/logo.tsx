@@ -13,10 +13,18 @@ export function Logo({
   width?: number
   symbolOnly?: boolean
 }) {
+  // Brand guidelines section 3: the symbol uses the small cut at 32 px and below, and the horizontal logo
+  // is never narrower than 200 px (below that, use the symbol alone).
+  if (!symbolOnly && width < 200)
+    throw new Error(
+      "The horizontal logo is 200 px wide at least. Use symbolOnly."
+    )
   const src = symbolOnly
-    ? reversed
-      ? "/brand/cpa-symbol-reversed.svg"
-      : "/brand/cpa-symbol-color.svg"
+    ? width <= 32
+      ? "/brand/cpa-symbol-small.svg"
+      : reversed
+        ? "/brand/cpa-symbol-reversed.svg"
+        : "/brand/cpa-symbol-color.svg"
     : reversed
       ? "/brand/cpa-horizontal-reversed.svg"
       : "/brand/cpa-horizontal-color.svg"

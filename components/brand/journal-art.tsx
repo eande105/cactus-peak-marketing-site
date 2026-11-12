@@ -12,6 +12,10 @@ const BY_SLUG: Record<string, Pick> = {
   "pickleball-in-the-heat": { object: "paddle", scheme: "sand" },
 }
 
+/** The object a note is about, for places that show it on a disc instead of a crop. */
+export const journalObject = (slug: string): ObjectId =>
+  BY_SLUG[slug]?.object ?? "kettlebell"
+
 /** The article picture: a Crop of the object the article is about. Decorative, because the headline sits beside it. */
 export function JournalArt({
   slug,

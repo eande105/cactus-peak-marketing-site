@@ -21,15 +21,29 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: "/brand/favicon.svg", type: "image/svg+xml" }] },
   manifest: "/site.webmanifest",
 }
-export const viewport: Viewport = { width: "device-width", initialScale: 1 }
+// Saguaro Night, from the brand head snippet. A literal, because the browser reads it before any CSS loads.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Lets env(safe-area-inset-bottom) reach the fixed bottom bars on phones with a home indicator.
+  viewportFit: "cover",
+  themeColor: "#1c3328",
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // Every page reads the catalog (header menus, footer, search). It is cached for an hour (lib/supabase/public.ts).
   const catalog = await getClientCatalog()
+  // globals.css makes in-page jumps smooth. The data attribute tells Next.js to turn that off during a route
+  // change; without it, the scroll to the top of a new page animates and stops partway down the page.
   return (
-    <html lang="en-US" suppressHydrationWarning className="antialiased">
+    <html
+      lang="en-US"
+      suppressHydrationWarning
+      className="antialiased"
+      data-scroll-behavior="smooth"
+    >
       <head>
         <ThemeVariables />
       </head>

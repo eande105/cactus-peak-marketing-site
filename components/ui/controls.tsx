@@ -6,8 +6,10 @@ import {
   cloneElement,
   type ReactElement,
   type ReactNode,
+  type RefObject,
+  useRef,
 } from "react"
-import { Checkbox, Select, Switch, Tooltip } from "@/components/graphical"
+import { Checkbox, Select, Tooltip } from "@/components/graphical"
 import { cn } from "@/lib/utils"
 
 // Form controls on the Graphical runtime (gui/components/cactus-peak-athletic/*.md). The runtime owns fill, edge,
@@ -52,36 +54,6 @@ export function CheckRow({
   )
 }
 
-export function SwitchRow({
-  checked,
-  onChange,
-  children,
-  disabled,
-  name,
-  className,
-}: {
-  checked: boolean
-  onChange: (checked: boolean) => void
-  children: ReactNode
-  disabled?: boolean
-  name?: string
-  className?: string
-}) {
-  return (
-    <Switch.Row className={cn("min-h-11", className)}>
-      <Switch.Root
-        name={name}
-        checked={checked}
-        onCheckedChange={(c) => onChange(!!c)}
-        disabled={disabled}
-      >
-        <Switch.Thumb />
-      </Switch.Root>
-      <Switch.Label>{children}</Switch.Label>
-    </Switch.Row>
-  )
-}
-
 export type SelectOption<V extends string> = {
   value: V
   label: string
@@ -103,12 +75,43 @@ type SelectControlProps<V extends string> = {
   "aria-describedby"?: string
 }
 
+/**
+ * The roomy look for a select that opens over other cards, such as the club picker above the class table. Its
+ * label sits further from the trigger (SelectBox). The
+ * theme's popup has no shadow and a faint edge, so on a white card it has no visible edge. These styles give
+ * it a clear edge, a soft shadow and 44 px rows. They go on the parts' `style`, which the theme merges after its
+ * own inline styles.
+ */
+const ROOMY = {
+  sideOffset: 8,
+  trigger: {
+    padding: "10px 14px",
+    boxShadow: "0 0 0 1px var(--border-strong)",
+  },
+  popup: {
+    padding: "6px",
+    borderRadius: "14px",
+    boxShadow:
+      "0 0 0 1px color-mix(in oklab, var(--border-strong) 45%, transparent), 0 16px 40px -12px color-mix(in oklab, var(--night) 35%, transparent)",
+  },
+  item: {
+    minHeight: "44px",
+    padding: "10px 12px",
+    borderRadius: "10px",
+    gap: "16px",
+    fontSize: "16px",
+    lineHeight: "24px",
+  },
+} as const
+
 // Trigger and menu shared by SelectControl and SelectBox. Built from the Graphical Select parts, not SelectField,
 // because SelectField puts extra props on the root, where an id or describedby ids never reach the DOM.
 function SelectParts<V extends string>({
   options,
   placeholder,
   className,
+  triggerRef,
+  roomy,
   ...trigger
 }: Pick<
   SelectControlProps<V>,
@@ -119,25 +122,34 @@ function SelectParts<V extends string>({
   | "aria-label"
   | "aria-invalid"
   | "aria-describedby"
->) {
+> & { triggerRef?: RefObject<HTMLButtonElement | null>; roomy?: boolean }) {
   return (
     <>
       {/* The runtime sets min-height 0 inline. The 44 px touch target needs the important flag to win. */}
-      <Select.Trigger {...trigger} className={cn("min-h-11!", className)}>
+      <Select.Trigger
+        {...trigger}
+        ref={triggerRef}
+        className={cn("min-h-11!", className)}
+        style={roomy ? ROOMY.trigger : undefined}
+      >
         <Select.Value placeholder={placeholder} />
         <Select.Icon />
       </Select.Trigger>
       <Select.Portal>
-        <Select.Positioner>
+        <Select.Positioner {...(roomy ? { sideOffset: ROOMY.sideOffset } : {})}>
           {/* Filter rows use content-sized triggers ("All clubs"). At the trigger's width the club names would wrap,
               so the trigger width is the minimum and the popup grows to its longest option, within the screen. */}
-          <Select.Popup className="w-max max-w-(--available-width) min-w-(--anchor-width)">
+          <Select.Popup
+            className="w-max max-w-(--available-width) min-w-(--anchor-width)"
+            style={roomy ? ROOMY.popup : undefined}
+          >
             <Select.List>
               {options.map((o) => (
                 <Select.Item
                   key={o.value}
                   value={o.value}
                   disabled={o.disabled}
+                  style={roomy ? ROOMY.item : undefined}
                 >
                   <Select.ItemText>{o.label}</Select.ItemText>
                   <Select.ItemIndicator />
@@ -163,18 +175,23 @@ export function SelectControl<V extends string>({
   disabled,
   ...parts
 }: SelectControlProps<V>) {
+  const triggerRef = useRef<HTMLButtonElement>(null)
   return (
     <Select.Root<V>
       value={value}
       onValueChange={(v) => {
-        if (v !== null) onChange(v)
+        if (v === null) return
+        onChange(v)
+        // The popup returns focus to the trigger only after it finishes closing. A quick Tab before that
+        // left focus on the closing popup, and it fell to the page. Focus the trigger now instead.
+        triggerRef.current?.focus()
       }}
       items={parts.options}
       name={name}
       required={required}
       disabled={disabled}
     >
-      <SelectParts {...parts} />
+      <SelectParts {...parts} triggerRef={triggerRef} />
     </Select.Root>
   )
 }
@@ -194,28 +211,37 @@ export function SelectBox<V extends string>({
   disabled,
   placeholder,
   id,
+  roomy,
 }: {
   label: string
   hideLabel?: boolean
   inline?: boolean
   className?: string
   triggerClassName?: string
+  /** A wider trigger and a popup with a clear edge and 44 px rows, for a select that opens over cards. */
+  roomy?: boolean
 } & Omit<
   SelectControlProps<V>,
   "className" | "aria-label" | "aria-invalid" | "aria-describedby"
 >) {
+  const triggerRef = useRef<HTMLButtonElement>(null)
   return (
     <div
       className={cn(
         "min-w-0",
-        inline ? "inline-flex items-center gap-2" : "flex flex-col gap-1.5",
+        inline
+          ? cn("inline-flex items-center", roomy ? "gap-4" : "gap-2")
+          : "flex flex-col gap-1.5",
         className
       )}
     >
       <Select.Root<V>
         value={value}
         onValueChange={(v) => {
-          if (v !== null) onChange(v)
+          if (v === null) return
+          onChange(v)
+          // Same reason as SelectControl: keep focus on the trigger so Tab moves on.
+          triggerRef.current?.focus()
         }}
         items={options}
         name={name}
@@ -230,6 +256,8 @@ export function SelectBox<V extends string>({
           placeholder={placeholder}
           id={id}
           className={triggerClassName}
+          triggerRef={triggerRef}
+          roomy={roomy}
         />
       </Select.Root>
     </div>

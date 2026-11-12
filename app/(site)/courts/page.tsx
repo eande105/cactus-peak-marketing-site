@@ -1,27 +1,45 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { LinkButton } from "@/components/brand/atoms"
-import { ObjectRack } from "@/components/brand/graphics"
+import { LinkButton, SectionHead, TextLink } from "@/components/brand/atoms"
+import { SectionNav } from "@/components/sections/club-detail-client"
+import { Band, FaqSection, TourCTABand } from "@/components/sections/common"
+import { FactTable, NotHere } from "@/components/sections/fact-table"
+import { CourtCount, courtTiles } from "@/components/sections/program-heroes"
 import {
-  Breadcrumbs,
-  DenseSection,
-  FaqSection,
-  HeroSplit,
-  LeadSection,
-  SplitSection,
-  TourCTABand,
-  TourTimeline,
-} from "@/components/sections/common"
+  NumberedSteps,
+  ProgramHero,
+  ProgramRows,
+  quietLink,
+} from "@/components/sections/program-page"
 import { CourtGrid } from "@/components/sections/slot-grid"
 import { HandoffButton } from "@/components/sections/small-client"
 import { getCatalog } from "@/lib/catalog/server"
+import { timesByClub } from "@/lib/class-times"
+import { PHONE_HOURS } from "@/lib/labels"
+import { classHref } from "@/lib/links"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Courts at Cactus Peak — 18 courts at 3 clubs",
   description:
     "Pickleball, tennis and basketball at three clubs. Book 3 days ahead in the app or call the desk.",
 }
+
+/** The page's sections, in order. */
+const SECTIONS = [
+  { id: "clubs", label: "Clubs" },
+  { id: "booking", label: "Booking" },
+  { id: "play", label: "Ways to play" },
+  { id: "today", label: "Today" },
+  { id: "questions", label: "Questions" },
+]
+
+// The Trailhead answer leads, because the first answer opens by default and it is the one visitors look for.
 const faq = [
+  {
+    id: "c3",
+    q: "Can Trailhead members book courts?",
+    a: "Courts come with Ridge and Summit.",
+  },
   {
     id: "c1",
     q: "Do I need my own paddle?",
@@ -33,240 +51,246 @@ const faq = [
     a: "Yes. Ask a coach for a beginner court.",
   },
   {
-    id: "c3",
-    q: "Can Trailhead members book courts?",
-    a: "Courts come with Ridge and Summit.",
-  },
-  {
     id: "c4",
     q: "Can I book for a group?",
     a: "Yes. Book each court as a slot.",
   },
 ]
+
+/** The extras beside the courts, where a club has them. */
+const EXTRAS: Record<string, string> = {
+  "power-mckellips": "Turf lane, Superstition-view deck",
+}
+
+// The court desk: Power & McKellips has the most courts, so its number is the one the page gives.
+const DESK = { phone: "(480) 555-0127", tel: "+14805550127" }
+
+/**
+ * Courts. It answers, in order, where the courts are, how to book one, the coached ways to play and what is
+ * open today. It shares the membership page's parts: a hero with a picture made for the claim and a row of
+ * the section nav, lead-size heads, alternating bands and the Copper tour panel. The court counts come
+ * from the club data, so the hero, the table and the club pages agree.
+ */
 export default async function Courts() {
-  const { classBySlug, clubBySlug } = await getCatalog()
-  const rows = [
-    ["mesa-dobson", "4", "2", "—", ""],
-    ["mesa-red-mountain", "6", "—", "—", "Turf lane, Superstition-view deck"],
-    ["gilbert-val-vista", "4", "—", "2", ""],
-  ]
+  const { classBySlug, clubs, slots } = await getCatalog()
+  const withCourts = clubs.filter((c) => courtTiles(c).length > 0)
+  const total = withCourts.reduce((n, c) => n + courtTiles(c).length, 0)
+  const without = clubs.filter((c) => courtTiles(c).length === 0)
+  const count = (n?: number) => (n ? String(n) : <NotHere />)
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Courts" }]} />
-      <HeroSplit
+      <ProgramHero
+        id="courts-hero-title"
         title="Play more than you plan."
-        support="18 courts at 3 clubs. Pickleball, tennis and basketball. Book in the app or call the desk."
+        lede={`${total} courts at ${withCourts.length} clubs, for pickleball, tennis and basketball. Book a 60- or 90-minute slot 3 days ahead in the app.`}
         actions={
           <>
-            <LinkButton href="/tour" size="lg">
+            <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
               Book a free tour
             </LinkButton>
-            <LinkButton href="tel:+14805550127" variant="outline" size="lg">
-              Call Mesa – Red Mountain (480) 555-0127
+            <LinkButton
+              href="#booking"
+              variant="outline"
+              size="lg"
+              className="max-sm:flex-1"
+            >
+              How booking works
             </LinkButton>
           </>
         }
-        fact={{
-          icon: "paddle",
-          value: "18 courts",
-          label: "At Dobson, Red Mountain and Val Vista",
-        }}
-      />
-      <DenseSection label="Courts by club" icon="tennis-ball">
-        <div className="hidden overflow-x-auto rounded-lg bg-card edge ring-border lg:block">
-          <table className="w-full text-body">
-            <caption className="sr-only">Courts at each club</caption>
-            <thead>
-              <tr className="text-left text-caption text-muted-foreground">
-                <th scope="col" className="p-4">
-                  Club
-                </th>
-                <th scope="col" className="p-4">
-                  Pickleball
-                </th>
-                <th scope="col" className="p-4">
-                  Tennis
-                </th>
-                <th scope="col" className="p-4">
-                  Basketball
-                </th>
-                <th scope="col" className="p-4">
-                  Extras
-                </th>
-                <th scope="col" className="p-4">
-                  <span className="sr-only">Book</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(([s, p, t, b, x]) => (
-                <tr key={s} className="border-t border-border">
-                  <th scope="row" className="p-4 text-left">
-                    <Link className="hover:underline" href={`/clubs/${s}`}>
-                      {clubBySlug(s)!.name}
-                    </Link>
-                  </th>
-                  <td className="tabular p-4">{p}</td>
-                  <td className="tabular p-4">{t}</td>
-                  <td className="tabular p-4">{b}</td>
-                  <td className="p-4 text-caption">{x || "—"}</td>
-                  <td className="p-4">
-                    <HandoffButton
-                      label="Book a court"
-                      classSlug="pickleball-open-play"
-                      club={s as "mesa-dobson"}
-                      start={420}
-                    />
-                  </td>
-                </tr>
-              ))}
-              <tr className="border-t border-border">
-                <th scope="row" className="p-4 text-left text-muted-foreground">
-                  Downtown, Heritage
-                </th>
-                <td colSpan={5} className="p-4 text-muted-foreground">
-                  No courts.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <ul className="border-t-2 border-foreground lg:hidden">
-          {rows.map(([s, p, t, b, x]) => (
-            <li key={s} className="border-b border-border py-4">
-              <Link
-                href={`/clubs/${s}`}
-                className="font-display-wide text-h3 hover:underline"
-              >
-                {clubBySlug(s)!.name}
-              </Link>
-              <p className="tabular text-body">
-                {[
-                  p !== "—" && `${p} pickleball`,
-                  t !== "—" && `${t} tennis`,
-                  b !== "—" && `${b} basketball`,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-              {x ? (
-                <p className="text-body text-muted-foreground">{x}</p>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      </DenseSection>
-      <SplitSection
-        label="How booking works"
-        graphic={
-          <ObjectRack
-            ratio="4/3"
-            layout="spotlight"
-            focus="schedule"
-            ids={[
-              "paddle",
-              "tennis-ball",
-              "stopwatch",
-              "key",
-              "sneaker",
-              "water-bottle",
-            ]}
-          />
+        note={
+          <>
+            Prefer to call?{" "}
+            <a
+              href={`tel:${DESK.tel}`}
+              className={cn(
+                "inline-flex min-h-11 items-center text-foreground tabular-nums",
+                quietLink
+              )}
+            >
+              {DESK.phone}
+            </a>
+          </>
         }
-      >
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <p className="mb-4 text-caption">
-              Prefer to call?{" "}
-              <a
-                className="tabular font-semibold text-link underline underline-offset-4"
-                href="tel:+14805550127"
-              >
-                (480) 555-0127
-              </a>
-              . The desk is staffed 6:00 a.m. to 8:00 p.m.
-            </p>
-            <HandoffButton
-              label="Book a court"
-              classSlug="pickleball-open-play"
-              club="mesa-red-mountain"
-              start={420}
-              variant="primary"
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <TourTimeline
-              steps={[
-                {
-                  title: "Pick a time.",
-                  text: "Courts are 60- or 90-minute slots.",
-                },
-                {
-                  title: "Book 3 days ahead.",
-                  text: "The window opens at 6:00 a.m. Arizona time. Ridge and Summit include courts. One court reservation a day, at most 2 active. Cancel free up to 2 hours before.",
-                },
-                {
-                  title: "Show up.",
-                  text: "Check in at the desk or with the app.",
-                },
-              ]}
-            />
-          </div>
+        layout="banner"
+        picture={<CourtCount clubs={withCourts} />}
+      />
+
+      <SectionNav items={SECTIONS} />
+
+      <Band tone="tint" id="clubs">
+        <SectionHead
+          size="lead"
+          title="Courts at three clubs."
+          lede="Ridge and Summit open every court. Trailhead does not include courts."
+          action={<TextLink href="/membership#compare">Compare plans</TextLink>}
+        />
+        {/* A table from md, one block for each club below it, so nothing scrolls sideways. */}
+        <div className="mt-12">
+          <FactTable
+            caption="Courts at each club"
+            corner="Club"
+            columns={[
+              { label: "Pickleball", icon: "paddle", numeric: true },
+              { label: "Tennis", icon: "tennis-ball", numeric: true },
+              { label: "Basketball", icon: "basketball", numeric: true },
+              { label: "Also here" },
+            ]}
+            rows={withCourts.map((c) => ({
+              key: c.slug,
+              title: c.short,
+              sub: c.city,
+              href: `/clubs/${c.slug}`,
+              values: [
+                count(c.courts?.pickleball),
+                count(c.courts?.tennis),
+                count(c.courts?.basketball),
+                EXTRAS[c.slug] ?? <NotHere label="Nothing more" />,
+              ],
+            }))}
+          />
         </div>
-      </SplitSection>
-      <DenseSection label="Four ways to play" icon="basketball">
-        <ul className="border-t-2 border-foreground">
-          {[
-            "pickleball-open-play",
-            "pickleball-clinic",
-            "tennis-drills",
-            "hoops-run",
-          ].map((s) => {
-            const c = classBySlug(s)!
-            return (
-              <li
-                key={s}
-                className="grid items-baseline gap-x-6 border-b border-border py-4 md:grid-cols-[260px_90px_minmax(0,1fr)]"
-              >
-                <Link
-                  href={`/classes/${s}`}
-                  className="font-display-wide text-h3 hover:underline"
-                >
-                  {c.name}
-                </Link>
-                <span className="tabular text-body">{c.duration} min</span>
-                <span className="text-body text-muted-foreground">
-                  {c.blurb}
-                  {c.firstTimer ? " Good for first-timers." : ""}
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-      </DenseSection>
-      <LeadSection title="Courts open today.">
-        <p className="mb-4 text-body text-muted-foreground">
-          Mesa – Red Mountain. A sample of today&apos;s slots.
-        </p>
-        <CourtGrid />
-        <div className="mt-4">
+        {without.length ? (
+          <p className="mt-6 max-w-[62ch] text-body text-pretty text-muted-foreground">
+            No courts at {without.map((c) => c.short).join(" or ")}. Ridge and
+            Summit members play at the other {withCourts.length}.
+          </p>
+        ) : null}
+      </Band>
+
+      <Band id="booking">
+        <SectionHead
+          size="lead"
+          title="Book three days ahead."
+          lede="The window opens at 6 am Arizona time."
+        />
+        <NumberedSteps
+          className="mt-12"
+          steps={[
+            {
+              title: "Pick a time.",
+              text: "Courts come in 60- or 90-minute slots.",
+              icon: "stopwatch",
+            },
+            {
+              title: "Book in the app.",
+              text: "One court a day, up to 2 booked at once. Cancel free up to 2 hours before.",
+              icon: "schedule",
+            },
+            {
+              title: "Show up and play.",
+              text: "Check in at the desk or with the app. Loaner paddles are at the desk.",
+              icon: "paddle",
+            },
+          ]}
+        />
+        <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 pt-8 rule-t">
           <HandoffButton
             label="Book a court"
             classSlug="pickleball-open-play"
-            club="mesa-red-mountain"
+            club="power-mckellips"
+            start={420}
+            variant="primary"
+          />
+          <p className="text-body text-muted-foreground">
+            Or call the desk at{" "}
+            <a
+              href={`tel:${DESK.tel}`}
+              className={cn(
+                "inline-flex min-h-11 items-center font-semibold text-foreground tabular-nums",
+                quietLink
+              )}
+            >
+              {DESK.phone}
+            </a>
+            , {PHONE_HOURS}.
+          </p>
+        </div>
+      </Band>
+
+      <Band tone="tint" id="play">
+        <SectionHead
+          size="lead"
+          title="Four ways to play."
+          lede="Open play when you want a game. A clinic or a drill when you want a coach."
+        />
+        <ProgramRows
+          className="mt-12"
+          rows={[
+            ["pickleball-open-play", "paddle"],
+            ["pickleball-clinic", "paddle"],
+            ["tennis-drills", "tennis-ball"],
+            ["hoops-run", "basketball"],
+          ].flatMap(([slug, icon]) => {
+            const c = classBySlug(slug)
+            if (!c) return []
+            const per = timesByClub(slots, c.key, clubs)
+            return [
+              {
+                key: slug,
+                icon: icon as "paddle",
+                title: c.name,
+                href: classHref(c),
+                line: (
+                  <>
+                    {c.blurb}
+                    {c.firstTimer ? " Good for first-timers." : ""}
+                    {/* Start times differ by club, so each club gets its own line. */}
+                    {per.length ? (
+                      <ul className="mt-2 text-muted-foreground">
+                        {per.map((p) => (
+                          <li key={p.club.slug} className="tabular-nums">
+                            <span className="font-semibold text-foreground">
+                              {p.club.short}:
+                            </span>{" "}
+                            {p.text}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </>
+                ),
+                aside: `${c.duration} minutes`,
+              },
+            ]
+          })}
+        />
+      </Band>
+
+      <Band id="today">
+        <SectionHead
+          size="lead"
+          title="Courts open today."
+          lede="A sample of today's slots at Power & McKellips."
+        />
+        <div className="mt-12">
+          <CourtGrid />
+        </div>
+        <div className="mt-6">
+          <HandoffButton
+            label="Book a court"
+            classSlug="pickleball-open-play"
+            club="power-mckellips"
             start={480}
           />
         </div>
-      </LeadSection>
-      <div className="border-t border-border">
-        <FaqSection
-          items={faq}
-          title="Court questions."
-          phone="(480) 555-0127"
-          tel="+14805550127"
-        />
-      </div>
-      <TourCTABand title="Meet your court." />
+      </Band>
+
+      <FaqSection
+        id="questions"
+        tone="tint"
+        title="Court questions."
+        items={faq}
+        phone={DESK.phone}
+        tel={DESK.tel}
+      />
+
+      <TourCTABand
+        night
+        title="Meet your court on a tour."
+        support="A coach shows you the courts and the open-play times, and finds you a beginner game if you want one. No card."
+        passEmail
+      />
     </>
   )
 }

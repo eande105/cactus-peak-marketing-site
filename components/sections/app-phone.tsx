@@ -8,7 +8,7 @@ import { fmtTime } from "@/lib/time"
 export function AppPhone() {
   const { clubBySlug, clubs } = useCatalog()
   const { sessions, now } = useSessions()
-  const club = clubBySlug("gilbert-val-vista") ?? clubs[0]
+  const club = clubBySlug("val-vista-warner") ?? clubs[0]
   const rows = sessions
     .filter(
       (s) => s.clubSlug === club.slug && (s.day > 0 || s.start >= now.min)
@@ -32,7 +32,7 @@ export function AppPhone() {
           return (
             <li
               key={s.id}
-              className="flex items-baseline justify-between gap-2 border-t border-border py-2 text-caption"
+              className="flex items-baseline justify-between gap-2 py-2 text-caption rule-t"
             >
               <span className="tabular font-semibold">
                 {fmtTime(s.start, true)}
@@ -45,7 +45,7 @@ export function AppPhone() {
           )
         })}
       </ul>
-      <div className="rounded-xl mt-4 h-24 bg-muted p-3 text-caption">
+      <div className="mt-4 h-24 rounded-lg bg-muted p-3 text-caption">
         <p className="eyebrow">Pass</p>
         <p className="tabular font-data text-h3 font-bold">4821 7730</p>
       </div>

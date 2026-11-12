@@ -2,6 +2,7 @@
 
 import { randomInt } from "node:crypto"
 import { getCatalog } from "@/lib/catalog/server"
+import { NETWORK_ERROR } from "@/lib/forms/messages"
 import { getWriteClient } from "@/lib/supabase/public"
 
 // Server actions for the marketing forms. Each one validates on the server again (the client checks are only for
@@ -13,8 +14,6 @@ export type FormResult<T = object> =
   | { ok: false; error: string; fields?: Record<string, string> }
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
-const NETWORK_ERROR =
-  "We could not send that. Check your connection and try again, or call (480) 555-0100."
 
 const str = (v: unknown, max: number) =>
   typeof v === "string" ? v.trim().slice(0, max + 1) : ""

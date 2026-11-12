@@ -7,7 +7,6 @@ import { Drawer } from "@/components/graphical"
 import { ArrowLeft, ChevronRight, Search, User, X } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { MEMBER_SIGN_IN_URL } from "@/lib/links"
-import { cn } from "@/lib/utils"
 import { useMyClub } from "./club-context"
 import { ClubSwitcher } from "./club-switcher"
 import { Logo } from "./logo"
@@ -45,8 +44,19 @@ export function MobileDrawer({
   const { club } = useMyClub()
   const tree = useNavTree()
   const group = tree.find((g) => g.id === level)
+  // The group the visitor last opened. Back returns focus to its button, so a keyboard user keeps their place.
+  const opened = useRef<string | null>(null)
   useEffect(() => {
-    if (level !== "root") title.current?.focus()
+    if (level !== "root") {
+      opened.current = level
+      title.current?.focus()
+    } else if (opened.current) {
+      document
+        .querySelector<HTMLButtonElement>(
+          `[data-menu-group="${opened.current}"]`
+        )
+        ?.focus()
+    }
   }, [level])
   const nav = () => {
     onOpenChange(false)
@@ -65,21 +75,18 @@ export function MobileDrawer({
         <Drawer.Backdrop className="z-[70]" />
         <Drawer.Viewport className="site-menu-viewport z-[70]">
           {/* No padding or gap: the bars and the scroll area run to the edges. */}
-          <Drawer.Popup
-            aria-label="Menu"
-            className="site-menu gap-0 overflow-hidden p-0 outline-none"
-          >
+          <Drawer.Popup className="site-menu gap-0 overflow-hidden p-0 outline-none">
             <Drawer.Content className="flex h-full flex-col gap-0">
               {level === "root" ? (
-                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center border-b border-border px-2">
+                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-2 rule-b">
                   <Drawer.Close
                     aria-label="Close menu"
                     className="min-h-11 min-w-11"
                   >
-                    <X aria-hidden="true" />
+                    <X className="size-4.5" aria-hidden="true" />
                   </Drawer.Close>
                   <div className="justify-self-center">
-                    <Logo width={180} />
+                    <Logo width={200} />
                   </div>
                   <Button
                     variant="ghost"
@@ -87,18 +94,18 @@ export function MobileDrawer({
                     aria-label="Search clubs and classes"
                     onClick={onSearch}
                   >
-                    <Search className="size-5" aria-hidden="true" />
+                    <Search className="size-4.5" aria-hidden="true" />
                   </Button>
                 </div>
               ) : (
-                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center border-b border-border px-2">
+                <div className="grid h-14 shrink-0 grid-cols-[44px_1fr_44px] items-center px-2 rule-b">
                   <Button
                     variant="ghost"
                     size="icon"
                     aria-label="Back to menu"
                     onClick={() => setLevel("root")}
                   >
-                    <ArrowLeft className="size-5" aria-hidden="true" />
+                    <ArrowLeft className="size-4.5" aria-hidden="true" />
                   </Button>
                   <h2
                     ref={title}
@@ -111,7 +118,7 @@ export function MobileDrawer({
                     aria-label="Close menu"
                     className="min-h-11 min-w-11"
                   >
-                    <X aria-hidden="true" />
+                    <X className="size-4.5" aria-hidden="true" />
                   </Drawer.Close>
                 </div>
               )}
@@ -127,12 +134,13 @@ export function MobileDrawer({
                         <li key={g.id}>
                           <button
                             type="button"
+                            data-menu-group={g.id}
                             onClick={() => setLevel(g.id)}
-                            className="font-display-wide flex min-h-14 w-full items-center justify-between border-b border-border text-h3"
+                            className="font-display-wide flex min-h-14 w-full items-center justify-between text-h3 rule-b"
                           >
                             {g.label}
                             <ChevronRight
-                              className="size-5 text-muted-foreground"
+                              className="size-4.5 text-muted-foreground"
                               aria-hidden="true"
                             />
                           </button>
@@ -143,7 +151,7 @@ export function MobileDrawer({
                           <Link
                             href={n.href}
                             onClick={nav}
-                            className="font-display-wide flex min-h-14 items-center border-b border-border text-h3"
+                            className="font-display-wide flex min-h-14 items-center text-h3 rule-b"
                           >
                             {n.label}
                           </Link>
@@ -175,6 +183,22 @@ export function MobileDrawer({
                   </div>
                 ) : (
                   <div className="p-2">
+                    {/* The overview page first, the same as the desktop menu. */}
+                    <div className="mb-2">
+                      <Link
+                        href={group.overview.href}
+                        onClick={nav}
+                        className="flex min-h-12 items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
+                      >
+                        <NavItemBody item={group.overview} />
+                        <span
+                          aria-hidden="true"
+                          className="text-muted-foreground"
+                        >
+                          →
+                        </span>
+                      </Link>
+                    </div>
                     {group.sections.map((sec) => (
                       <div key={sec.label ?? group.id} className="mb-2">
                         {sec.label ? (
@@ -182,15 +206,13 @@ export function MobileDrawer({
                             {sec.label}
                           </p>
                         ) : null}
-                        <ul
-                          className={cn(sec.cols === 2 && "grid grid-cols-2")}
-                        >
+                        <ul>
                           {sec.items.map((i) => (
                             <li key={i.title}>
                               <Link
                                 href={i.href}
                                 onClick={nav}
-                                className="flex min-h-14 items-center gap-3 rounded-md px-3 py-2 hover:bg-muted"
+                                className="flex min-h-12 items-center gap-2 rounded-md px-3 py-2 hover:bg-muted"
                               >
                                 <NavItemBody item={i} />
                               </Link>
@@ -199,19 +221,21 @@ export function MobileDrawer({
                         </ul>
                       </div>
                     ))}
-                    <Link
-                      href={group.callout.href}
-                      onClick={nav}
-                      className="mx-2 mt-2 mb-4 block rounded-lg"
-                    >
-                      <NavCalloutBody callout={group.callout} />
-                    </Link>
+                    {group.callout ? (
+                      <Link
+                        href={group.callout.href}
+                        onClick={nav}
+                        className="mx-2 mt-2 mb-4 block rounded-lg"
+                      >
+                        <NavCalloutBody callout={group.callout} />
+                      </Link>
+                    ) : null}
                   </div>
                 )}
               </div>
               {/* The same button set as the desktop header, in the same order and styles: search in the top bar,
                 then sign in (soft) and the free tour (filled). Join is one tap away through Membership. */}
-              <div className="flex shrink-0 gap-3 border-t border-border bg-card p-4">
+              <div className="flex shrink-0 gap-3 bg-card p-4 rule-t">
                 <LinkButton
                   href={MEMBER_SIGN_IN_URL}
                   external
@@ -219,7 +243,7 @@ export function MobileDrawer({
                   aria-label="Member sign in"
                   className="flex-1"
                 >
-                  <User aria-hidden="true" />
+                  <User className="size-4.5" aria-hidden="true" />
                   Sign in
                 </LinkButton>
                 <LinkButton

@@ -83,7 +83,11 @@ export function OverlayPopup({
   placement?: DialogPlacement
   className?: string
   children: React.ReactNode
-  label: string
+  /**
+   * A name for a popup that can render without an OverlayTitle. Leave it out when a title is always there:
+   * the title names the popup through aria-labelledby, and a second name would only drift from it.
+   */
+  label?: string
   hideClose?: boolean
   closeClassName?: string
 }) {

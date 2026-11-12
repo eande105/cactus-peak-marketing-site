@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
+import { LinkButton, SectionHead } from "@/components/brand/atoms"
 import { GymObject } from "@/components/brand/graphics"
 import { AppPhone } from "@/components/sections/app-phone"
-import { Band, Breadcrumbs, Container } from "@/components/sections/common"
+import { Band, TourCTABand } from "@/components/sections/common"
+import { ProgramHero } from "@/components/sections/program-page"
 import { MEMBER_APP_URL } from "@/lib/links"
 
 export const metadata: Metadata = {
@@ -9,34 +11,27 @@ export const metadata: Metadata = {
   description:
     "Book classes, see how busy the club is, and scan in with one tap. iPhone app.",
 }
+
+const FEATURES = [
+  ["Book classes and join waitlists", "schedule"],
+  ["See how busy your club is, right now", "heart-watch"],
+  ["Check in with your pass", "pass"],
+] as const
+
 export default function AppPage() {
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Get the app" }]} />
-      <Container className="grid items-center gap-8 pt-4 pb-12 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-7">
-          <h1 className="display-hero">Your club, in your pocket.</h1>
-          <p className="lede mt-4">
-            Book classes, see how busy the club is, and scan in with one tap.
-          </p>
-          <a
-            href="https://apps.apple.com/"
-            className="mt-6 inline-flex min-h-12 items-center rounded-md bg-night px-6 text-label text-night-foreground"
-          >
+      <ProgramHero
+        id="app-title"
+        title="Your club, in your pocket."
+        lede="Book classes, see how busy the club is, and scan in with one tap."
+        actions={
+          <LinkButton href="https://apps.apple.com/" external size="lg">
             Download on the App Store
-          </a>
-          <div className="mt-6 hidden items-center gap-4 lg:flex">
-            <span
-              aria-hidden="true"
-              className="grid size-24 place-items-center rounded-md border-2 border-foreground text-center text-caption font-semibold"
-            >
-              QR to App Store
-            </span>
-            <p className="max-w-[20ch] text-body text-muted-foreground">
-              Scan with your phone camera to open the App Store.
-            </p>
-          </div>
-          <p className="mt-2 text-body text-muted-foreground">
+          </LinkButton>
+        }
+        note={
+          <>
             The app is for iPhone. On Android, use the{" "}
             <a
               className="text-link underline underline-offset-4"
@@ -45,22 +40,14 @@ export default function AppPage() {
               member site
             </a>
             .
-          </p>
-        </div>
-        <div className="lg:col-span-5">
-          <AppPhone />
-        </div>
-      </Container>
-      <Band tone="muted" className="py-10 lg:py-14">
-        <h2 className="sr-only">What the app does</h2>
-        <ol className="grid gap-6 border-t-2 border-foreground pt-6 lg:grid-cols-3">
-          {(
-            [
-              ["Book classes and join waitlists.", "schedule"],
-              ["See how busy your club is, right now.", "heart-watch"],
-              ["Check in with your pass.", "key"],
-            ] as const
-          ).map(([t, icon], i) => (
+          </>
+        }
+        picture={<AppPhone />}
+      />
+      <Band tone="tint" id="features">
+        <SectionHead title="What the app does." />
+        <ol className="mt-8 grid gap-6 pt-6 rule-t rule-heavy lg:mt-12 lg:grid-cols-3">
+          {FEATURES.map(([t, icon], i) => (
             <li key={t}>
               <span className="flex items-end justify-between gap-4">
                 <span className="tabular font-data text-h1 font-bold">
@@ -73,6 +60,7 @@ export default function AppPage() {
           ))}
         </ol>
       </Band>
+      <TourCTABand night title="See the club before you sign up." />
     </>
   )
 }

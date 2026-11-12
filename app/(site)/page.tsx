@@ -1,11 +1,15 @@
 import type { Metadata } from "next"
 
 import { SectionHead, TextLink } from "@/components/brand/atoms"
-import { PlanColumns } from "@/components/brand/plan-parts"
 import { Band, JsonLd, TourCTABand } from "@/components/sections/common"
 import { HomeClasses } from "@/components/sections/home-classes"
-import { ClubFinderGrid, ClubStrip } from "@/components/sections/home-client"
+import { ClubCards, ClubStrip } from "@/components/sections/home-client"
+import { HomeCoachLine } from "@/components/sections/home-coaches"
 import { HomeHero } from "@/components/sections/home-hero"
+import { HomeMembership } from "@/components/sections/home-membership"
+import { HomeServices } from "@/components/sections/home-services"
+import { HomeStory } from "@/components/sections/home-story"
+import { HomeVoices } from "@/components/sections/home-voices"
 import { getCatalog } from "@/lib/catalog/server"
 
 export const metadata: Metadata = {
@@ -14,9 +18,13 @@ export const metadata: Metadata = {
     "Pools, courts, classes and recovery at five East Valley clubs. Climb at your own pace. Book a free tour or a 3-day pass.",
 }
 
-// Six sections, one job each (REDESIGN.md goal 3). Schedule, kids club, coaches, the tour steps and the FAQ have their own pages.
+// One job per section (REDESIGN.md goal 3). Each band introduces a part of the site and links to its pages:
+// clubs, classes (and the coaches), the programs past the gym floor, plans (and the app), members, and who
+// runs the clubs (About, the Journal and Careers). The schedule, the tour steps and the FAQ have their own pages.
 export default async function Home() {
-  const { clubs, testimonials } = await getCatalog()
+  const { clubs, coaches, packs, journal, jobs, testimonials, clubQuotes } =
+    await getCatalog()
+  const since = Math.min(...clubs.map((c) => c.opened))
   return (
     <>
       <JsonLd
@@ -34,53 +42,71 @@ export default async function Home() {
       />
       <HomeHero />
 
-      {/* The first tinted band. Its colour shows below the hero at the fold, as the cue to scroll. */}
-      <Band tone="tint">
+      {/* The hero's Night panel is the colour block at the top, so the clubs share its Sand page and the
+          two read as one opening. The classes and plans bands are tinted. The bands next to the panels stay
+          Sand, so each panel sits on the same field as its gutter and no thin strip of another colour
+          shows between a band and a panel. */}
+      <Band>
         <ClubStrip className="mb-12 lg:mb-16" />
         <SectionHead
           size="lead"
-          title="Five clubs. One membership."
-          action={<TextLink href="/clubs">Compare the clubs</TextLink>}
+          title="Find the club that fits your week."
+          action={<TextLink href="/clubs#compare">Compare the clubs</TextLink>}
         />
         <div className="mt-12">
-          <ClubFinderGrid />
+          <ClubCards />
         </div>
       </Band>
 
-      <Band>
+      <Band tone="tint">
         <SectionHead
           size="lead"
           title="Eight ways to move."
-          action={<TextLink href="/classes">All 28 classes</TextLink>}
+          action={<TextLink href="/classes#types">All 28 classes</TextLink>}
         />
         <HomeClasses className="mt-12" />
+        <HomeCoachLine coaches={coaches} />
+      </Band>
+
+      <Band>
+        <SectionHead size="lead" title="More than the gym floor." />
+        <HomeServices
+          clubs={clubs}
+          coaches={coaches}
+          packs={packs}
+          className="mt-12"
+        />
       </Band>
 
       <Band tone="tint" id="plans">
         <SectionHead
           size="lead"
-          title="Pick your pace."
-          lede="Month to month. $0 enrollment through Nov 30."
-          action={<TextLink href="/membership#compare">Compare plans</TextLink>}
+          title="Three plans. No contract."
+          action={
+            <TextLink href="/membership#compare">Compare the plans</TextLink>
+          }
         />
-        <PlanColumns className="mt-12" />
+        <HomeMembership className="mt-12" />
       </Band>
 
       <Band>
-        <SectionHead size="lead" title="Steady beats loud." />
-        <ul className="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-2">
-          {testimonials.slice(0, 2).map((t) => (
-            <li key={t.who}>
-              <blockquote className="font-display-wide text-h2 text-balance lg:text-h1">
-                “{t.quote}”
-              </blockquote>
-              <p className="mt-6 text-body">
-                <span className="font-semibold">{t.who}</span>{" "}
-                <span className="text-muted-foreground">· {t.club}</span>
-              </p>
-            </li>
-          ))}
-        </ul>
+        <SectionHead size="lead" title="What members say." />
+        <HomeVoices
+          testimonials={testimonials}
+          clubQuotes={clubQuotes}
+          className="mt-12"
+        />
+      </Band>
+
+      {/* The muted tone is the plain page with a top rule, because the band above is plain too and the band
+          next to the tour panel stays Sand. */}
+      <Band tone="muted">
+        <SectionHead
+          size="lead"
+          title={`Built for the East Valley since ${since}.`}
+          action={<TextLink href="/about">Our story</TextLink>}
+        />
+        <HomeStory journal={journal} jobs={jobs} className="mt-12" />
       </Band>
 
       <TourCTABand passEmail night />

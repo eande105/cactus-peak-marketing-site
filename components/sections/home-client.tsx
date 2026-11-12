@@ -1,43 +1,21 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
 import { LinkButton } from "@/components/brand/atoms"
-import { StatusLine } from "@/components/brand/club-parts"
+import { isClubId, StatusLine } from "@/components/brand/club-parts"
 import {
-  type ClubId,
   ClubSet,
   clubObjects,
-  generalObjects,
+  type ObjectId,
   ObjectRack,
 } from "@/components/brand/graphics"
 import { BusynessMeter } from "@/components/brand/meters"
-import { Toggle } from "@/components/graphical"
-import { Check } from "@/components/icons"
+import { ArrowRight } from "@/components/icons"
 import { useCatalog, useSessions } from "@/components/site/catalog-context"
 import { useMyClub } from "@/components/site/club-context"
 import { fmtTime } from "@/lib/time"
-import type { AmenityKey, Club } from "@/lib/types"
+import type { Club } from "@/lib/types"
 import { cn } from "@/lib/utils"
-
-const isClubId = (slug: string): slug is ClubId => slug in clubObjects
-
-/** An orbit around the club's lead object; the rest of its Set and the general objects fill the rings. */
-function ClubOrbit({ slug, seed }: { slug: string; seed: number }) {
-  if (!isClubId(slug)) return null
-  const [lead, ...rest] = clubObjects[slug]
-  return (
-    <ObjectRack
-      ratio="4/5"
-      layout="orbit"
-      scheme="copper"
-      focus={lead}
-      ids={[...rest, ...generalObjects.filter((id) => id !== lead)]}
-      seed={seed + 1}
-      className="rounded-lg"
-    />
-  )
-}
 
 /** Your club strip (spec 1.2). Shown only when a club is set. First-time visitors use the finder below. */
 export function ClubStrip({ className }: { className?: string }) {
@@ -93,74 +71,99 @@ function ClubChange() {
   )
 }
 
-/** Home club finder (spec 1.3): five rows, one photo slot that follows the focused row. Chips dim clubs that lack the amenity. */
-export function ClubFinderGrid() {
-  const { clubs, amenityFilters } = useCatalog()
-  const [on, setOn] = useState<AmenityKey[]>([])
-  const [focus, setFocus] = useState(0)
-  const toggle = (k: AmenityKey) =>
-    setOn((v) => (v.includes(k) ? v.filter((x) => x !== k) : [...v, k]))
-  const dim = (c: Club) => on.some((k) => !c.has[k])
-  const f = clubs[focus]
+/**
+ * The section's art: every club's objects around one lit gym bag, the brand's object for membership
+ * (VISUAL-IDENTITY.md, object table). The clubs have no photos yet, so the Rack is the flagship card's
+ * picture. The clubs' lead objects come first, then their second and third, so each club is in the Rack
+ * before any club repeats (VISUAL-IDENTITY.md, section 4: 6 to 12 objects, each once).
+ */
+const sectionIds: ObjectId[] = [
+  ...new Set<ObjectId>(
+    [0, 1, 2].flatMap((i) => Object.values(clubObjects).map((set) => set[i]))
+  ),
+].slice(0, 12)
+
+// The club name is the card's one link. Its ::after covers the card, so the whole card is one target and
+// one tab stop.
+const cardLink =
+  "inline-flex min-h-11 items-center no-underline underline-offset-4 group-hover:underline after:absolute after:inset-0 after:rounded-lg"
+
+/**
+ * Home clubs (spec 03-pages, section 1.3): from lg, the flagship on the left over two rows and the other
+ * four in a 2 x 2 grid beside it, so all five clubs show at once. The cards use the bands of the club cards
+ * on /clubs, with less in them: the name, the club type with its opening year and the club's one-line
+ * personality, then a footer that points to the club page. Facilities, sizes and addresses live on /clubs and
+ * on each club page only, so the home page cannot disagree with them.
+ */
+export function ClubCards() {
+  const { clubs } = useCatalog()
+  const [feature, ...rest] = clubs
+  const byNewest = [...rest].sort((a, b) => b.opened - a.opened)
   return (
-    <div>
-      {/* biome-ignore lint/a11y/useSemanticElements: role=group on a non-form control group; fieldset adds default min-inline-size and a legend that would change the layout */}
-      <div
-        role="group"
-        aria-label="Filter clubs by what they have"
-        className="hidden flex-wrap gap-2 md:flex"
-      >
-        {amenityFilters.map((a) => (
-          <Toggle
-            key={a.key}
-            pressed={on.includes(a.key)}
-            onPressedChange={() => toggle(a.key)}
-            className="min-h-11"
-          >
-            {on.includes(a.key) ? <Check aria-hidden="true" /> : null}
-            {a.label}
-          </Toggle>
+    <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+      <HomeClubCard club={feature} feature />
+      <ul className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+        {byNewest.map((c) => (
+          <HomeClubCard key={c.slug} club={c} as="li" />
         ))}
-      </div>
-      {/* A row is a name, one line and today's status. Address, busyness and the signature list live on the club page (REDESIGN.md goal 4). */}
-      <div className="mt-8 grid gap-12 lg:grid-cols-12">
-        <ul className="border-t border-border lg:col-span-7">
-          {clubs.map((c, i) => (
-            <li
-              key={c.slug}
-              onMouseEnter={() => setFocus(i)}
-              onFocus={() => setFocus(i)}
-              className={cn(
-                "border-b border-border transition-opacity duration-150",
-                dim(c) && "opacity-40"
-              )}
-            >
-              <Link
-                href={`/clubs/${c.slug}`}
-                className="group grid gap-x-6 gap-y-1 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline"
-              >
-                <span className="font-display-wide text-h2 group-hover:underline lg:text-h1">
-                  {c.name}
-                </span>
-                <StatusLine className="max-sm:order-last" />
-                <span className="text-body text-muted-foreground sm:col-span-2">
-                  {c.personality}
-                </span>
-                {dim(c) ? (
-                  <span className="sr-only">
-                    Does not match the chosen filters
-                  </span>
-                ) : null}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <div className="hidden lg:col-span-5 lg:block">
-          <div className="sticky top-28">
-            <ClubOrbit slug={f.slug} seed={focus} />
+      </ul>
+    </div>
+  )
+}
+
+function HomeClubCard({
+  club: c,
+  feature,
+  as: T = "article",
+}: {
+  club: Club
+  feature?: boolean
+  as?: "article" | "li"
+}) {
+  return (
+    <T className="group relative flex flex-col overflow-hidden rounded-lg bg-card edge ring-border">
+      {/* Decorative: the card names the club. The flagship card has the section's one picture. */}
+      {feature ? (
+        <div className="relative aspect-[16/10] rule-b">
+          <div className="absolute inset-0">
+            <ObjectRack
+              ratio="16/10"
+              layout="cluster"
+              scheme="night"
+              focus="gym-bag"
+              ids={sectionIds}
+              fill
+            />
           </div>
         </div>
+      ) : null}
+      <div className="px-6 py-5">
+        <h3
+          className={cn(
+            "font-display-wide text-balance",
+            feature ? "text-h2" : "text-h3"
+          )}
+        >
+          <Link href={`/clubs/${c.slug}`} className={cardLink}>
+            {c.name}
+          </Link>
+        </h3>
+        <p className="mt-1 text-caption text-muted-foreground tabular-nums">
+          {c.city} · {c.type} · Opened in {c.opened}
+        </p>
+        <p className="mt-3 text-body text-pretty">{c.personality}</p>
       </div>
-    </div>
+      {/* The footer points to the club page, where the facilities, hours and address are. The name link above
+          is the card's one target, so the footer is a label for it, not a second link. */}
+      <div
+        aria-hidden="true"
+        className="mt-auto flex items-center justify-between gap-4 px-6 py-4 text-label text-link rule-t"
+      >
+        <span className="group-hover:underline group-hover:underline-offset-4">
+          See the club
+        </span>
+        <ArrowRight className="size-5 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+      </div>
+    </T>
   )
 }

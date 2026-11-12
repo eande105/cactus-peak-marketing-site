@@ -91,24 +91,32 @@ export function timeToMinutes(time: string) {
   return Number(h) * 60 + Number(m)
 }
 
+/**
+ * Every time on the site is written "6 am" or "4:30 pm": no ":00" on the hour, lowercase am/pm after a space.
+ * `bare` gives the phone status-bar clock ("9:41"), which always shows the minutes and no am/pm.
+ */
 export function fmtTime(min: number, bare = false) {
+  if (!bare) return fmtClock(min)
   const h24 = Math.floor(min / 60) % 24
-  const m = min % 60
   const h = h24 % 12 === 0 ? 12 : h24 % 12
-  const s = `${h}:${String(m).padStart(2, "0")}`
-  return bare ? s : `${s} ${h24 < 12 ? "a.m." : "p.m."}`
+  return `${h}:${String(min % 60).padStart(2, "0")}`
 }
+/** The same style as fmtClock. Kept as a name for the schedule code that already uses it. */
 export function fmtTimeShort(min: number) {
+  return fmtClock(min)
+}
+/** "4:30 am", "10 pm" */
+export function fmtClock(min: number) {
   const h24 = Math.floor(min / 60) % 24
   const m = min % 60
   const h = h24 % 12 === 0 ? 12 : h24 % 12
-  return `${h}${m ? `:${String(m).padStart(2, "0")}` : ""} ${h24 < 12 ? "a.m." : "p.m."}`
+  return `${h}${m ? `:${String(m).padStart(2, "0")}` : ""} ${h24 < 12 ? "am" : "pm"}`
 }
 export function fmtRange(a: number, b: number) {
   return `${fmtTime(a)}–${fmtTime(b)}`
 }
 
-// Hours are the same at all five clubs (00-foundation.md §2): Mon–Fri 4:30 a.m.–10 p.m., Sat–Sun 6 a.m.–8 p.m.
+// Hours are the same at all five clubs (00-foundation.md §2): Mon–Fri 4:30 am–10 pm, Sat–Sun 6 am–8 pm
 // Pools close 30 minutes before the club. The database has no hours table yet.
 export const WEEKDAY_HOURS: [number, number] = [4 * 60 + 30, 22 * 60]
 export const WEEKEND_HOURS: [number, number] = [6 * 60, 20 * 60]
@@ -124,11 +132,11 @@ export type OpenState = "open" | "closingSoon" | "opensLater" | "closed"
 export type ClubStatus = {
   state: OpenState
   open: boolean
-  /** "Open · until 10 p.m." */
+  /** "Open · until 10 pm" */
   text: string
-  /** "Open until 10 p.m." */
+  /** "Open until 10 pm" */
   short: string
-  /** Today's hours, "4:30 a.m.–10:00 p.m." */
+  /** Today's hours, "4:30 am–10 pm" */
   hours: string
 }
 

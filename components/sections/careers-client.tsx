@@ -3,15 +3,30 @@
 import Link from "next/link"
 import { useState } from "react"
 import { LinkButton } from "@/components/brand/atoms"
+import { GymObject } from "@/components/brand/graphics"
 import { useCatalog } from "@/components/site/catalog-context"
 import { Button } from "@/components/ui/button"
 import { SelectBox } from "@/components/ui/controls"
 import { Input } from "@/components/ui/input"
 import { submitSignup } from "@/lib/forms/actions"
 import { isEmail } from "@/lib/store"
+import type { Job } from "@/lib/types"
+import { DEPT_OBJECT, payEnds } from "./about-heroes"
 import { EmptyState } from "./common"
+import { ActiveFilters, FilterBar, ResultCount, SortSelect } from "./filter-bar"
 import { Honeypot, honeypotOf } from "./flow-ui"
 
+type JobSort = "newest" | "pay"
+// A role with no posted date sorts last under "Newest". Pay sorts on the top of each role's range.
+const JOB_SORTS: Record<JobSort, (a: Job, b: Job) => number> = {
+  newest: (a, b) => (b.posted ?? "").localeCompare(a.posted ?? ""),
+  pay: (a, b) => (payEnds(b.pay)?.[1] ?? 0) - (payEnds(a.pay)?.[1] ?? 0),
+}
+
+/**
+ * Every open role, under the site's results toolbar (filter-bar.tsx): club, department and type on the left, the
+ * count and the sort on the right, and a chip for each active filter.
+ */
 export function JobList() {
   const { jobs } = useCatalog()
   const [club, setClub] = useState("")
@@ -21,19 +36,27 @@ export function JobList() {
   const [state, setState] = useState<
     "idle" | "busy" | "ok" | "error" | "failed"
   >("idle")
-  const list = jobs.filter(
-    (j) =>
-      (!club || j.club === club) &&
-      (!dept || j.dept === dept) &&
-      (!type || j.type === type)
-  )
+  const [sort, setSort] = useState<JobSort>("newest")
+  const list = jobs
+    .filter(
+      (j) =>
+        (!club || j.club === club) &&
+        (!dept || j.dept === dept) &&
+        (!type || j.type === type)
+    )
+    .sort(JOB_SORTS[sort])
   const opts = (k: "club" | "dept" | "type") => [
     ...new Set(jobs.map((j) => j[k])),
   ]
+  const reset = () => {
+    setClub("")
+    setDept("")
+    setType("")
+  }
   return (
     <div>
-      <div className="flex flex-wrap gap-4">
-        {(
+      <FilterBar
+        filters={(
           [
             ["Club", club, setClub, "club"],
             ["Department", dept, setDept, "dept"],
@@ -52,35 +75,79 @@ export function JobList() {
             ]}
           />
         ))}
-      </div>
-      <p className="tabular mt-4 text-caption" aria-live="polite">
-        {list.length} open roles
-      </p>
+        results={
+          <>
+            <ResultCount
+              shown={list.length}
+              total={jobs.length}
+              noun={["open role", "open roles"]}
+            />
+            <SortSelect
+              value={sort}
+              onChange={setSort}
+              options={[
+                { value: "newest", label: "Newest" },
+                { value: "pay", label: "Highest pay" },
+              ]}
+            />
+          </>
+        }
+      />
+      <ActiveFilters
+        items={[
+          club && { key: "club", label: club, clear: () => setClub("") },
+          dept && { key: "dept", label: dept, clear: () => setDept("") },
+          type && { key: "type", label: type, clear: () => setType("") },
+        ]}
+        onClearAll={reset}
+      />
       {list.length ? (
-        <ul className="mt-2 border-t border-border">
+        <ul className="mt-6 rule-b rule-rows">
           {list.map((j) => (
             <li
               key={j.slug}
-              className="flex flex-wrap items-center justify-between gap-3 border-b border-border py-4"
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-6 lg:grid-cols-12 lg:gap-x-8"
             >
-              <div>
-                <Link
-                  href={`/careers/${j.slug}`}
-                  className="font-display-wide text-h3 hover:underline"
-                >
-                  {j.title}
-                </Link>
-                <p className="text-body text-muted-foreground">
-                  {j.club} · {j.type} · {j.pay}
-                </p>
-              </div>
-              <LinkButton
-                href={`/careers/${j.slug}`}
-                variant="outline"
-                size="sm"
+              {/* The object sits outside the heading, so the heading's name is only the title. */}
+              <span
+                aria-hidden="true"
+                className="grid size-12 place-items-center rounded-md bg-night lg:col-span-1"
               >
-                Apply
-              </LinkButton>
+                <GymObject
+                  id={DEPT_OBJECT[j.dept] ?? "whistle"}
+                  scheme="night"
+                  className="size-8"
+                />
+              </span>
+              <div className="min-w-0 lg:col-span-4">
+                <h3 className="font-display-wide text-h3 text-balance">
+                  <Link
+                    href={`/careers/${j.slug}`}
+                    className="no-underline underline-offset-4 hover:underline"
+                  >
+                    {j.title}
+                  </Link>
+                </h3>
+                <p className="text-caption text-muted-foreground">{j.dept}</p>
+              </div>
+              <p className="text-body max-lg:col-start-2 lg:col-span-3">
+                {j.club}
+                <span className="block text-caption text-muted-foreground">
+                  {j.type}
+                </span>
+              </p>
+              <p className="tabular text-body-strong max-lg:col-start-2 lg:col-span-2">
+                {j.pay}
+              </p>
+              <div className="max-lg:col-start-2 lg:col-span-2 lg:justify-self-end">
+                <LinkButton
+                  href={`/careers/${j.slug}`}
+                  variant="outline"
+                  size="sm"
+                >
+                  View role<span className="sr-only">: {j.title}</span>
+                </LinkButton>
+              </div>
             </li>
           ))}
         </ul>
@@ -114,6 +181,9 @@ export function JobList() {
             <Input
               id="tl"
               type="email"
+              autoComplete="email"
+              aria-invalid={state === "error"}
+              aria-describedby="tl-status"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-card"
@@ -122,7 +192,7 @@ export function JobList() {
               Join the list
             </Button>
           </form>
-          <p role="status" className="text-caption">
+          <p id="tl-status" role="status" className="text-caption">
             {state === "ok"
               ? "Thanks. We will write when a role opens."
               : state === "error"

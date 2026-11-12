@@ -5,13 +5,17 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { LinkButton, TextLink } from "@/components/brand/atoms"
 import { ClubArt } from "@/components/brand/club-art"
+import { ClubMap } from "@/components/brand/club-map"
 import { Check, CircleCheck, Plus } from "@/components/icons"
 import { useCatalog, useClubNow } from "@/components/site/catalog-context"
 import { MinimalCheckoutHeader } from "@/components/site/chrome"
 import { useMyClub } from "@/components/site/club-context"
 import { Button } from "@/components/ui/button"
 import { CheckRow, Textarea } from "@/components/ui/controls"
+import { RadioGroupBox } from "@/components/ui/radio-group-box"
 import { submitTour } from "@/lib/forms/actions"
+import { NETWORK_ERROR } from "@/lib/forms/messages"
+import { directionsHref } from "@/lib/geo"
 import { isEmailOrPhone, isPhone, useSessionState } from "@/lib/store"
 import { fmtTime } from "@/lib/time"
 import type { ClubSlug } from "@/lib/types"
@@ -73,6 +77,8 @@ type Tour = {
   remind: boolean
   id: string
   coach: string
+  /** The step the visitor was on, so leaving and coming back lands on the same step. */
+  step: number
 }
 const INIT: Tour = {
   club: "",
@@ -84,8 +90,41 @@ const INIT: Tour = {
   remind: false,
   id: "",
   coach: "",
+  step: 1,
 }
 export const useTour = () => useSessionState<Tour>("cpa_tour", INIT)
+
+/**
+ * Back and Next. On a phone it is a bar fixed to the bottom of the screen, so Next is always in reach,
+ * even after a long list of times. From 768px it sits in the page. The hint shows above the buttons on a phone.
+ */
+function ActionBar({
+  children,
+  hint,
+}: {
+  children: React.ReactNode
+  hint?: string
+}) {
+  return (
+    <>
+      {/* The bar docks below lg, the same breakpoint as the join flow's bar. */}
+      <div className="h-24 lg:hidden" aria-hidden="true" />
+      <div
+        data-action-bar
+        className="fixed inset-x-0 bottom-0 z-40 flex flex-col-reverse gap-2 bg-card px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t lg:static lg:z-auto lg:mt-8 lg:flex-row lg:items-center lg:gap-4 lg:bg-transparent lg:p-0 lg:rule-none"
+      >
+        <div className="flex gap-3">{children}</div>
+        <p
+          id="tour-hint"
+          className="text-caption text-muted-foreground empty:hidden"
+          aria-live="polite"
+        >
+          {hint}
+        </p>
+      </div>
+    </>
+  )
+}
 
 export function TourFlow() {
   const sp = useSearchParams()
@@ -93,9 +132,11 @@ export function TourFlow() {
   const { club: mine } = useMyClub()
   const { clubs, clubBySlug, profileCoaches: coaches } = useCatalog()
   const now = useClubNow()
-  const [t, setT] = useTour()
+  const [t, setT, ready] = useTour()
   const [step, setStep] = useState(1)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  // The summary shows only after a submit attempt. Before that, each field shows its own message on blur.
+  const [tried, setTried] = useState(false)
   const [coachOn, setCoachOn] = useState(true)
   const [noteOpen, setNoteOpen] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -109,20 +150,57 @@ export function TourFlow() {
   }, [step])
   const go = (n: number) => {
     setErrors({})
+    setTried(false)
     setStep(n)
+    setT((p) => ({ ...p, step: n }))
   }
+  // Once the saved tour is read, return to the step the visitor left, if its earlier steps are still valid.
+  const restored = useRef(false)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runs once, when the saved tour first loads
+  useEffect(() => {
+    if (!ready || restored.current) return
+    restored.current = true
+    const dayOk = t.day !== null && t.day >= now.dayNum
+    if (!club || !dayOk) return
+    if (
+      t.step >= 3 &&
+      t.time !== null &&
+      slotsFor(club, t.day!, now).includes(t.time)
+    )
+      setStep(3)
+    else if (t.step >= 2) setStep(2)
+  }, [ready])
+  // Check the contact fields when the visitor leaves them, and clear a message as soon as it is fixed.
+  const check = (key: "first" | "contact", value: string) =>
+    setErrors((e) => {
+      const msg =
+        key === "first"
+          ? value.trim()
+            ? ""
+            : "Enter your first name."
+          : isEmailOrPhone(value)
+            ? ""
+            : "Enter an email like name@example.com or a 10-digit mobile number."
+      if ((e[key] ?? "") === msg) return e
+      const { [key]: _drop, ...rest } = e
+      return msg ? { ...rest, [key]: msg } : rest
+    })
   const noteDefault =
     sp.get("note") === "kids"
       ? "I'd like to see the pool and the kids club."
       : sp.get("note") === "warm-pool"
         ? "I'd like to see the warm-water pool."
-        : "I'd like to see the pool and the kids club."
+        : sp.get("note") === "swim-school"
+          ? "I'd like to see swim school."
+          : "I'd like to see the pool and the kids club."
 
   const submit = async (form: HTMLFormElement) => {
+    setTried(true)
     const e: Record<string, string> = {}
     if (!t.first.trim()) e.first = "Enter your first name."
     if (!isEmailOrPhone(t.contact))
-      e.contact = "Enter an email or a 10-digit mobile number."
+      e.contact =
+        "Enter an email like name@example.com or a 10-digit mobile number."
     setErrors(e)
     if (Object.keys(e).length || t.day === null || t.time === null) {
       focusErrors()
@@ -142,16 +220,18 @@ export function TourFlow() {
     }).catch(() => null)
     if (!r?.ok) {
       setBusy(false)
-      setErrors(
-        r
-          ? serverErrors(r)
-          : { form: "We could not send that. Check your connection." }
-      )
+      setErrors(r ? serverErrors(r) : { form: NETWORK_ERROR })
       focusErrors()
       return
     }
     // The confirmation page reads the booking from this tab's sessionStorage. Nothing personal goes in the URL.
-    setT((p) => ({ ...p, club: club as string, id: r.ref, coach: withCoach }))
+    setT((p) => ({
+      ...p,
+      club: club as string,
+      id: r.ref,
+      coach: withCoach,
+      step: 1,
+    }))
     router.push("/tour/confirmed")
   }
   const slots = t.day !== null && club ? slotsFor(club, t.day, now) : []
@@ -181,7 +261,7 @@ export function TourFlow() {
               label={["Club and day", "Time", "Confirm"][step - 1]}
             />
           </div>
-          <div className="lg:col-span-7 lg:col-start-2">
+          <div className="lg:col-span-7">
             {step === 1 ? (
               <section aria-labelledby="t1">
                 <h1
@@ -208,7 +288,7 @@ export function TourFlow() {
                 ) : null}
                 <fieldset className="mt-8">
                   <legend className="text-label">Club</legend>
-                  <div className="mt-2 flex flex-col gap-2" role="radiogroup">
+                  <RadioGroupBox className="mt-2 flex flex-col gap-2">
                     {clubs.map((x) => {
                       const on = club === x.slug
                       return (
@@ -239,7 +319,7 @@ export function TourFlow() {
                               {x.name}
                             </span>
                             <span className="block text-body text-muted-foreground">
-                              {x.cross}
+                              {x.city}
                             </span>
                           </span>
                           {on ? (
@@ -251,14 +331,13 @@ export function TourFlow() {
                         </button>
                       )
                     })}
-                  </div>
+                  </RadioGroupBox>
                 </fieldset>
                 <fieldset className="mt-8">
                   <legend className="text-label">Day</legend>
-                  <div
-                    className="-mx-4 mt-2 flex scrollbar-none gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
-                    role="radiogroup"
-                    aria-label="Choose a day"
+                  <RadioGroupBox
+                    className="-mx-4 mt-2 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+                    aria-label="Pick a day"
                     tabIndex={club ? undefined : 0}
                   >
                     {Array.from({ length: 14 }, (_, i) => now.dayNum + i).map(
@@ -313,34 +392,35 @@ export function TourFlow() {
                         )
                       }
                     )}
-                  </div>
+                  </RadioGroupBox>
                   <p className="mt-2 text-caption text-muted-foreground">
                     {club
                       ? "Tours run every 30 minutes. All times are Arizona time."
                       : "Pick a club first. All times are Arizona time."}
                   </p>
                 </fieldset>
-                <div className="mt-8 flex items-center gap-4">
+                <ActionBar
+                  hint={
+                    !club
+                      ? "Pick a club to continue."
+                      : t.day === null
+                        ? "Pick a day to continue."
+                        : ""
+                  }
+                >
                   <Button
+                    className="max-lg:flex-1"
                     disabled={!club || t.day === null}
+                    focusableWhenDisabled
+                    aria-describedby="tour-hint"
                     onClick={() => {
                       setT((p) => ({ ...p, club }))
                       go(2)
                     }}
                   >
-                    Next
+                    Continue
                   </Button>
-                  <span
-                    className="text-caption text-muted-foreground"
-                    aria-live="polite"
-                  >
-                    {!club
-                      ? "Pick a club to continue."
-                      : t.day === null
-                        ? "Pick a day to continue."
-                        : ""}
-                  </span>
-                </div>
+                </ActionBar>
               </section>
             ) : null}
             {step === 2 && t.day !== null ? (
@@ -358,10 +438,7 @@ export function TourFlow() {
                     list.length ? (
                       <fieldset key={g} className="mt-6">
                         <legend className="eyebrow mb-2">{g}</legend>
-                        <div
-                          className="grid grid-cols-2 gap-2 lg:grid-cols-3"
-                          role="radiogroup"
-                        >
+                        <RadioGroupBox className="grid grid-cols-2 gap-2 lg:grid-cols-3">
                           {list.map((m) => {
                             const on = t.time === m
                             return (
@@ -389,7 +466,7 @@ export function TourFlow() {
                               </button>
                             )
                           })}
-                        </div>
+                        </RadioGroupBox>
                       </fieldset>
                     ) : null
                   )
@@ -403,17 +480,26 @@ export function TourFlow() {
                     </Button>
                   </EmptyState>
                 )}
-                <div className="mt-8 flex items-center gap-4">
-                  <Button variant="ghost" onClick={() => go(1)}>
+                <ActionBar
+                  hint={t.time === null ? "Pick a time to continue." : ""}
+                >
+                  <Button
+                    variant="ghost"
+                    className="max-lg:flex-1"
+                    onClick={() => go(1)}
+                  >
                     Back
                   </Button>
-                  <Button disabled={t.time === null} onClick={() => go(3)}>
-                    Next
+                  <Button
+                    className="max-lg:flex-[2]"
+                    disabled={t.time === null}
+                    focusableWhenDisabled
+                    aria-describedby="tour-hint"
+                    onClick={() => go(3)}
+                  >
+                    Continue
                   </Button>
-                  <span className="text-caption text-muted-foreground">
-                    {t.time === null ? "Pick a time to continue." : ""}
-                  </span>
-                </div>
+                </ActionBar>
               </section>
             ) : null}
             {step === 3 && c && t.day !== null && t.time !== null ? (
@@ -447,26 +533,35 @@ export function TourFlow() {
                     submit(e.currentTarget)
                   }}
                 >
-                  <ErrorSummary errors={errors} />
+                  <ErrorSummary errors={errors} show={tried} />
                   <Honeypot />
                   <div className="grid gap-5 sm:grid-cols-2">
                     <TextField
                       label="First name"
+                      required
                       value={t.first}
-                      onChange={(v) => setT((p) => ({ ...p, first: v }))}
+                      onChange={(v) => {
+                        setT((p) => ({ ...p, first: v }))
+                        if (errors.first && v.trim()) check("first", v)
+                      }}
+                      onBlur={() => check("first", t.first)}
                       error={errors.first}
                       autoComplete="given-name"
                     />
                     <TextField
                       label="Email or mobile number"
+                      required
                       value={t.contact}
-                      onChange={(v) =>
+                      onChange={(v) => {
                         setT((p) => ({
                           ...p,
                           contact: v,
                           remind: isPhone(v) ? p.remind : false,
                         }))
-                      }
+                        if (errors.contact && isEmailOrPhone(v))
+                          check("contact", v)
+                      }}
+                      onBlur={() => check("contact", t.contact)}
                       error={errors.contact}
                       help="We send your tour details here."
                       autoComplete="email"
@@ -510,17 +605,26 @@ export function TourFlow() {
                       </span>
                     ) : null}
                   </CheckRow>
-                  <div className="flex flex-wrap items-center gap-4">
-                    <Button type="button" variant="ghost" onClick={() => go(2)}>
+                  <TextLink href="/contact?topic=tour" className="self-start">
+                    Request info instead
+                  </TextLink>
+                  <ActionBar>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="max-lg:flex-1"
+                      onClick={() => go(2)}
+                    >
                       Back
                     </Button>
-                    <Button type="submit" loading={busy}>
+                    <Button
+                      type="submit"
+                      className="max-lg:flex-[2]"
+                      loading={busy}
+                    >
                       Book my tour
                     </Button>
-                    <TextLink href="/contact?topic=tour">
-                      Request info instead
-                    </TextLink>
-                  </div>
+                  </ActionBar>
                   <p className="text-caption text-muted-foreground">
                     Free. No card. We use your details only to book this tour.{" "}
                     <Link href="/legal/privacy" className="underline">
@@ -533,7 +637,7 @@ export function TourFlow() {
             ) : null}
           </div>
           {c ? (
-            <aside className="hidden lg:col-span-3 lg:block">
+            <aside className="hidden lg:col-span-5 lg:block">
               <div className="sticky top-8 rounded-lg bg-muted p-4 text-body">
                 <h2 className="text-body-strong">Your tour</h2>
                 <p className="mt-2 font-semibold">{c.name}</p>
@@ -563,6 +667,7 @@ export function TourConfirmed() {
     return (
       <Container className="py-16">
         <EmptyState
+          as="h1"
           title="We could not find a booking."
           text="Start a new one. It takes about a minute."
         >
@@ -571,14 +676,17 @@ export function TourConfirmed() {
       </Container>
     )
   const rows = [
-    ["Get directions", "https://maps.apple.com/"],
-    ["Message the club", `/contact?topic=tour&club=${c.slug}`],
+    ["Get directions", directionsHref(c)],
+    // The site cannot change a booking, and /tour makes a second one. The club changes or cancels it.
+    [
+      "Message the club to change or cancel",
+      `/contact?topic=tour&club=${c.slug}`,
+    ],
     ["Club details", `/clubs/${c.slug}`],
-    ["Reschedule or cancel", "/tour"],
   ]
   return (
     <Container className="grid gap-8 py-10 lg:grid-cols-12 lg:py-16">
-      <div className="lg:col-span-7 lg:col-start-2">
+      <div className="lg:col-span-7">
         <CircleCheck className="size-12 text-success" aria-hidden="true" />
         <h1
           className="font-display-wide mt-3 text-h1 lg:text-display"
@@ -590,7 +698,12 @@ export function TourConfirmed() {
         <p className="tabular mt-2 text-body">
           {dateLabel(t.day, true)} at {fmtTime(t.time)} · {c.name}
         </p>
-        <div className="mt-6 rounded-lg bg-card p-5 text-body edge ring-border">
+        <ClubMap
+          only={c.slug}
+          interactive={false}
+          className="mt-6 aspect-[16/9] w-full"
+        />
+        <div className="mt-4 rounded-lg bg-card p-5 text-body edge ring-border">
           <p>
             {c.cross}, {c.city}, AZ {c.zip}
           </p>
@@ -632,12 +745,12 @@ export function TourConfirmed() {
             Add to calendar
           </LinkButton>
         </div>
-        <ul className="mt-6 border-t border-border">
+        <ul className="mt-6 rule-t">
           {rows.map(([l, h]) => (
             <li key={l}>
               <a
                 href={h}
-                className="flex min-h-12 items-center justify-between border-b border-border text-label hover:underline"
+                className="flex min-h-12 items-center justify-between text-label rule-b hover:underline"
               >
                 <span>{l}</span>
                 <span aria-hidden="true">→</span>
@@ -653,7 +766,7 @@ export function TourConfirmed() {
         <p className="mt-6 text-body">
           Want to try a class too?{" "}
           <TextLink href="/trial" className="inline-flex">
-            Get a free 3-day pass
+            Try a free 3-day pass
           </TextLink>
         </p>
         <LinkButton href="/" variant="outline" className="mt-4">

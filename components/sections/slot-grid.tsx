@@ -20,7 +20,7 @@ export function LaneGrid() {
               {left === 0
                 ? "Full"
                 : left <= 5
-                  ? `${left} lanes left`
+                  ? `${left} ${left === 1 ? "lane" : "lanes"} left`
                   : "Lanes open"}
             </p>
           </li>
@@ -75,7 +75,7 @@ export function CourtGrid() {
           </thead>
           <tbody>
             {times.map((t, r) => (
-              <tr key={t} className="border-t border-border">
+              <tr key={t} className="[&>*]:rule-t">
                 <th scope="row" className="tabular p-3 text-left">
                   {fmtTime(t)}
                 </th>

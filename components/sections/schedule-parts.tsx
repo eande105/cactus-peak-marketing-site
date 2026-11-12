@@ -14,6 +14,8 @@ import { ClubSwitcher } from "@/components/site/club-switcher"
 import { Button } from "@/components/ui/button"
 import { SelectBox } from "@/components/ui/controls"
 import { filterSessions } from "@/lib/catalog"
+import { countOf } from "@/lib/labels"
+import { scheduleUrl } from "@/lib/links"
 import { clubHours, dayInfo, fmtTimeShort } from "@/lib/time"
 import type { ClubSlug, Session } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -34,12 +36,17 @@ export function ScheduleDayStrip({
   // Single choice on a Graphical ToggleGroup. Pressing the current day again keeps it on.
   return (
     <ToggleGroup
-      aria-label="Choose a day"
+      aria-label="Pick a day"
       value={[String(value)]}
       onValueChange={(v) => {
         if (v[0] !== undefined) onChange(Number(v[0]))
       }}
-      className={cn("max-w-full scrollbar-none overflow-x-auto", className)}
+      // A scroll box clips anything past its edge. The padding leaves room for the focus ring, and the
+      // negative margin keeps the buttons where they were.
+      className={cn(
+        "-m-1 max-w-[calc(100%+0.5rem)] overflow-x-auto p-1",
+        className
+      )}
     >
       {Array.from({ length: 7 }, (_, i) => {
         const d = dayInfo(i, dayNum)
@@ -53,7 +60,7 @@ export function ScheduleDayStrip({
             value={String(i)}
             aria-label={
               counts
-                ? `${i === 0 ? "Today" : `${d.short} ${d.dom}`}, ${counts[i]} classes`
+                ? `${i === 0 ? "Today" : `${d.short} ${d.dom}`}, ${countOf(counts[i], "class", "classes")}`
                 : undefined
             }
             className={cn(
@@ -70,7 +77,7 @@ export function ScheduleDayStrip({
 }
 
 /** Sessions that have not started yet, and how many fall on each of the next 7 days. */
-export function useUpcoming(opts: {
+function useUpcoming(opts: {
   club: ClubSlug | "all"
   category?: string
   classSlug?: string
@@ -98,6 +105,7 @@ export function ScheduleTeaser({
   category,
   classSlug,
   coach,
+  coachSlug,
   allowAll,
   switcher = true,
   limit = 6,
@@ -107,7 +115,10 @@ export function ScheduleTeaser({
   club?: ClubSlug | "all"
   category?: string
   classSlug?: string
+  /** The coach's name. The sessions carry the name, so the filter matches on it. */
   coach?: string
+  /** The coach's slug. The schedule link needs it, because the board looks a coach up by slug. */
+  coachSlug?: string
   allowAll?: boolean
   switcher?: boolean
   limit?: number
@@ -120,7 +131,7 @@ export function ScheduleTeaser({
   const [picked, setPicked] = useState<ClubSlug | "all" | "">("")
   const club: ClubSlug | "all" =
     fixedClub ??
-    (picked || mine?.slug || (allowAll ? "all" : "gilbert-val-vista"))
+    (picked || mine?.slug || (allowAll ? "all" : "val-vista-warner"))
   const { upcoming, counts, now } = useUpcoming({
     club,
     category,
@@ -169,7 +180,8 @@ export function ScheduleTeaser({
             }
             text={
               day === 0 && now.min < clubHours(now.weekday)[1]
-                ? `The club is open until ${fmtTimeShort(clubHours(now.weekday)[1])}.`
+                ? // Times ("10 pm") carry no full stop, so the sentence adds its own.
+                  `The club is open until ${fmtTimeShort(clubHours(now.weekday)[1])}.`
                 : "Try another day."
             }
           >
@@ -183,7 +195,12 @@ export function ScheduleTeaser({
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6">
         <TextLink
-          href={`/schedule?${c ? `club=${c.slug}` : "club=all"}${category ? `&category=${category}` : ""}${classSlug ? `&class=${classSlug}` : ""}${coach ? `&coach=${coach}` : ""}`}
+          href={scheduleUrl({
+            club: c ? c.slug : "all",
+            category,
+            class: classSlug,
+            coach: coachSlug,
+          })}
         >
           {classSlug
             ? "Open the full schedule for this class"
