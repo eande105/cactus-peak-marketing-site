@@ -1,91 +1,15 @@
 "use client"
 
-import Link from "next/link"
-import {
-  ObjectRow,
-  type PlanId,
-  planObjects,
-} from "@/components/brand/graphics"
-import { Check } from "@/components/icons"
 import { useCatalog } from "@/components/site/catalog-context"
-import type { Plan } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { LinkButton } from "./atoms"
-import { RibMeter } from "./meters"
 
-export function PlanCard({
-  plan,
-  variant = "default",
-  yourClub,
-  className,
-}: {
-  plan: Plan
-  variant?: "default" | "highlighted" | "compact"
-  yourClub?: string
-  className?: string
-}) {
-  const hi = variant === "highlighted" || plan.badge
-  const features = variant === "compact" ? plan.compact : plan.features
-  return (
-    <article
-      className={cn(
-        "relative flex flex-col gap-4 rounded-lg bg-card p-6",
-        hi ? "ring-2 ring-primary lg:-translate-y-2" : "edge ring-border",
-        className
-      )}
-    >
-      {plan.badge ? (
-        <p className="eyebrow absolute -top-3 left-6 rounded-sm bg-primary px-2 py-1 text-primary-foreground">
-          {plan.badge}
-        </p>
-      ) : null}
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="font-display-wide text-h3">{plan.name}</h3>
-        <RibMeter
-          value={plan.ribs}
-          tone="brand"
-          size="md"
-          label="Plan level"
-          valueText={`${plan.name}, ${plan.ribs} of 5`}
-          decorative
-        />
-      </div>
-      <p className="flex items-baseline gap-1">
-        <span className="tabular font-data text-h1 font-bold">
-          ${plan.price}
-        </span>
-        <span className="text-caption text-muted-foreground">/mo</span>
-      </p>
-      <p className="text-caption text-foreground">
-        {plan.bestFor}
-        {plan.slug === "trailhead" && yourClub ? (
-          <span className="mt-1 block text-muted-foreground">
-            Your club: {yourClub}.
-          </span>
-        ) : null}
-      </p>
-      <ul className="flex flex-col gap-2 text-caption">
-        {features.map((f) => (
-          <li key={f} className="flex items-start gap-2">
-            <Check
-              className="mt-0.5 size-4 shrink-0 text-success"
-              aria-hidden="true"
-            />
-            {f}
-          </li>
-        ))}
-      </ul>
-      <LinkButton
-        href={`/join/plan?plan=${plan.slug}`}
-        variant={plan.badge ? "primary" : "outline"}
-        className="mt-auto"
-      >
-        Join {plan.name}
-      </LinkButton>
-    </article>
-  )
-}
-
+/**
+ * Every plan row side by side. From md it is a table that fits its column, so nothing scrolls inside it and
+ * the head can stick under the header and the section nav as the rows pass. (A sticky head inside a
+ * sideways scroll box sticks to the box, not the window, and slid down over the first rows.) Below md four
+ * columns do not fit, and a sideways table hides which plan a value belongs to, so each row is a block:
+ * the row's name, then the three plans with their values, each one labelled.
+ */
 export function PlanComparisonTable({
   className,
   stickyTop = false,
@@ -96,25 +20,23 @@ export function PlanComparisonTable({
   const { plans, comparison } = useCatalog()
   return (
     <section
-      className={cn(
-        "relative overflow-x-auto border-y border-foreground",
-        className
-      )}
-      // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region needs a tab stop so keyboard users can scroll it
-      tabIndex={0}
-      aria-label="Plan comparison. Scroll sideways on small screens."
+      className={cn("relative rule-y rule-ink", className)}
+      aria-label="Plan comparison"
     >
-      <table className="w-full min-w-[640px] border-collapse text-caption">
+      <table className="w-full border-collapse text-caption max-md:hidden">
         <caption className="sr-only">
           Compare Trailhead, Ridge and Summit
         </caption>
         <thead
-          className={cn("bg-background", stickyTop && "sticky top-16 z-10")}
+          className={cn(
+            "bg-background",
+            stickyTop && "md:sticky md:top-(--sticky-top) md:z-10"
+          )}
         >
           <tr>
             <th
               scope="col"
-              className="w-[28%] bg-transparent p-4 text-left text-caption font-semibold text-muted-foreground"
+              className="w-[28%] p-4 text-left align-bottom text-caption font-semibold text-muted-foreground"
             >
               What you get
             </th>
@@ -127,20 +49,25 @@ export function PlanComparisonTable({
                   p.badge && "bg-accent/40"
                 )}
               >
+                {/* The badge goes above the name, so the names and prices line up across the columns. */}
+                {p.badge ? (
+                  <span className="mb-1 block text-caption font-semibold">
+                    {p.badge}
+                  </span>
+                ) : null}
                 <span className="font-display-wide block text-h3">
                   {p.name}
                 </span>
                 <span className="tabular block font-data text-label">
                   ${p.price}/mo
                 </span>
-                {p.badge ? <span className="eyebrow">{p.badge}</span> : null}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {comparison.map((r) => (
-            <tr key={r.row} className="border-t border-border">
+            <tr key={r.row} className="[&>*]:rule-t">
               <th scope="row" className="p-4 text-left font-medium">
                 {r.row}
               </th>
@@ -151,7 +78,16 @@ export function PlanComparisonTable({
                   className={cn("p-4", plans[i].badge && "bg-accent/40")}
                 >
                   {v === "–" ? (
-                    <span className="sr-only">Not included</span>
+                    <>
+                      {/* A visible dash, so an empty cell reads as "no" and not as missing data. */}
+                      <span
+                        aria-hidden="true"
+                        className="text-muted-foreground"
+                      >
+                        —
+                      </span>
+                      <span className="sr-only">Not included</span>
+                    </>
                   ) : v === "Included" ? (
                     <span>
                       <span
@@ -169,93 +105,40 @@ export function PlanComparisonTable({
           ))}
         </tbody>
       </table>
-    </section>
-  )
-}
 
-/** Three plans as columns divided by hairlines. Ridge carries the one filled button. */
-export function PlanColumns({
-  yourClub,
-  className,
-}: {
-  yourClub?: string
-  className?: string
-}) {
-  const { plans } = useCatalog()
-  return (
-    <ul
-      className={cn(
-        "grid border-t-2 border-foreground lg:grid-cols-3",
-        className
-      )}
-    >
-      {plans.map((p, i) => (
-        <li
-          key={p.slug}
-          className={cn(
-            "flex flex-col gap-3 border-b border-border py-5 lg:gap-4 lg:border-b-0 lg:px-8 lg:py-8 lg:py-10",
-            i > 0 && "lg:border-l lg:border-border",
-            i === 0 && "lg:pl-0",
-            p.badge && "lg:bg-card/60",
-            p.badge ? "max-lg:order-first" : ""
-          )}
-        >
-          {/* Name, price, who it is for, what is in it. The price and the name rank the plans, so no meter (REDESIGN.md goal 7). */}
-          <div className="flex items-baseline justify-between gap-3">
-            <h3 className="font-display-wide text-h2">{p.name}</h3>
-            {p.badge ? (
-              <span className="rounded-sm bg-accent px-2 py-0.5 text-label text-foreground">
-                {p.badge}
-              </span>
-            ) : null}
+      <dl className="md:hidden">
+        {comparison.map((r) => (
+          <div key={r.row} className="py-4 rule-t first:rule-t-0">
+            <dt className="text-body-strong">{r.row}</dt>
+            <dd className="mt-2 grid grid-cols-3 gap-3">
+              {r.vals.map((v, i) => (
+                <p
+                  // biome-ignore lint/suspicious/noArrayIndexKey: each value lines up with a plan; the list is static
+                  key={i}
+                  className="min-w-0 text-body text-pretty"
+                >
+                  <span className="block text-caption text-muted-foreground">
+                    {plans[i].name}
+                  </span>
+                  {v === "–" ? (
+                    <>
+                      <span
+                        aria-hidden="true"
+                        className="text-muted-foreground"
+                      >
+                        —
+                      </span>
+                      <span className="sr-only">Not included</span>
+                    </>
+                  ) : (
+                    v
+                  )}
+                </p>
+              ))}
+            </dd>
           </div>
-          <p className="flex items-baseline gap-1">
-            <span className="tabular font-data text-[3.5rem] leading-none font-bold">
-              ${p.price}
-            </span>
-            <span className="text-body text-muted-foreground">/mo</span>
-          </p>
-          {p.slug in planObjects ? (
-            // One object for each thing the plan includes; the copy beside it names them.
-            <ObjectRow
-              ids={planObjects[p.slug as PlanId]}
-              className="h-8 w-auto self-start"
-            />
-          ) : null}
-          <p className="text-body">
-            {p.bestFor}
-            {p.slug === "trailhead" && yourClub ? (
-              <span className="mt-1 block text-muted-foreground">
-                Your club: {yourClub}.
-              </span>
-            ) : null}
-          </p>
-          <ul className="mt-2 hidden flex-col gap-2 text-body text-muted-foreground lg:flex">
-            {p.features.map((f) => (
-              <li key={f} className="flex items-start gap-2">
-                <Check
-                  className="mt-1 size-4 shrink-0 text-foreground"
-                  aria-hidden="true"
-                />
-                {f}
-              </li>
-            ))}
-          </ul>
-          <LinkButton
-            href={`/join/plan?plan=${p.slug}`}
-            variant={p.badge ? "primary" : "outline"}
-            className="mt-auto max-lg:hidden"
-          >
-            Join {p.name}
-          </LinkButton>
-          <Link
-            href={`/join/plan?plan=${p.slug}`}
-            className="inline-flex min-h-11 items-center text-label text-link underline-offset-4 hover:underline lg:hidden"
-          >
-            Join {p.name}
-          </Link>
-        </li>
-      ))}
-    </ul>
+        ))}
+      </dl>
+    </section>
   )
 }

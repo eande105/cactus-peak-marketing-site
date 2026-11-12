@@ -1,55 +1,80 @@
 import type { Metadata } from "next"
-import { SectionHead } from "@/components/brand/atoms"
+
+import { SectionHead, TextLink } from "@/components/brand/atoms"
+import { ClubsDirectory } from "@/components/sections/clubs-directory"
+import { ClubsOfferings } from "@/components/sections/clubs-offerings"
 import {
-  ClubComparisonTable,
-  ClubFinderSplit,
-  ClubsHeaderSearch,
-} from "@/components/sections/clubs-client"
-import {
-  Band,
-  Breadcrumbs,
-  Container,
-  TourCTABand,
-} from "@/components/sections/common"
-import type { AmenityKey } from "@/lib/types"
+  ClubsGoals,
+  ClubsOverviewHero,
+} from "@/components/sections/clubs-overview"
+import { ClubsPlanCards } from "@/components/sections/clubs-plan-cards"
+import { Band, TourCTABand } from "@/components/sections/common"
+import { getCatalog } from "@/lib/catalog/server"
 
 export const metadata: Metadata = {
   title: "Gym locations in Mesa and Gilbert, AZ — Cactus Peak",
   description:
-    "Find the club near you. 5 clubs, hours, pools, courts and kids club. Open 4:30 a.m. weekdays.",
+    "Five clubs, one membership. Pools, courts, classes and recovery in Mesa and Gilbert. Open 4:30 am weekdays.",
 }
 
-export default async function ClubsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ amenity?: string }>
-}) {
-  const sp = await searchParams
-  const initial = (sp.amenity?.split(",") ?? []).filter((k): k is AmenityKey =>
-    ["pool", "courts", "cycling", "kids", "recovery", "classes"].includes(k)
-  )
+/*
+ * The clubs landing page, in the order a visitor asks about the clubs. Each section has one job, and each
+ * fact has one home on the page:
+ * 1. The hero: five clubs, two cities, one membership.
+ * 2. Find your club (#find): the ZIP search with the five club cards as its results. The only club list.
+ * 3. What's at each club (#compare): every offering by club, linked to its page, with the plan that opens it.
+ *    The only place that says which club has what.
+ * 4. Where your plan takes you: the plan cards, without the club key (section 3 shows where things are).
+ * 5. How members use their club: member stories.
+ * 6. The tour panel.
+ */
+export default async function ClubsPage() {
+  const { clubs, plans, testimonials, prices, coaches } = await getCatalog()
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Clubs" }]} />
-      <Container className="grid gap-6 pt-4 pb-8 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <h1 className="display-lead">Find your club.</h1>
-          <p className="lede mt-3 text-muted-foreground">
-            Five clubs in Mesa and Gilbert. All open at 4:30 a.m. on weekdays.
-          </p>
-        </div>
-        <div className="lg:col-span-5">
-          <ClubsHeaderSearch />
-        </div>
-      </Container>
-      <ClubFinderSplit initial={initial} />
-      <Band tone="muted" id="compare">
-        <SectionHead title="Which club has what." className="mb-8" />
-        <ClubComparisonTable />
+      <ClubsOverviewHero />
+
+      <Band id="find">
+        <SectionHead size="lead" title="Find your club." />
+        <ClubsDirectory clubs={clubs} className="mt-10" />
       </Band>
+
+      <Band tone="tint" id="compare">
+        <SectionHead size="lead" title="What's at each club." />
+        <ClubsOfferings clubs={clubs} coaches={coaches} className="mt-12" />
+      </Band>
+
+      <Band>
+        <SectionHead
+          size="lead"
+          title="Where your plan takes you."
+          action={<TextLink href="/membership#compare">Compare plans</TextLink>}
+        />
+        <div className="mt-12">
+          <ClubsPlanCards
+            plans={plans}
+            clubs={clubs}
+            childPrice={prices.child}
+            facilityFee={prices.facilityFee}
+            facilityKey={false}
+          />
+        </div>
+      </Band>
+
+      <Band tone="tint">
+        <SectionHead size="lead" title="How members use their club." />
+        <ClubsGoals
+          testimonials={testimonials}
+          clubs={clubs}
+          className="mt-12"
+        />
+      </Band>
+
       <TourCTABand
-        title="Not sure which club? Tour two."
-        support="Book one tour. Ask your coach to walk you to the club that fits."
+        night
+        title="Not sure which club? Start with a tour."
+        support="A coach shows you around and helps you pick the club that fits your week."
+        passEmail
       />
     </>
   )

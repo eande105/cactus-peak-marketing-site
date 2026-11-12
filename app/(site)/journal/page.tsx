@@ -1,38 +1,46 @@
 import type { Metadata } from "next"
-import {
-  Breadcrumbs,
-  ClosingRow,
-  Container,
-  SplitSection,
-} from "@/components/sections/common"
+import { SectionHead } from "@/components/brand/atoms"
+import { JournalHero } from "@/components/sections/about-heroes"
+import { Band } from "@/components/sections/common"
 import { JournalIndex } from "@/components/sections/journal-parts"
-import { NewsletterStrip } from "@/components/sections/small-client"
+import { NewsletterPanel } from "@/components/sections/newsletter-panel"
+import { getCatalog } from "@/lib/catalog/server"
 
 export const metadata: Metadata = {
   title: "The Journal — Cactus Peak",
   description:
     "Training notes from our coaches. Written in Mesa and Gilbert, in the heat.",
 }
-export default function Journal() {
+
+/**
+ * The Journal. The masthead opens on the latest note as the cover story. Then every other note, and the page closes
+ * on the monthly email panel instead of the tour panel, because a reader here wants more to read.
+ */
+export default async function Journal() {
+  const { journal, coachBySlug } = await getCatalog()
+  const latest = journal[0]
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Journal" }]} />
-      <Container className="pt-4 pb-10">
-        <h1 className="display-lead">The Journal.</h1>
-        <p className="lede mt-4 text-muted-foreground">
-          Training notes from our coaches. Written in Mesa and Gilbert, in the
-          heat.
-        </p>
-      </Container>
-      <Container className="pb-16">
-        <JournalIndex />
-      </Container>
-      <SplitSection label="One note a month">
-        <div className="max-w-md">
-          <NewsletterStrip />
+      <JournalHero
+        latest={latest}
+        author={
+          latest
+            ? (coachBySlug(latest.author)?.name ?? "Cactus Peak coaches")
+            : ""
+        }
+        count={journal.length}
+      />
+
+      <Band tone="tint" id="notes">
+        <SectionHead size="lead" title="Every note." />
+        <div className="mt-12">
+          <JournalIndex skip={latest?.slug} />
         </div>
-      </SplitSection>
-      <ClosingRow title="Come see the club." />
+      </Band>
+
+      <div className="pt-12 lg:pt-16">
+        <NewsletterPanel id="email" notes={journal} />
+      </div>
     </>
   )
 }

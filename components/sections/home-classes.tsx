@@ -1,132 +1,96 @@
 "use client"
 
 import Link from "next/link"
-import * as React from "react"
-
-import { TextLink } from "@/components/brand/atoms"
-import {
-  type CategoryId,
-  CategoryTile,
-  categoryObject,
-  ObjectRack,
-} from "@/components/brand/graphics"
+import { type CategoryId, CategoryTile } from "@/components/brand/graphics"
+import { IntensityRibs } from "@/components/brand/meters"
 import { useCatalog } from "@/components/site/catalog-context"
-import {
-  Carousel,
-  type CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
+import { classHref, typeHref } from "@/lib/links"
 import type { ClassType } from "@/lib/types"
 
-/** Home "Eight ways to move." body: a carousel of featured classes next to the eight class types. */
+/**
+ * Home "Eight ways to move." body, in two parts. First the eight kinds of class, because the heading
+ * names them: the Tile, the name and the count, one link each. Then three popular classes, each the name,
+ * one line and how long and how hard. The full list lives on /classes.
+ * The hero and the clubs are card layouts with Night and Copper Racks. This section has no cards: the
+ * parts sit on the band between rules, and the graphic is the cut Tile in each category's own colour,
+ * the one place the brand allows category colour (VISUAL-IDENTITY.md, sections 4 and 5).
+ */
 export function HomeClasses({ className }: { className?: string }) {
-  return (
-    <div
-      className={`grid gap-12 lg:grid-cols-12 lg:gap-x-12 ${className ?? ""}`}
-    >
-      <FeaturedCarousel className="min-w-0 lg:col-span-5" />
-      <CategoryGrid className="lg:col-span-7" />
-    </div>
-  )
-}
-
-function FeaturedCarousel({ className }: { className?: string }) {
-  const { popularNow, classBySlug } = useCatalog()
-  // The "popular now" classes plus Switchback HIIT, so conditioning is also in the set.
-  const featured = [...new Set([...popularNow, "switchback-hiit"])]
+  const { popularNow, classBySlug, categories } = useCatalog()
+  // The first three popular classes: a ride, a yoga flow and a lift, so three kinds and three effort levels.
+  const featured = popularNow
     .map(classBySlug)
     .filter((c): c is ClassType => Boolean(c))
-  const [api, setApi] = React.useState<CarouselApi>()
-  const [current, setCurrent] = React.useState(0)
-
-  // Subscribe to Embla events. State changes only inside the handler, never in the effect body.
-  React.useEffect(() => {
-    if (!api) return
-    const sync = () => setCurrent(api.selectedScrollSnap())
-    api.on("select", sync)
-    api.on("reInit", sync)
-    return () => {
-      api.off("select", sync)
-      api.off("reInit", sync)
-    }
-  }, [api])
-
+    .slice(0, 3)
   return (
-    <Carousel
-      setApi={setApi}
-      opts={{ align: "start" }}
-      aria-label="Featured classes"
-      className={`max-w-2xl lg:max-w-none ${className ?? ""}`}
-    >
-      <CarouselContent className="-ml-4">
-        {featured.map((c, i) => (
-          <CarouselItem
+    <div className={className}>
+      <nav aria-label="Class types">
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 sm:gap-y-6 lg:grid-cols-8">
+          {categories.map((c) => (
+            <li key={c.id}>
+              <Link
+                href={typeHref(c.id)}
+                className="group flex min-h-11 items-center gap-3 no-underline sm:flex-col sm:items-start"
+              >
+                <CategoryTile
+                  category={c.id as CategoryId}
+                  cut
+                  className="size-10 shrink-0 sm:size-12"
+                />
+                <span className="text-body-strong group-hover:underline">
+                  {c.name}
+                  <span className="ml-1.5 font-normal text-muted-foreground tabular-nums">
+                    {c.count}
+                    <span className="sr-only"> classes</span>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <h3 className="font-display-wide mt-16 text-h2 lg:mt-20">Popular now</h3>
+      <ul className="mt-6 grid rule-y max-lg:rule-rows lg:grid-cols-3 lg:rule-cols">
+        {featured.map((c) => (
+          <li
             key={c.slug}
-            aria-label={`${i + 1} of ${featured.length}`}
-            className="basis-[88%] pl-4 sm:basis-full"
+            className="group relative flex flex-col py-8 lg:px-8 lg:first:pl-0 lg:last:pr-0"
           >
-            <ObjectRack
-              ratio="4/3"
-              layout="arc"
-              focus={categoryObject[c.category as CategoryId]}
-              seed={i + 1}
-              className="rounded-lg"
-            />
-            <h3 className="font-display-wide mt-6 text-h2">{c.name}</h3>
-            <p className="mt-2 max-w-[40ch] text-body text-pretty">{c.blurb}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-x-6">
-              <TextLink href={`/classes/${c.slug}`}>Class details</TextLink>
-              <span className="text-body text-muted-foreground">
-                {c.duration} min
+            <div className="flex items-center gap-3">
+              {/* Decorative: the category name follows. */}
+              <CategoryTile
+                category={c.category}
+                cut
+                className="size-8 shrink-0"
+              />
+              <span className="text-label text-muted-foreground">
+                {c.categoryName}
               </span>
             </div>
-          </CarouselItem>
+            <h4 className="font-display-wide mt-4 text-h3">
+              {/* The name is the one link. Its ::after covers the column, so the column is one target. */}
+              <Link
+                href={classHref(c)}
+                className="inline-flex min-h-11 items-center underline-offset-4 group-hover:underline after:absolute after:inset-0"
+              >
+                {c.name}
+              </Link>
+            </h4>
+            <p className="mt-2 max-w-[42ch] text-body text-pretty text-muted-foreground">
+              {c.blurb}
+            </p>
+            {/* The two facts a first visit turns on: how long and how hard. */}
+            <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-label">
+              <span className="tabular-nums">{c.duration} min</span>
+              <span aria-hidden="true" className="text-muted-foreground">
+                ·
+              </span>
+              <IntensityRibs level={c.intensity} categoryId={c.category} />
+            </p>
+          </li>
         ))}
-      </CarouselContent>
-      <div className="mt-4 flex items-center gap-3">
-        <CarouselPrevious className="static inset-auto m-0 translate-x-0 translate-y-0" />
-        <CarouselNext className="static inset-auto m-0 translate-x-0 translate-y-0" />
-        <p
-          aria-live="polite"
-          aria-atomic="true"
-          className="ml-2 text-body text-muted-foreground tabular-nums"
-        >
-          {current + 1} of {featured.length}
-        </p>
-      </div>
-    </Carousel>
-  )
-}
-
-/** The eight categories as a list: the name leads, the category Tile labels it (VISUAL-IDENTITY.md, section 6). */
-function CategoryGrid({ className }: { className?: string }) {
-  const { categories } = useCatalog()
-  return (
-    <ul
-      className={`grid content-start border-t border-border sm:grid-cols-2 sm:gap-x-8 ${className ?? ""}`}
-    >
-      {categories.map((c) => (
-        <li key={c.id} className="border-b border-border">
-          <Link
-            href={`/classes/category/${c.id}`}
-            className="group flex min-h-16 items-center gap-4 py-3 no-underline"
-          >
-            <CategoryTile
-              category={c.id as CategoryId}
-              className="size-10 shrink-0"
-            />
-            <span className="font-display-wide min-w-0 flex-1 text-h3 group-hover:underline">
-              {c.name}
-            </span>
-            <span className="text-body text-muted-foreground tabular-nums">
-              {c.count} classes
-            </span>
-          </Link>
-        </li>
-      ))}
-    </ul>
+      </ul>
+    </div>
   )
 }

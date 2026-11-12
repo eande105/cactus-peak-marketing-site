@@ -18,9 +18,15 @@ const SIZES = {
 }
 const PEAK = [0.6, 0.8, 1, 0.8, 0.6]
 
-/** Five upright ribs, filled left to right. Filled rib = solid, empty rib = outline, so shape carries the value. */
+/**
+ * Five upright ribs, filled left to right. Filled rib = solid, empty rib = outline, so shape carries the value.
+ * With `from`, the meter shows a range: ribs up to `from` are solid (the least a session asks), ribs from there
+ * up to `value` are outlined in the tone with a light fill (how hard it can get), and the rest stay empty.
+ * The range rib keeps a full-strength outline, because a light fill alone falls under 3:1 against the card.
+ */
 export function RibMeter({
   value,
+  from,
   tone = "neutral",
   categoryId,
   size = "md",
@@ -31,6 +37,8 @@ export function RibMeter({
   className,
 }: {
   value: number
+  /** The low end of a range, 1 to 5. Leave it out for a single value. */
+  from?: number
   tone?: Tone
   categoryId?: CategoryId
   size?: keyof typeof SIZES
@@ -60,17 +68,20 @@ export function RibMeter({
     >
       {PEAK.map((p, i) => {
         const on = i < value
+        // A rib inside the range but above its low end.
+        const ranged = on && from !== undefined && from < value && i >= from
         const bg =
           tone === "category" && categoryId
             ? `var(--cat-${categoryId})`
             : undefined
+        const ink = bg ?? "var(--foreground)"
         return (
           <span
             // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length ribs never reorder
             key={i}
             className={cn(
               "block",
-              on
+              on && !ranged
                 ? tone === "category"
                   ? ""
                   : toneClass[tone]
@@ -84,10 +95,17 @@ export function RibMeter({
                 "px " +
                 Math.min(4, s.w / 2) +
                 "px 1px 1px",
-              background: on ? bg : undefined,
-              boxShadow: on
-                ? undefined
-                : "inset 0 0 0 1.5px var(--border-strong)",
+              background: ranged
+                ? `color-mix(in oklab, ${ink} 28%, transparent)`
+                : on
+                  ? bg
+                  : undefined,
+              // A 4 px rib with a 1.5 px outline leaves 1 px of fill and reads as solid, so the small size uses 1 px.
+              boxShadow: ranged
+                ? `inset 0 0 0 ${s.w <= 4 ? 1 : 1.5}px ${ink}`
+                : on
+                  ? undefined
+                  : "inset 0 0 0 1.5px var(--border-strong)",
             }}
           />
         )
@@ -130,6 +148,7 @@ export function IntensityRibs({
     >
       <RibMeter
         value={hi}
+        from={lo}
         tone="category"
         categoryId={categoryId}
         size={size}

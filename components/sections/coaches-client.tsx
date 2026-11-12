@@ -1,102 +1,30 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
-import { LinkButton } from "@/components/brand/atoms"
-import { CoachAvatar } from "@/components/brand/class-parts"
-import { useCatalog, useSessions } from "@/components/site/catalog-context"
+import { Toggle, ToggleGroup } from "@/components/graphical"
+import { useCatalog } from "@/components/site/catalog-context"
 import { Button } from "@/components/ui/button"
 import { CheckRow, SelectBox } from "@/components/ui/controls"
-import { dayInfo, fmtTime } from "@/lib/time"
-import type { Session } from "@/lib/types"
+import type { Coach } from "@/lib/types"
+import { ClubPin, CoachCard } from "./coach-finder"
 import { EmptyState } from "./common"
+import { ActiveFilters, FilterBar, ResultCount, SortSelect } from "./filter-bar"
 
-function teachLine(
-  sessions: Session[],
-  name: string,
-  now: { dayNum: number; min: number }
-) {
-  const s = sessions
-    .filter((x) => x.coach === name && (x.day > 0 || x.start >= now.min))
-    .slice(0, 2)
-  return s.length
-    ? "Next: " +
-        s
-          .map(
-            (x) =>
-              `${dayInfo(x.day, now.dayNum).short} ${fmtTime(x.start)} at ${x.clubShort}`
-          )
-          .join(", ")
-    : "No classes this week"
-}
-const any = (label: string, values: string[]) => [
-  { value: "", label },
-  ...values.map((v) => ({ value: v, label: v })),
-]
+const ALL = "all"
 
-export function CoachFilter() {
-  const { profileCoaches: coaches } = useCatalog()
-  const [spec, setSpec] = useState("")
-  const list = coaches
-    .filter((c) => !spec || c.specialties.includes(spec))
-    .slice(0, 4)
-  return (
-    <div>
-      <SelectBox
-        inline
-        label="Specialty"
-        value={spec}
-        onChange={setSpec}
-        options={any("Any", [
-          "Strength",
-          "Cycle",
-          "Mind & Body",
-          "Aqua",
-          "Return to training",
-          "Youth",
-        ])}
-      />
-      <ul
-        className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4"
-        aria-live="polite"
-      >
-        {list.map((c) => (
-          <li key={c.slug} className="flex flex-col items-start gap-3">
-            <CoachAvatar
-              slug={c.slug}
-              name={c.name}
-              className="size-20 md:size-28"
-            />
-            <div>
-              <h3 className="font-display-wide text-h3">
-                <Link href={`/coaches/${c.slug}`} className="hover:underline">
-                  {c.name}
-                </Link>
-              </h3>
-              <p className="text-body text-muted-foreground">
-                {spec && c.specialties.includes(spec) ? spec : c.specialties[0]}
-              </p>
-            </div>
-            <LinkButton
-              href={`/tour?coach=${c.slug}&club=${c.clubs[0]}`}
-              variant="outline"
-              size="sm"
-            >
-              Book intro
-            </LinkButton>
-          </li>
-        ))}
-      </ul>
-      {!list.length ? (
-        <EmptyState
-          title="No coach has that specialty here."
-          text="Try another one."
-        />
-      ) : null}
-    </div>
-  )
+type Sort = "years" | "name"
+const SORTS: Record<Sort, (a: Coach, b: Coach) => number> = {
+  years: (a, b) => (b.years ?? 0) - (a.years ?? 0),
+  name: (a, b) => a.name.localeCompare(b.name),
 }
 
+/**
+ * Every coach with a profile, as the personal training page shows its coaches: one visual card each, so a
+ * visitor compares by scrolling. The club track is the main filter, because most visitors pick a coach at the
+ * club they will use. Under it is the site's results toolbar (filter-bar.tsx): the filters on the left, and the
+ * result count and the sort on the right. Each active filter shows as a chip that removes it. The first card is
+ * lit in Copper.
+ */
 export function CoachGrid({
   init,
 }: {
@@ -107,127 +35,130 @@ export function CoachGrid({
     clubs,
     classTypes,
     classBySlug,
-    clubBySlug,
   } = useCatalog()
-  const { sessions, now } = useSessions()
   const specs = [...new Set(coaches.flatMap((c) => c.specialties))].sort()
-  const [club, setClub] = useState(init.club ?? "")
+  const [club, setClub] = useState(init.club || ALL)
   const [spec, setSpec] = useState(init.specialty ?? "")
   const [cls, setCls] = useState("")
   const [pt, setPt] = useState(false)
-  const list = coaches.filter(
-    (c) =>
-      (!club || c.clubs.includes(club)) &&
-      (!spec || c.specialties.includes(spec)) &&
-      (!cls || c.teaches.includes(cls)) &&
-      (!pt || c.pt)
-  )
+  const [sort, setSort] = useState<Sort>("years")
+  const list = coaches
+    .filter(
+      (c) =>
+        (club === ALL || c.clubs.includes(club)) &&
+        (!spec || c.specialties.includes(spec)) &&
+        (!cls || c.teaches.includes(cls)) &&
+        (!pt || c.pt)
+    )
+    .sort(SORTS[sort])
   const reset = () => {
-    setClub("")
+    setClub(ALL)
     setSpec("")
     setCls("")
     setPt(false)
   }
+  const atClub = clubs.find((c) => c.slug === club)
+  // The active filters, each with the way to remove it, for the chips under the toolbar.
+  const active = [
+    atClub && { key: "club", label: atClub.short, clear: () => setClub(ALL) },
+    spec && { key: "spec", label: spec, clear: () => setSpec("") },
+    cls && {
+      key: "cls",
+      label: classBySlug(cls)?.name ?? cls,
+      clear: () => setCls(""),
+    },
+    pt && { key: "pt", label: "Takes clients", clear: () => setPt(false) },
+  ]
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-4">
-        <SelectBox
-          inline
-          label="Club"
-          value={club}
-          onChange={setClub}
-          options={[
-            { value: "", label: "All clubs" },
-            ...clubs.map((c) => ({ value: c.slug, label: c.name })),
-          ]}
-        />
-        <SelectBox
-          inline
-          label="Specialty"
-          value={spec}
-          onChange={setSpec}
-          options={any("Any", specs)}
-        />
-        <SelectBox
-          inline
-          label="Class"
-          value={cls}
-          onChange={setCls}
-          options={[
-            { value: "", label: "Any class" },
-            ...classTypes
-              .filter((t) => coaches.some((c) => c.teaches.includes(t.slug)))
-              .map((c) => ({ value: c.slug, label: c.name })),
-          ]}
-        />
-        <CheckRow checked={pt} onChange={setPt}>
-          Takes personal training clients
-        </CheckRow>
-      </div>
-      <p className="mt-3 text-body text-muted-foreground" aria-live="polite">
-        {list.length} {list.length === 1 ? "coach" : "coaches"}
-      </p>
+      {/* No scroll box here: a scroll box clips the focus ring. The clubs wrap instead. */}
+      <ToggleGroup
+        aria-label="Show coaches at a club"
+        value={[club]}
+        onValueChange={(v) => {
+          if (v[0] !== undefined) setClub(String(v[0]))
+        }}
+        className="flex flex-wrap gap-1 rounded-lg bg-card p-1 edge ring-border"
+      >
+        <Toggle value={ALL} className="min-h-11 gap-2 px-3">
+          Every club
+          <span className="tabular-nums opacity-70">{coaches.length}</span>
+        </Toggle>
+        {clubs.map((c) => (
+          <Toggle key={c.slug} value={c.slug} className="min-h-11 gap-2 px-3">
+            <ClubPin n={c.n} />
+            {c.short}
+            <span className="tabular-nums opacity-70">
+              {coaches.filter((x) => x.clubs.includes(c.slug)).length}
+              <span className="sr-only"> coaches</span>
+            </span>
+          </Toggle>
+        ))}
+      </ToggleGroup>
+
+      <FilterBar
+        className="mt-4"
+        filters={
+          <>
+            <SelectBox
+              inline
+              label="Specialty"
+              value={spec}
+              onChange={setSpec}
+              options={[
+                { value: "", label: "Any" },
+                ...specs.map((s) => ({ value: s, label: s })),
+              ]}
+            />
+            <SelectBox
+              inline
+              label="Class"
+              value={cls}
+              onChange={setCls}
+              options={[
+                { value: "", label: "Any" },
+                ...classTypes
+                  .filter((t) =>
+                    coaches.some((c) => c.teaches.includes(t.slug))
+                  )
+                  .map((c) => ({ value: c.slug, label: c.name })),
+              ]}
+            />
+            <CheckRow checked={pt} onChange={setPt}>
+              Takes clients
+            </CheckRow>
+          </>
+        }
+        results={
+          <>
+            <ResultCount
+              shown={list.length}
+              total={coaches.length}
+              noun={["coach", "coaches"]}
+            />
+            <SortSelect
+              value={sort}
+              onChange={setSort}
+              options={[
+                { value: "years", label: "Most experience" },
+                { value: "name", label: "Name, A to Z" },
+              ]}
+            />
+          </>
+        }
+      />
+      <ActiveFilters items={active} onClearAll={reset} />
+
       {list.length ? (
-        <ul className="mt-6 grid border-t-2 border-foreground md:grid-cols-2 md:gap-x-12">
-          {list.map((c) => (
-            <li
-              key={c.slug}
-              className="grid grid-cols-[72px_1fr] items-start gap-x-4 border-b border-border py-5 sm:grid-cols-[96px_1fr_auto]"
-            >
-              <CoachAvatar
-                slug={c.slug}
-                name={c.name}
-                className="size-[72px] sm:size-24"
-              />
-              <div>
-                <h2 className="font-display-wide text-h2">
-                  <Link href={`/coaches/${c.slug}`} className="hover:underline">
-                    {c.name}
-                  </Link>
-                </h2>
-                <p className="text-body text-muted-foreground">
-                  {c.credential || c.specialties.join(", ")}
-                </p>
-                {c.teaches.length ? (
-                  <p className="mt-2 text-body">
-                    Favorite classes:{" "}
-                    {c.teaches
-                      .slice(0, 2)
-                      .map((t) => classBySlug(t)?.name)
-                      .filter(Boolean)
-                      .join(", ")}
-                  </p>
-                ) : null}
-                <p className="tabular text-caption text-muted-foreground">
-                  {c.pt && !c.teaches.length
-                    ? "Personal training by appointment"
-                    : teachLine(sessions, c.name, now)}
-                </p>
-                <p className="text-body text-muted-foreground">
-                  {c.clubs
-                    .map((k) => clubBySlug(k)?.name)
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-              </div>
-              <LinkButton
-                href={`/tour?coach=${c.slug}&club=${c.clubs[0]}`}
-                variant="outline"
-                size="sm"
-              >
-                Book intro
-              </LinkButton>
-            </li>
+        <ul className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((c, i) => (
+            <CoachCard key={c.slug} coach={c} lit={i === 0} />
           ))}
         </ul>
       ) : (
-        <EmptyState
-          className="mt-6"
-          title="No coaches match."
-          text="Remove a filter."
-        >
+        <EmptyState className="mt-10" title="No coaches match.">
           <Button variant="outline" onClick={reset}>
-            Reset filters
+            Clear filters
           </Button>
         </EmptyState>
       )}

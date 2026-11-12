@@ -1,100 +1,154 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useState } from "react"
 import { LinkButton } from "@/components/brand/atoms"
-import { NumberField } from "@/components/graphical"
-import { Minus, Plus } from "@/components/icons"
+import { ChildHead, Minus, Plus, User } from "@/components/icons"
 import { useCatalog } from "@/components/site/catalog-context"
-import type { Plan } from "@/lib/types"
+import { RadioGroupBox } from "@/components/ui/radio-group-box"
+import type { Club, Plan } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-function Stepper({
+const MAX_ADULTS = 4
+const MAX_KIDS = 6
+
+/** What each plan gives everyone on the account, in the plan's own words. */
+const planLine: Record<Plan["slug"], string> = {
+  trailhead: "Everyone trains at your home club, with every class there.",
+  ridge: "Everyone trains at all 5 clubs, with every class and all 3 pools.",
+  summit: "Everyone gets Ridge, plus recovery at 4 clubs and 9-day booking.",
+}
+
+/** "A, B and C". */
+function listOf(items: string[]) {
+  if (items.length < 2) return items.join("")
+  return `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`
+}
+
+/**
+ * One person on the account, as a figure in the family row. Every figure is the same size; the icon tells
+ * adults (a head and shoulders) from children (a child's face), and the label under it says the same. The
+ * primary member is the Night figure; everyone added is outlined. The row is hidden from screen readers:
+ * the counts and the total name the same people.
+ */
+function Figure({ kind }: { kind: "you" | "adult" | "child" }) {
+  const Icon = kind === "child" ? ChildHead : User
+  return (
+    <span className="flex w-14 shrink-0 flex-col items-center gap-1">
+      <span
+        className={cn(
+          "grid size-14 place-items-center rounded-full",
+          kind === "you"
+            ? "bg-night text-night-foreground"
+            : "bg-card text-foreground edge ring-border-strong"
+        )}
+      >
+        <Icon className="size-6" />
+      </span>
+      <span className="text-caption text-muted-foreground">
+        {kind === "you" ? "You" : kind === "adult" ? "Adult" : "Child"}
+      </span>
+    </span>
+  )
+}
+
+/** Add or remove one kind of member: the name, the price each, the count and two buttons. */
+function MemberRow({
   label,
-  hint,
-  value,
-  set,
+  each,
+  count,
   max,
+  step,
 }: {
   label: string
-  hint: string
-  value: number
-  set: (n: number) => void
+  each: number
+  count: number
   max: number
+  /** Moves the count by one, from the latest value, so quick taps never use a stale count. */
+  step: (by: 1 | -1) => void
 }) {
-  const id = useId()
-  // Graphical NumberField. The input is a spinbutton, so screen readers hear each new value without a live region.
-  // Base UI keeps the value between 0 and max, and the steppers turn off at either end.
   return (
-    <div>
-      <NumberField.Root
-        id={id}
-        value={value}
-        min={0}
-        max={max}
-        onValueChange={(v) => set(v ?? 0)}
-      >
-        <NumberField.Label htmlFor={id}>
-          {label}{" "}
-          <span className="font-normal text-muted-foreground">{hint}</span>
-        </NumberField.Label>
-        <NumberField.Group>
-          <NumberField.Decrement
-            aria-label={`Fewer: ${label}`}
-            className="min-h-11 min-w-11"
-          >
-            <Minus aria-hidden="true" />
-          </NumberField.Decrement>
-          <NumberField.Input />
-          <NumberField.Increment
-            aria-label={`More: ${label}`}
-            className="min-h-11 min-w-11"
-          >
-            <Plus aria-hidden="true" />
-          </NumberField.Increment>
-        </NumberField.Group>
-      </NumberField.Root>
-      {value >= max ? (
-        <p className="mt-1 text-caption text-muted-foreground">
-          Need more than {max}? Call us.
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 py-4 rule-b">
+      <div>
+        <p className="text-body-strong">{label}</p>
+        <p className="text-caption text-muted-foreground tabular-nums">
+          +${each} a month each
+          {count >= max ? ". Need more? Call us." : ""}
         </p>
-      ) : null}
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => count > 0 && step(-1)}
+          aria-disabled={count === 0 || undefined}
+          aria-label={`Remove one: ${label}`}
+          className="grid size-11 place-items-center rounded-md bg-card edge ring-border hover:ring-border-strong aria-disabled:opacity-40"
+        >
+          <Minus className="size-4" aria-hidden="true" />
+        </button>
+        {/* The count is read out with its label when it changes, through the total's live region. */}
+        <span className="w-8 text-center text-h3 font-semibold tabular-nums">
+          {count}
+        </span>
+        <button
+          type="button"
+          onClick={() => count < max && step(1)}
+          aria-disabled={count >= max || undefined}
+          aria-label={`Add one: ${label}`}
+          className="grid size-11 place-items-center rounded-md bg-card edge ring-border hover:ring-border-strong aria-disabled:opacity-40"
+        >
+          <Plus className="size-4" aria-hidden="true" />
+        </button>
+      </div>
     </div>
   )
 }
 
-export function FamilyCalculator({
-  compact,
-  preset,
-}: {
-  compact?: boolean
-  preset?: { plan: "ridge"; adults: number; children: number }
-}) {
+/**
+ * The family plan builder. The left column builds the account: the plan, then who is on it, shown as a row
+ * of figures that grows as people are added, then plain lines that say what the choices mean for the family.
+ * The right column is the total, line by line, and the one action. From lg the two sit side by side and the
+ * total stays in view; below lg the total follows the builder.
+ */
+export function FamilyCalculator({ className }: { className?: string }) {
   const {
     plans,
-    prices: { adult: ADULT, child: CHILD },
+    clubs,
+    prices: { adult: ADULT, child: CHILD, facilityFee: FEE },
   } = useCatalog()
-  const [plan, setPlan] = useState<Plan["slug"]>(preset?.plan ?? "ridge")
-  const [adults, setAdults] = useState(preset?.adults ?? 0)
-  const [kids, setKids] = useState(preset?.children ?? 0)
-  const p = plans.find((x) => x.slug === plan)!
+  const [plan, setPlan] = useState<Plan["slug"]>("ridge")
+  const [adults, setAdults] = useState(1)
+  const [kids, setKids] = useState(2)
+  const p = plans.find((x) => x.slug === plan) ?? plans[0]
   const total = p.price + adults * ADULT + kids * CHILD
-  const parts = [
-    `$${p.price}`,
-    ...(adults ? [`$${adults * ADULT}`] : []),
-    ...(kids ? [`$${kids * CHILD}`] : []),
-  ].join(" + ")
-  const name = `${p.name}${adults ? ` + ${adults} adult${adults > 1 ? "s" : ""}` : ""}${kids ? ` + ${kids} ${kids > 1 ? "children" : "child"}` : ""}`
+  const people = 1 + adults + kids
+  const kidsClubs = clubs.filter((c: Club) => c.has.kids).map((c) => c.short)
+
+  // What the choices mean, one line each, in the order a parent asks.
+  const notes = [
+    planLine[p.slug],
+    adults
+      ? `${adults === 1 ? "Your adult add-on gets" : adults === 2 ? "Both adult add-ons get" : `All ${adults} adult add-ons get`} the same plan as you.`
+      : null,
+    kids
+      ? `Kids club is included for children 12 and under, at ${listOf(kidsClubs)}.`
+      : null,
+    kids ? "Teens 13 to 17 follow the teen rules." : null,
+    p.slug === "trailhead" && (adults || kids)
+      ? "Everyone shares your home club."
+      : null,
+  ].filter((x): x is string => Boolean(x))
+
   return (
-    <div className="grid gap-8 lg:grid-cols-12">
-      <div
-        className={cn(
-          "flex flex-col gap-6",
-          compact ? "lg:col-span-7" : "lg:col-span-6"
-        )}
-      >
+    <div
+      className={cn(
+        "grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-16",
+        className
+      )}
+    >
+      <div className="lg:col-span-7">
         <fieldset>
-          <legend className="text-label">Base plan</legend>
-          <div className="mt-2 flex flex-wrap gap-2" role="radiogroup">
+          <legend className="text-label">Plan for everyone</legend>
+          <RadioGroupBox className="mt-3 grid grid-cols-3 gap-2">
             {plans.map((x) => (
               // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
               <button
@@ -104,63 +158,129 @@ export function FamilyCalculator({
                 aria-checked={plan === x.slug}
                 onClick={() => setPlan(x.slug)}
                 className={cn(
-                  "min-h-11 rounded-md px-4 text-label edge",
+                  "flex min-h-14 flex-col items-start justify-center rounded-md px-4 py-2 text-left edge",
                   plan === x.slug
-                    ? "bg-accent ring-2 ring-primary"
+                    ? "bg-card ring-2 ring-primary"
                     : "bg-card ring-border hover:ring-border-strong"
                 )}
               >
-                {x.name}{" "}
-                <span className="tabular font-normal text-muted-foreground">
-                  ${x.price}
+                <span className="text-label">{x.name}</span>
+                <span className="text-caption text-muted-foreground tabular-nums">
+                  ${x.price}/mo
                 </span>
               </button>
             ))}
-          </div>
+          </RadioGroupBox>
         </fieldset>
-        <Stepper
-          label="Adults to add"
-          hint={`($${ADULT} each)`}
-          value={adults}
-          set={setAdults}
-          max={4}
-        />
-        <Stepper
-          label="Children, 6 months–17"
-          hint={`($${CHILD} each)`}
-          value={kids}
-          set={setKids}
-          max={6}
-        />
+
+        <div className="mt-8">
+          <p className="text-label">
+            On the account{" "}
+            <span className="font-normal text-muted-foreground tabular-nums">
+              {people} {people === 1 ? "person" : "people"}
+            </span>
+          </p>
+          {/* The family row: you, then each adult, then each child. */}
+          <div
+            aria-hidden="true"
+            className="mt-3 flex min-h-24 flex-wrap items-start gap-x-2 gap-y-3 rounded-lg bg-muted p-3"
+          >
+            <Figure kind="you" />
+            {Array.from({ length: adults }, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: figures are identical and only their count matters
+              <Figure key={`a${i}`} kind="adult" />
+            ))}
+            {Array.from({ length: kids }, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: figures are identical and only their count matters
+              <Figure key={`k${i}`} kind="child" />
+            ))}
+          </div>
+          <div className="mt-2">
+            <MemberRow
+              label="Adults (besides you)"
+              each={ADULT}
+              count={adults}
+              max={MAX_ADULTS}
+              step={(by) =>
+                setAdults((n) => Math.min(MAX_ADULTS, Math.max(0, n + by)))
+              }
+            />
+            <MemberRow
+              label="Children, 6 months to 17"
+              each={CHILD}
+              count={kids}
+              max={MAX_KIDS}
+              step={(by) =>
+                setKids((n) => Math.min(MAX_KIDS, Math.max(0, n + by)))
+              }
+            />
+          </div>
+        </div>
+
+        <ul className="mt-6 grid gap-2">
+          {notes.map((n) => (
+            <li key={n} className="flex gap-3 text-body text-pretty">
+              <span
+                aria-hidden="true"
+                className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary"
+              />
+              {n}
+            </li>
+          ))}
+        </ul>
       </div>
-      <div
-        className={cn(
-          "border-t-2 border-foreground pt-4",
-          compact ? "lg:col-span-5" : "lg:col-span-6"
-        )}
-        aria-live="polite"
-      >
-        <p className="text-body">
-          {name} ={" "}
-          <span className="tabular font-data text-h2 font-bold">
-            ${total} a month
-          </span>
-        </p>
-        {adults || kids ? (
-          <p className="tabular mt-1 text-caption text-muted-foreground">
-            {parts}. Month to month.
-          </p>
-        ) : (
-          <p className="mt-1 text-body text-muted-foreground">
-            Month to month.
-          </p>
-        )}
-        <LinkButton
-          href={`/join/plan?plan=${plan}&adults=${adults}&children=${kids}`}
-          className="mt-4"
+
+      {/* The total. It stays in view from lg while the builder scrolls. */}
+      <div className="lg:sticky lg:top-[calc(var(--sticky-top)+1.5rem)] lg:col-span-5">
+        <section
+          aria-label="Your family's monthly cost"
+          className="rounded-lg bg-card p-6 edge ring-border lg:p-8"
         >
-          Join with this family
-        </LinkButton>
+          <dl className="text-body tabular-nums">
+            <div className="flex items-baseline justify-between gap-4 pb-3 rule-b">
+              <dt>{p.name}, you</dt>
+              <dd>${p.price}</dd>
+            </div>
+            <div
+              className={cn(
+                "flex items-baseline justify-between gap-4 py-3 rule-b",
+                !adults && "text-muted-foreground"
+              )}
+            >
+              <dt>
+                {adults} {adults === 1 ? "adult" : "adults"} × ${ADULT}
+              </dt>
+              <dd>${adults * ADULT}</dd>
+            </div>
+            <div
+              className={cn(
+                "flex items-baseline justify-between gap-4 py-3 rule-b",
+                !kids && "text-muted-foreground"
+              )}
+            >
+              <dt>
+                {kids} {kids === 1 ? "child" : "children"} × ${CHILD}
+              </dt>
+              <dd>${kids * CHILD}</dd>
+            </div>
+          </dl>
+          {/* Announced when it changes, so a screen reader hears the new total after each tap. */}
+          <div aria-live="polite" className="mt-5">
+            <p className="text-label text-muted-foreground">
+              Each month for {people} {people === 1 ? "person" : "people"}
+            </p>
+            <p className="tabular font-data text-figure-lg">${total}</p>
+            <p className="mt-2 text-caption text-muted-foreground tabular-nums">
+              + ${FEE} facility fee each March
+            </p>
+          </div>
+          <LinkButton
+            href={`/join/plan?plan=${plan}&adults=${adults}&children=${kids}`}
+            className="mt-6 w-full"
+          >
+            Join with this family
+          </LinkButton>
+        </section>
       </div>
     </div>
   )

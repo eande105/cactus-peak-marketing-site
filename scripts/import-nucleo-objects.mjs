@@ -50,9 +50,15 @@ export const OBJECTS = {
   "gym-bag": "gym-bag",
   playground: "playground",
   key: "key",
+  location: "location",
   schedule: "workout-schedule",
   "heart-watch": "watch-heartbeat",
   sun: "sun",
+  pass: "ticket",
+  calendar: "calendar-check",
+  clipboard: "clipboard-check",
+  envelope: "envelope",
+  lift: "accessibility-lift",
 }
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")

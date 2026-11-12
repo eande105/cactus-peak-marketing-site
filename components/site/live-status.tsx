@@ -31,16 +31,31 @@ export function LiveClubStatus({
   )
 }
 
-/** A "Today" tag that shows when today is in the given group of days. */
-export function TodayTag({
-  weekend,
-  className,
-}: {
-  weekend: boolean
-  className?: string
-}) {
-  const { weekday } = useClubNow()
-  const isWeekend = weekday === 0 || weekday === 6
-  if (isWeekend !== weekend) return null
-  return <span className={className}>Today</span>
+/**
+ * The open state of every club, for the corner cell of an hours table. The table rows already give the times, so
+ * the text names the state only. A filled dot means open; a ring means closed, so the state does not depend on
+ * colour alone.
+ */
+export function ClubsOpenStatus() {
+  const s = clubStatus(useClubNow())
+  const word =
+    s.state === "open"
+      ? "Open now"
+      : s.state === "closingSoon"
+        ? "Closing soon"
+        : "Closed now"
+  return (
+    <span className="inline-flex items-center gap-2 text-night-foreground">
+      <span
+        aria-hidden="true"
+        className={cn(
+          "size-2 shrink-0 rounded-full",
+          s.state === "open" && "bg-success",
+          s.state === "closingSoon" && "bg-warning",
+          !s.open && "border-[1.5px] border-current"
+        )}
+      />
+      {word}
+    </span>
+  )
 }

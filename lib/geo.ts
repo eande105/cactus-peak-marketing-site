@@ -19,3 +19,7 @@ export function distancesFrom(
     clubs.map((c) => [c.slug, miles(p, [c.lat, c.lng])])
   ) as Record<ClubSlug, number>
 }
+
+/** Turn-by-turn directions in the visitor's maps app, to the club's exact point. */
+export const directionsHref = (c: { lat: number; lng: number; name: string }) =>
+  `https://maps.apple.com/?daddr=${c.lat},${c.lng}&q=${encodeURIComponent(c.name)}`

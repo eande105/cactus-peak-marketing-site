@@ -9,7 +9,7 @@ export default function NotFound() {
       </h1>
       <div className="mt-6 flex flex-wrap gap-3">
         <LinkButton href="/clubs" size="lg">
-          See all five clubs
+          See all 5 clubs
         </LinkButton>
         <LinkButton href="/search" variant="outline" size="lg">
           Search

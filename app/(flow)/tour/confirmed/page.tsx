@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { TourConfirmed } from "@/components/sections/tour-flow"
 import { MinimalCheckoutHeader } from "@/components/site/chrome"
 export const metadata: Metadata = {
-  title: "Tour booked — Cactus Peak Athletic",
+  title: "Tour booked — Cactus Peak",
+  description: "Your tour time, the club address and what to bring.",
   robots: { index: false },
 }
 export default function Page() {

@@ -4,6 +4,7 @@ import { Container } from "@/components/sections/common"
 import { SearchResults } from "@/components/sections/search-results"
 export const metadata: Metadata = {
   title: "Search — Cactus Peak",
+  description: "Search clubs, classes and coaches.",
   robots: { index: false, follow: true },
 }
 export default function Search() {

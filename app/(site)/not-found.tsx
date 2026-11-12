@@ -3,7 +3,9 @@ import { LinkButton } from "@/components/brand/atoms"
 import { Container } from "@/components/sections/common"
 
 export const metadata: Metadata = {
-  title: "Page not found — Cactus Peak Athletic",
+  title: { absolute: "Page not found — Cactus Peak" },
+  description:
+    "This page moved or never existed. Search the site or go to a club page.",
 }
 
 export default function NotFound() {
@@ -25,7 +27,7 @@ export default function NotFound() {
         <LinkButton href="/clubs" size="lg">
           Find a club
         </LinkButton>
-        <LinkButton href="/schedule" variant="outline" size="lg">
+        <LinkButton href="/classes#schedule" variant="outline" size="lg">
           See the schedule
         </LinkButton>
         <LinkButton href="/search" variant="ghost" size="lg">

@@ -9,7 +9,7 @@ export type CategoryId =
   | "court"
   | "recovery"
   | "youth"
-/** A club slug from the `clubs` table ("mesa-dobson"). */
+/** A club slug from the `clubs` table ("dobson-southern"). */
 export type ClubSlug = string
 export type Level = 1 | 2 | 3 | 4 | 5
 export type AmenityKey =
@@ -62,7 +62,7 @@ export type Club = {
   studios: number
   busyness: Level
   extras: string
-  /** Typical busyness 1-5 by hour, 4 a.m. to 9 p.m. */
+  /** Typical busyness 1-5 by hour, 4 am to 9 pm */
   typicalWeekday: number[]
   typicalWeekend: number[]
 }
@@ -110,6 +110,8 @@ export type ClassType = {
   bring: string[]
   clubs: ClubSlug[] | "all"
   teen?: boolean
+  /** The youngest age that can join. 0 when there is no limit. */
+  minAge: number
   caption: string
   pick: string
 }
@@ -168,10 +170,16 @@ export type Session = {
   room: string
   coach: string | null
   coachSlug: string | null
+  /** The coach has a public profile page, so the name can link to /coaches/<slug>. */
+  coachProfile: boolean
   capacity: number
   /** Spots left. Equal to capacity until the live counts load. */
   left: number
   waitlist: number
+  /** False until the live counts load. `left` and `waitlist` are not real before then. */
+  live: boolean
+  /** The live counts failed or took too long. Show no spot count, and do not show a loading placeholder. */
+  countsFailed: boolean
 }
 
 export type Plan = {
@@ -216,6 +224,13 @@ export type Job = {
   dept: string
   type: string
   pay: string
+  /** From the `details` column. Every part is optional. */
+  summary?: string
+  duties?: string[]
+  requirements?: string[]
+  schedule?: string
+  /** "2026-10-26", from `details.posted`. */
+  posted?: string
 }
 
 export type Testimonial = {

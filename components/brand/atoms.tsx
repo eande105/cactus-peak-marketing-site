@@ -1,7 +1,7 @@
 import type { VariantProps } from "class-variance-authority"
 import Link from "next/link"
-import { Check, type IconComponent, Minus } from "@/components/icons"
-import { Button, buttonVariants } from "@/components/ui/button"
+import type { IconComponent } from "@/components/icons"
+import { buttonVariants } from "@/components/ui/button"
 import type { CategoryId } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { CategoryIcon, catColor, catText, catTint } from "./icons"
@@ -45,7 +45,6 @@ export function LinkButton({
     </Link>
   )
 }
-export { Button }
 
 /** Inline text link with an arrow. */
 export function TextLink({
@@ -139,42 +138,6 @@ export function AmenityChip({
   )
 }
 
-export function YesNo({
-  yes,
-  yesText = "Yes",
-  noText = "No",
-  cell = false,
-}: {
-  yes: boolean
-  yesText?: string
-  noText?: string
-  cell?: boolean
-}) {
-  if (cell)
-    return yes ? (
-      <span>
-        <span
-          aria-hidden="true"
-          className="inline-block size-2 rounded-full bg-foreground"
-        />
-        <span className="sr-only">{yesText}</span>
-      </span>
-    ) : (
-      <span className="sr-only">{noText}</span>
-    )
-  return yes ? (
-    <span className="inline-flex items-center gap-1.5 text-caption font-medium text-foreground">
-      <Check className="size-4 text-success" aria-hidden="true" />
-      {yesText}
-    </span>
-  ) : (
-    <span className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
-      <Minus className="size-4" aria-hidden="true" />
-      {noText}
-    </span>
-  )
-}
-
 // The heading is the section's only label (REDESIGN.md goal 1). A lede is one line that adds a fact, never a restatement.
 export function SectionHead({
   title,
@@ -215,8 +178,4 @@ export function SectionHead({
       {action}
     </div>
   )
-}
-
-export function Rule({ className }: { className?: string }) {
-  return <hr className={cn("h-px border-0 bg-border", className)} />
 }

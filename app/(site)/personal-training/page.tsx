@@ -1,17 +1,15 @@
 import type { Metadata } from "next"
-import { LinkButton, TextLink } from "@/components/brand/atoms"
-import { ObjectRack } from "@/components/brand/graphics"
-import { CoachFilter } from "@/components/sections/coaches-client"
+import { LinkButton, SectionHead, TextLink } from "@/components/brand/atoms"
+import { SectionNav } from "@/components/sections/club-detail-client"
+import { CoachFinder, type CoachGoal } from "@/components/sections/coach-finder"
+import { Band, FaqSection, TourCTABand } from "@/components/sections/common"
+import { SessionPlan } from "@/components/sections/program-heroes"
 import {
-  Breadcrumbs,
-  DenseSection,
-  FaqSection,
-  HeroSplit,
-  LeadSection,
-  SplitSection,
-  TourCTABand,
-  TourTimeline,
-} from "@/components/sections/common"
+  NumberedSteps,
+  OfferColumns,
+  ProgramHero,
+  RuleList,
+} from "@/components/sections/program-page"
 import { getCatalog } from "@/lib/catalog/server"
 
 export const metadata: Metadata = {
@@ -19,6 +17,15 @@ export const metadata: Metadata = {
   description:
     "One-on-one sessions at all 5 clubs. Packs of 4, 8 or 12, or a single session for $75.",
 }
+
+/** The page's sections, in order. The nav and the hero's actions use these anchors. */
+const SECTIONS = [
+  { id: "how", label: "How it works" },
+  { id: "packs", label: "Packs" },
+  { id: "coaches", label: "Find a coach" },
+  { id: "questions", label: "Questions" },
+]
+
 const faq = [
   {
     id: "p1",
@@ -29,146 +36,195 @@ const faq = [
   {
     id: "p3",
     q: "Does Summit include PT?",
-    a: "Summit includes 1 intro session a quarter.",
+    a: "Summit includes a 30-minute intro session each quarter.",
   },
 ]
+
+/**
+ * The goals a visitor comes with, each tied to the coach specialty that answers it. The coach finder lists them
+ * in this order and leaves out a goal with no coach who takes clients.
+ */
+const GOALS: CoachGoal[] = [
+  {
+    title: "Injury comeback",
+    specialty: "Return to training",
+    icon: "resistance-band",
+  },
+  {
+    title: "Strength",
+    specialty: "Strength",
+    icon: "barbell",
+  },
+  {
+    title: "Cycling",
+    specialty: "Cycle",
+    icon: "spin-bike",
+  },
+  {
+    title: "Court sports",
+    specialty: "Court",
+    icon: "paddle",
+  },
+  {
+    title: "Mobility",
+    specialty: "Mind & Body",
+    icon: "mat",
+  },
+  {
+    title: "Fitness",
+    specialty: "Conditioning",
+    icon: "jump-rope",
+  },
+  {
+    title: "Recovery",
+    specialty: "Recovery",
+    icon: "spa-stones",
+  },
+  {
+    title: "Swimming",
+    specialty: "Aqua",
+    icon: "pool",
+  },
+]
+
+/**
+ * Personal training. It answers, in order, what a visitor weighs before booking a coach: how the sessions
+ * work, what they cost, which coach fits the goal, and the questions left. It shares the membership page's
+ * parts: a hero with a picture made for the claim, the section nav, lead-size heads,
+ * alternating bands and the Copper tour panel to close.
+ */
 export default async function PT() {
-  const { packs, prices } = await getCatalog()
+  const { packs, prices, clubs, coaches } = await getCatalog()
+  const biggest = packs.reduce((a, b) => (b.n > a.n ? b : a), packs[0])
+  const cheapest = Math.min(...packs.map((p) => p.each))
+  const ptCoaches = coaches.filter((c) => c.pt).length
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Personal training" }]} />
-      <HeroSplit
+      <ProgramHero
+        id="pt-hero-title"
         title="Your own coach, 45 minutes at a time."
-        support={`One-on-one sessions at all 5 clubs. Packs of ${packs
-          .map((p) => p.n)
-          .join(", ")
-          .replace(
-            /, (\d+)$/,
-            " or $1"
-          )} (or a single session for $${prices.ptSingle}). Start with a free tour and meet a coach.`}
+        lede={`A plan written for your goal, your joints and your week, with one of ${ptCoaches} coaches at any of the ${clubs.length} clubs.`}
         actions={
           <>
-            <LinkButton href="/tour?coach=any" size="lg">
-              Meet a coach on a free tour
+            <LinkButton href="/tour" size="lg" className="max-sm:flex-1">
+              Book a free tour
             </LinkButton>
-            <LinkButton href="/coaches" variant="outline" size="lg">
-              See all coaches
+            <LinkButton
+              href="#packs"
+              variant="outline"
+              size="lg"
+              className="max-sm:flex-1"
+            >
+              See the packs
             </LinkButton>
           </>
         }
-        fact={{
-          icon: "whistle",
-          value: "$61",
-          label: "A session in a 12-pack. Single session $75.",
-        }}
+        picture={<SessionPlan pack={biggest} each={cheapest} />}
       />
-      <SplitSection
-        label="How it works"
-        graphic={
-          <ObjectRack
-            ratio="4/3"
-            layout="climb"
-            scheme="copper"
-            focus="whistle"
-            ids={["schedule", "heart-watch", "kettlebell", "plate"]}
-          />
-        }
-      >
-        <TourTimeline
+
+      <SectionNav items={SECTIONS} />
+
+      <Band tone="tint" id="how">
+        <SectionHead
+          size="lead"
+          title="A plan, not a workout."
+          lede="Every session follows a written plan, and every fourth one checks it."
+        />
+        <NumberedSteps
+          className="mt-12"
           steps={[
             {
               title: "Meet.",
-              text: "Free tour or an intro session (Summit gets a 30-minute intro each quarter).",
+              text: "On a free tour, or in Summit's 30-minute intro each quarter.",
+              icon: "whistle",
             },
             {
               title: "Plan.",
               text: "Your coach writes a plan for your goal, your joints and your week.",
+              icon: "schedule",
             },
             {
               title: "Train.",
-              text: "Sessions are 45 minutes. Book in the app.",
+              text: "Sessions are 45 minutes. Book them in the app.",
+              icon: "kettlebell",
             },
             {
               title: "Review.",
-              text: "Every 4 sessions, your coach checks the plan.",
+              text: "Every 4 sessions, your coach checks the plan and moves it on.",
+              icon: "heart-watch",
             },
           ]}
         />
-      </SplitSection>
-      <DenseSection label="Packs" id="packs" icon="schedule">
-        <ul className="grid gap-0 border-y border-border sm:grid-cols-3">
-          {packs.map((p) => (
-            <li
-              key={p.n}
-              className="border-b border-border py-6 sm:border-r sm:border-b-0 sm:px-6 sm:first:pl-0 sm:last:border-r-0"
-            >
-              <p className="font-display-wide text-h3">{p.n} sessions</p>
-              <p className="tabular font-data text-display font-bold">
-                ${p.price}
-              </p>
-              <p className="text-body text-muted-foreground">${p.each} each</p>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-body">Single session $75.</p>
-        <p className="mt-1 max-w-[62ch] text-body text-muted-foreground">
-          45 minutes. Packs last 12 months and pause during a freeze. Cancel or
-          reschedule free up to 24 hours before. Summit includes a 30-minute
-          intro each quarter.
-        </p>
-        <LinkButton href="/tour" className="mt-6">
-          Book a free tour to start
-        </LinkButton>
-      </DenseSection>
-      <LeadSection title="Find a coach.">
-        <p className="mb-4 text-body">
-          <TextLink href="/coaches">See all coaches</TextLink>
-        </p>
-        <CoachFilter />
-      </LeadSection>
-      <SplitSection
-        label="Pick a goal"
-        graphic={
-          <ObjectRack
-            ratio="1/1"
-            layout="orbit"
-            scheme="sand"
-            focus="whistle"
-            ids={[
-              "kettlebell",
-              "spa-stones",
-              "pool",
-              "paddle",
-              "resistance-band",
-              "barbell",
-              "heart-watch",
-              "sneaker",
+      </Band>
+
+      <Band id="packs">
+        <SectionHead
+          size="lead"
+          title="The more you train, the less it costs."
+          lede={`One session is $${prices.ptSingle}. A pack brings it down to $${cheapest}.`}
+        />
+        <OfferColumns
+          className="mt-12"
+          offers={packs.map((p) => ({
+            key: String(p.n),
+            title: `${p.n} sessions`,
+            value: `$${p.each}`,
+            unit: "a session",
+            sub: `$${p.price} for the pack`,
+            badge: p === biggest ? "Best value" : undefined,
+            lit: p === biggest,
+            lines: [
+              `Save $${(prices.ptSingle - p.each) * p.n} on single sessions.`,
+            ],
+            action: (
+              <LinkButton
+                href="/tour"
+                variant={p === biggest ? "primary" : "outline"}
+              >
+                Start with a tour
+              </LinkButton>
+            ),
+          }))}
+        />
+        <div className="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <RuleList
+            className="lg:col-span-7"
+            title="Every pack"
+            items={[
+              "45-minute sessions, booked in the app",
+              "Lasts 12 months, and pauses during a freeze",
+              "Cancel or move a session free up to 24 hours before",
+              "Train at any club your plan opens",
             ]}
           />
-        }
-      >
-        <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          {[
-            ["Come back after an injury", "Return to training"],
-            ["Build strength", "Strength"],
-            ["Prepare for pickleball", "Court"],
-            ["Swim with confidence", "Aqua"],
-          ].map(([t, s]) => (
-            <li key={t} className="border-t-2 border-foreground pt-3">
-              <TextLink
-                href={`/coaches?specialty=${encodeURIComponent(s)}`}
-                className="font-display-wide text-h3 text-foreground no-underline"
-              >
-                {t}
-              </TextLink>
-            </li>
-          ))}
-        </ul>
-      </SplitSection>
-      <div className="border-t border-border">
-        <FaqSection items={faq} title="Coaching questions." />
-      </div>
-      <TourCTABand title="Meet your coach." />
+          <div className="lg:col-span-5">
+            <h3 className="font-display-wide text-h3">On Summit?</h3>
+            <p className="mt-3 text-body text-pretty text-muted-foreground">
+              Summit includes a 30-minute intro session each quarter. Use it to
+              meet a coach and get a plan before you buy a pack.
+            </p>
+            <TextLink href="/membership#plans" className="mt-3">
+              See Summit
+            </TextLink>
+          </div>
+        </div>
+      </Band>
+
+      <Band tone="tint" id="coaches">
+        <SectionHead size="lead" title="Find your coach." />
+        <div className="mt-12">
+          <CoachFinder goals={GOALS} />
+        </div>
+      </Band>
+
+      <FaqSection id="questions" title="Coaching questions." items={faq} />
+
+      <TourCTABand
+        night
+        title="Find your coach on a tour."
+        support="Tell us your goal when you book. A coach walks the club with you and talks through where to start. No card."
+        passEmail
+      />
     </>
   )
 }

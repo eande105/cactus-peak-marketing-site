@@ -1,140 +1,181 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Accessibility, Briefcase, Newspaper } from "@/components/icons"
+import { SectionHead, TextLink } from "@/components/brand/atoms"
+import { ClubMap } from "@/components/brand/club-map"
+import { ClubPin } from "@/components/brand/club-pin"
 import {
-  Breadcrumbs,
-  Container,
-  SplitSection,
-} from "@/components/sections/common"
-import { ContactForm } from "@/components/sections/small-client"
+  type ClubId,
+  clubObjects,
+  type ObjectId,
+} from "@/components/brand/graphics"
+import { Accessibility, Briefcase, Newspaper } from "@/components/icons"
+import { ContactHero, DeskDay } from "@/components/sections/about-heroes"
+import { Band, TourCTABand } from "@/components/sections/common"
+import { ContactFormFromUrl } from "@/components/sections/url-init"
 import { getCatalog } from "@/lib/catalog/server"
+import { directionsHref } from "@/lib/geo"
+import { PHONE_HOURS_MIN } from "@/lib/labels"
+import { fmtClock, WEEKDAY_HOURS, WEEKEND_HOURS } from "@/lib/time"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Contact Cactus Peak — call a club or send a message",
   description:
-    "Call the club for the fastest answer. The desk is staffed 6:00 a.m. to 8:00 p.m.",
+    "Call the club for the fastest answer. A person answers 6 am–8 pm every day.",
 }
-export default async function Contact({
-  searchParams,
-}: {
-  searchParams: Promise<{ topic?: string; club?: string }>
-}) {
-  const sp = await searchParams
+
+const MEMBER_SERVICES = { phone: "(480) 555-0100", tel: "+14805550100" }
+
+/** The other ways in, for a reader who is not a member with a question. */
+const OTHER = [
+  {
+    href: "/legal/accessibility",
+    label: "Accessibility feedback",
+    Icon: Accessibility,
+  },
+  {
+    href: "mailto:press@cactuspeakathletic.com",
+    label: "Press: press@cactuspeakathletic.com",
+    Icon: Newspaper,
+  },
+  { href: "/careers", label: "Careers", Icon: Briefcase },
+]
+
+/** The quiet, underlined link style the cards use for directions. */
+const cardLink =
+  "inline-flex min-h-11 items-center text-label text-link underline decoration-[color-mix(in_oklab,currentColor_40%,transparent)] underline-offset-4 hover:decoration-current"
+
+/**
+ * Contact. The hero's picture answers the question this page gets most: when a person picks up. Then each club's
+ * number, a message form with the other ways in, and the Copper tour panel. It shares the program pages' hero,
+ * facts, heads and bands. It has no section nav: three short sections read top to bottom.
+ */
+export default async function Contact() {
   const { clubs } = await getCatalog()
-  const topics: Record<string, string> = {
-    tour: "Tour or pass",
-    accessibility: "Something else",
-    coach: "Something else",
-    orientation: "Membership",
-  }
+  const [deskOpen, deskClose] = PHONE_HOURS_MIN
+  const desk = `${fmtClock(deskOpen)}–${fmtClock(deskClose)}`
   return (
     <>
-      <Breadcrumbs trail={[{ label: "Contact" }]} />
-      <Container className="pt-4 pb-10">
-        <h1 className="display-lead">Talk to a person.</h1>
-        <p className="lede mt-4 text-muted-foreground">
-          Call the club for the fastest answer. The desk is staffed 6:00 a.m. to
-          8:00 p.m. For a medical emergency, call 911.
-        </p>
-      </Container>
-      <Container className="pb-12">
-        <h2 className="sr-only">Club phone numbers and hours</h2>
-        <div className="relative overflow-x-auto border-y-2 border-foreground">
-          <table className="w-full min-w-[760px] text-left text-body">
-            <caption className="sr-only">Clubs</caption>
-            <thead className="text-caption text-muted-foreground">
-              <tr>
-                {["Club", "Address", "Phone", "Hours today", "Directions"].map(
-                  (h) => (
-                    <th key={h} scope="col" className="p-3 font-semibold">
-                      {h}
-                    </th>
-                  )
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {clubs.map((c) => (
-                <tr key={c.slug} className="border-t border-border">
-                  <th scope="row" className="font-display-wide p-3 text-h3">
-                    {c.name}
-                  </th>
-                  <td className="p-3">
-                    {c.cross}, {c.city}, AZ {c.zip}
-                  </td>
-                  <td className="tabular p-3">
-                    <a
-                      className="inline-flex min-h-11 items-center font-semibold text-link underline-offset-4 hover:underline"
-                      href={`tel:${c.tel}`}
-                    >
-                      {c.phone}
-                    </a>
-                  </td>
-                  <td className="tabular p-3">4:30 a.m.–10 p.m.</td>
-                  <td className="p-3">
-                    <a
-                      className="inline-flex min-h-11 items-center text-link underline-offset-4 hover:underline"
-                      href="https://maps.apple.com/"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Directions
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-body text-muted-foreground">
-          Member services:{" "}
-          <a
-            className="tabular font-semibold text-link underline underline-offset-4"
-            href="tel:+14805550100"
-          >
-            (480) 555-0100
-          </a>
-          . Mon–Fri 4:30 a.m.–10 p.m., Sat–Sun 6 a.m.–8 p.m. Staffed 6 a.m.–8
-          p.m.
-        </p>
-      </Container>
-      <SplitSection label="Send a message">
-        <ContactForm
-          defaults={{ topic: topics[sp.topic ?? ""], club: sp.club }}
+      <ContactHero
+        lines={[
+          {
+            key: "member-services",
+            name: "Member services",
+            sub: "Any club",
+            phone: MEMBER_SERVICES.phone,
+            tel: MEMBER_SERVICES.tel,
+            icon: "mark",
+            lit: true,
+          },
+          ...clubs.map((c) => ({
+            key: c.slug,
+            name: c.name,
+            sub: c.city,
+            phone: c.phone,
+            tel: c.tel,
+            icon: (clubObjects[c.slug as ClubId]?.[0] ?? "whistle") as ObjectId,
+          })),
+        ]}
+        note={`A person answers ${desk}, every day. For a medical emergency, call 911.`}
+      />
+
+      <Band tone="tint" id="hours">
+        <SectionHead
+          size="lead"
+          title="When a person answers."
+          lede="The club stays open longer than the desk. After hours, send a message."
         />
-        <p className="mt-6 text-body font-semibold">
-          We reply within 1 business day.
-        </p>
-        <ul className="mt-3 flex flex-col divide-y divide-border border-y border-border text-body">
-          <li>
-            <Link
-              href="/legal/accessibility"
-              className="flex min-h-14 items-center gap-3 hover:underline"
+        <div className="mt-12">
+          <DeskDay
+            rows={[
+              {
+                day: "Monday to Friday",
+                open: WEEKDAY_HOURS,
+                desk: PHONE_HOURS_MIN,
+              },
+              {
+                day: "Saturday and Sunday",
+                open: WEEKEND_HOURS,
+                desk: PHONE_HOURS_MIN,
+              },
+            ]}
+          />
+        </div>
+      </Band>
+
+      <Band id="visit">
+        <SectionHead
+          size="lead"
+          title="Visit a club."
+          action={<TextLink href="/clubs">See every club</TextLink>}
+        />
+        <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {clubs.map((c) => (
+            <li
+              key={c.slug}
+              className="flex flex-col gap-3 rounded-lg bg-card p-5 edge ring-border"
             >
-              <Accessibility className="size-5" aria-hidden="true" />
-              Accessibility feedback
-            </Link>
-          </li>
-          <li>
-            <a
-              href="mailto:press@cactuspeakathletic.com"
-              className="flex min-h-14 items-center gap-3 hover:underline"
-            >
-              <Newspaper className="size-5" aria-hidden="true" />
-              Press: press@cactuspeakathletic.com
-            </a>
-          </li>
-          <li>
-            <Link
-              href="/careers"
-              className="flex min-h-14 items-center gap-3 hover:underline"
-            >
-              <Briefcase className="size-5" aria-hidden="true" />
-              Careers
-            </Link>
-          </li>
+              <ClubPin n={c.n} />
+              <h3 className="font-display-wide text-body-strong">
+                <Link
+                  href={`/clubs/${c.slug}`}
+                  className="no-underline underline-offset-4 hover:underline"
+                >
+                  {c.name}
+                </Link>
+              </h3>
+              <p className="text-caption text-pretty text-muted-foreground">
+                {c.cross}, {c.city}, AZ {c.zip}
+              </p>
+              <a
+                href={directionsHref(c)}
+                target="_blank"
+                rel="noopener"
+                className={cn(cardLink, "mt-auto")}
+              >
+                Directions
+                <span className="sr-only"> to {c.name}</span>
+              </a>
+            </li>
+          ))}
         </ul>
-      </SplitSection>
+        <ClubMap className="mt-6 h-[360px] overflow-hidden rounded-lg lg:h-[440px]" />
+      </Band>
+
+      <Band tone="tint" id="message">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <SectionHead
+              size="lead"
+              title="Send a message."
+              lede="We reply within 1 business day."
+            />
+            <ul className="mt-10 rule-t rule-heavy">
+              {OTHER.map(({ href, label, Icon }) => (
+                <li key={href} className="rule-b">
+                  <Link
+                    href={href}
+                    className="flex min-h-14 items-center gap-3 text-body no-underline hover:underline"
+                  >
+                    <Icon className="size-5 shrink-0" aria-hidden="true" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="lg:col-span-7">
+            <ContactFormFromUrl />
+          </div>
+        </div>
+      </Band>
+
+      <TourCTABand
+        night
+        title="Or come see the club."
+        support="A 30-minute tour. A coach, not a salesperson. No card."
+        passEmail
+      />
     </>
   )
 }

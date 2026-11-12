@@ -13,8 +13,10 @@ import { Button } from "@/components/ui/button"
 import { CheckRow, SelectControl } from "@/components/ui/controls"
 import { Input } from "@/components/ui/input"
 import { submitTrial } from "@/lib/forms/actions"
+import { NETWORK_ERROR } from "@/lib/forms/messages"
+import { scheduleUrl } from "@/lib/links"
 import { isEmailOrPhone, useSessionState } from "@/lib/store"
-import { Breadcrumbs, Container, TourTimeline } from "./common"
+import { Container, TourTimeline } from "./common"
 import {
   ErrorSummary,
   Field,
@@ -43,6 +45,8 @@ export function TrialFlow() {
   const [p, setP] = usePass()
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
+  // The summary shows only after a submit attempt. Before that, each field shows its own message on blur.
+  const [tried, setTried] = useState(false)
   const [club, setClub] = useState("")
   const [locked, setLocked] = useState(false)
   // Reads the email handed over from the Home band row (sessionStorage, never the URL) once after mount.
@@ -56,13 +60,36 @@ export function TrialFlow() {
     } catch {}
   }, [setP])
   const val = club || sp.get("club") || mine?.slug || ""
+  const CONTACT_MSG =
+    "Enter an email like name@example.com or a 10-digit mobile number."
+  // Check the contact field when the visitor leaves it, and clear the message once it is valid.
+  const checkContact = (v: string) =>
+    setErrors((e) => {
+      const msg = isEmailOrPhone(v) ? "" : CONTACT_MSG
+      if ((e.contact ?? "") === msg) return e
+      const { contact: _drop, ...rest } = e
+      return msg ? { ...rest, contact: msg } : rest
+    })
+  const checkFirst = (v: string) =>
+    setErrors((e) => {
+      const msg = v.trim() ? "" : "Enter your first name."
+      if ((e.first ?? "") === msg) return e
+      const { first: _drop, ...rest } = e
+      return msg ? { ...rest, first: msg } : rest
+    })
+  const checkClub = (v: string) =>
+    setErrors((e) => {
+      const msg = v ? "" : "Pick a club."
+      if ((e.club ?? "") === msg) return e
+      const { club: _drop, ...rest } = e
+      return msg ? { ...rest, club: msg } : rest
+    })
   const submit = async (form: HTMLFormElement) => {
+    setTried(true)
     const e: Record<string, string> = {}
     if (!val) e.club = "Pick a club."
     if (!p.first.trim()) e.first = "Enter your first name."
-    if (!isEmailOrPhone(p.contact))
-      e.contact =
-        "Enter an email like name@example.com or a 10-digit mobile number."
+    if (!isEmailOrPhone(p.contact)) e.contact = CONTACT_MSG
     setErrors(e)
     if (Object.keys(e).length) {
       focusErrors()
@@ -78,11 +105,7 @@ export function TrialFlow() {
     }).catch(() => null)
     if (!r?.ok) {
       setBusy(false)
-      setErrors(
-        r
-          ? serverErrors(r)
-          : { form: "We could not send that. Check your connection." }
-      )
+      setErrors(r ? serverErrors(r) : { form: NETWORK_ERROR })
       focusErrors()
       return
     }
@@ -94,19 +117,18 @@ export function TrialFlow() {
     <>
       <MinimalCheckoutHeader />
       <main id="main" tabIndex={-1} className="flex-1 outline-none">
-        <Breadcrumbs trail={[{ label: "Free 3-day pass" }]} />
-        <Container className="grid gap-10 pt-4 pb-16 lg:grid-cols-12 lg:gap-12">
+        <Container className="grid gap-10 pt-8 pb-16 lg:grid-cols-12 lg:gap-12 lg:pt-14">
           <div className="lg:col-span-7">
             <h1 className="font-display-wide text-h1 lg:text-display">
               Try us for 3 days. Free.
             </h1>
             <p className="mt-4 max-w-[48ch] text-body">
-              Use one club for 3 days. Take any class that has room. No card, no
-              catch.
+              Use one club for 3 days in a row, starting at your first check-in.
+              No card, no catch.
             </p>
             <ul className="mt-6 flex flex-col gap-3 text-body">
               {[
-                "Classes and pools at one club",
+                "Every class at one club, and its pool if it has one",
                 "Strength and cardio floor",
                 "A coach to say hello",
               ].map((t) => (
@@ -120,6 +142,11 @@ export function TrialFlow() {
               Courts and the recovery suite are not part of the pass. Ask about
               them on a tour.
             </p>
+            {/* Pass holders book at the desk or by phone. The app is for members only (00-foundation.md 4.1). */}
+            <p className="mt-3 text-body">
+              Book a class with room at the front desk or by calling the club,
+              up to 1 day ahead.
+            </p>
             <h2 className="sr-only">What happens next</h2>
             <div className="mt-10">
               <TourTimeline
@@ -128,7 +155,7 @@ export function TrialFlow() {
                   { title: "Get your pass.", text: "We email it and text it." },
                   {
                     title: "Show it at the desk.",
-                    text: "Bring photo ID. Your 3 days start now.",
+                    text: "Bring photo ID. Your pass starts at your first check-in.",
                   },
                   {
                     title: "Your pass ends.",
@@ -148,16 +175,19 @@ export function TrialFlow() {
               className="relative flex flex-col gap-5 rounded-lg bg-card p-6 edge ring-border lg:sticky lg:top-8"
             >
               <h2 className="font-display-wide text-h2">Get my free pass.</h2>
-              <ErrorSummary errors={errors} />
+              <ErrorSummary errors={errors} show={tried} />
               <Honeypot />
-              <Field label="Club" error={errors.club}>
+              <Field label="Club" error={errors.club} required>
                 {(a) => (
                   <SelectControl
                     {...a}
                     value={val}
-                    onChange={setClub}
+                    onChange={(v) => {
+                      setClub(v)
+                      if (errors.club) checkClub(v)
+                    }}
                     options={[
-                      { value: "", label: "Choose a club" },
+                      { value: "", label: "Pick a club" },
                       ...clubs.map((c) => ({ value: c.slug, label: c.name })),
                     ]}
                   />
@@ -165,8 +195,13 @@ export function TrialFlow() {
               </Field>
               <TextField
                 label="First name"
+                required
                 value={p.first}
-                onChange={(v) => setP((q) => ({ ...q, first: v }))}
+                onChange={(v) => {
+                  setP((q) => ({ ...q, first: v }))
+                  if (errors.first && v.trim()) checkFirst(v)
+                }}
+                onBlur={() => checkFirst(p.first)}
                 error={errors.first}
                 autoComplete="given-name"
               />
@@ -174,6 +209,7 @@ export function TrialFlow() {
                 label="Email or mobile number"
                 error={errors.contact}
                 help="We send your pass here."
+                required
               >
                 {(a) => (
                   <div className="flex gap-2">
@@ -181,11 +217,16 @@ export function TrialFlow() {
                       {...a}
                       value={p.contact}
                       readOnly={locked}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setP((q) => ({ ...q, contact: e.target.value }))
-                      }
+                        if (errors.contact && isEmailOrPhone(e.target.value))
+                          checkContact(e.target.value)
+                      }}
+                      onBlur={(e) => checkContact(e.target.value)}
                       className="bg-card"
                       autoComplete="email"
+                      autoCapitalize="none"
+                      spellCheck={false}
                     />
                     {locked ? (
                       <Button
@@ -301,7 +342,7 @@ export function TrialConfirmed() {
     )
   return (
     <Container className="grid gap-10 py-10 lg:grid-cols-12 lg:py-16">
-      <div className="lg:col-span-5 lg:col-start-2">
+      <div className="lg:col-span-7">
         <CircleCheck className="size-12 text-success" aria-hidden="true" />
         <h1 className="font-display-wide mt-3 text-h1">
           Your pass is ready{p.first ? `, ${p.first}` : ""}.
@@ -309,14 +350,14 @@ export function TrialConfirmed() {
         <p className="mt-2 text-body">
           Show it at the {c.name} desk. Bring photo ID.
         </p>
-        <div className="rounded-xl mt-6 bg-card p-6 edge ring-border">
+        <div className="mt-6 rounded-lg bg-card p-6 edge ring-border">
           <div className="mx-auto size-60 rounded-lg bg-surface p-3 edge ring-border">
             <SampleQR seed={p.id} />
           </div>
           <p className="eyebrow mt-4 text-muted-foreground">3-day pass</p>
           <p className="font-display-wide text-h3">{c.name}</p>
           <p className="text-body text-muted-foreground">
-            Valid for 3 days from your first visit
+            Valid for 3 days in a row from your first check-in
           </p>
           <p className="tabular mt-2 font-data text-h1 font-bold">
             PASS {p.id}
@@ -324,23 +365,27 @@ export function TrialConfirmed() {
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-4">
           <Button variant="secondary" onClick={() => window.print()}>
-            Save a copy
+            Print pass
           </Button>
-          <button
-            type="button"
-            className="min-h-11 text-label text-link underline-offset-4 hover:underline"
-          >
-            Email it to me again
-          </button>
           <LinkButton href="/" variant="outline">
             Done
           </LinkButton>
         </div>
       </div>
       <div className="lg:col-span-5">
-        <TextLink href={`/schedule?club=${c.slug}&firstTimer=1`}>
+        <TextLink href={scheduleUrl({ club: c.slug, firstTimer: true })}>
           Next: pick a class
         </TextLink>
+        <p className="text-body text-muted-foreground">
+          Book a class with room at the front desk or by calling {c.name} at{" "}
+          <a
+            className="tabular font-semibold text-link underline underline-offset-4"
+            href={`tel:${c.tel}`}
+          >
+            {c.phone}
+          </a>
+          , up to 1 day ahead.
+        </p>
         <div className="mt-6 rounded-lg bg-muted p-5">
           <h2 className="font-display-wide text-h3">Want a guided look?</h2>
           <p className="mt-1 text-caption">
@@ -355,7 +400,7 @@ export function TrialConfirmed() {
           </LinkButton>
         </div>
         <div className="mt-6 rounded-lg bg-card edge ring-border">
-          <ClubCard club={c} variant="compact" />
+          <ClubCard club={c} />
         </div>
         <p className="mt-4 text-body text-muted-foreground">
           {c.cross}, {c.city}. {c.parking}

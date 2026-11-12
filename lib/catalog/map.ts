@@ -116,6 +116,7 @@ export function mapClassType(
     bring: r.bring,
     clubs: r.club_slugs ?? "all",
     teen: r.teen_ok,
+    minAge: r.min_age,
     caption: r.caption,
     pick: r.pick,
   }
@@ -240,6 +241,31 @@ export function mapJournal(r: Tables<"journal_posts">): JournalEntry {
   }
 }
 
+/** Reads the optional `details` json of a job. Anything of the wrong type is dropped. */
+function jobDetails(
+  d: Json
+): Pick<Job, "summary" | "duties" | "requirements" | "schedule" | "posted"> {
+  const o = d && typeof d === "object" && !Array.isArray(d) ? d : {}
+  const str = (v: unknown) =>
+    typeof v === "string" && v.trim() ? v : undefined
+  const list = (v: unknown) => {
+    const a = Array.isArray(v)
+      ? v.filter((x): x is string => typeof x === "string" && !!x.trim())
+      : []
+    return a.length ? a : undefined
+  }
+  return {
+    summary: str(o.summary),
+    duties: list(o.duties),
+    requirements: list(o.requirements),
+    schedule: str(o.schedule),
+    // Only a plain date is kept, since it goes into the page and its JSON-LD.
+    posted: /^\d{4}-\d{2}-\d{2}$/.test(String(o.posted))
+      ? String(o.posted)
+      : undefined,
+  }
+}
+
 export function mapJob(r: Tables<"jobs">): Job {
   return {
     slug: r.slug,
@@ -248,6 +274,7 @@ export function mapJob(r: Tables<"jobs">): Job {
     dept: r.dept,
     type: r.job_type,
     pay: r.pay,
+    ...jobDetails(r.details),
   }
 }
 

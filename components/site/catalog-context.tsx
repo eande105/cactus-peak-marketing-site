@@ -94,7 +94,11 @@ function loadCounts(today: number, days: number): Promise<SessionCounts> {
       p_to: to.toISOString(),
     }),
   })
-    .then((r) => (r.ok ? r.json() : []))
+    // A non-200 answer is a failure, not an empty list: an empty list would claim every class has all its spots.
+    .then((r) => {
+      if (!r.ok) throw new Error(`session_counts ${r.status}`)
+      return r.json()
+    })
     .then(
       (rows: { session_id: string; booked: number; waitlisted: number }[]) => {
         const out: SessionCounts = {}
@@ -108,34 +112,47 @@ function loadCounts(today: number, days: number): Promise<SessionCounts> {
   return p
 }
 
-/** Live booked and waitlisted counts for the next `days` days. Undefined until they load. */
+// After this long without counts, the page stops showing "Loading spots".
+const COUNTS_PATIENCE_MS = 4000
+
+/** Live booked and waitlisted counts for the next `days` days. Undefined until they load, or if they fail. */
 function useSessionCounts(today: number, days: number) {
   const [state, setState] = useState<{
     today: number
     counts: SessionCounts
   } | null>(null)
+  const [gaveUp, setGaveUp] = useState<number | null>(null)
   useEffect(() => {
     let live = true
+    const timer = window.setTimeout(() => {
+      if (live) setGaveUp(today)
+    }, COUNTS_PATIENCE_MS)
     loadCounts(today, days)
       .then((counts) => {
         if (live) setState({ today, counts })
       })
-      .catch(() => {})
+      .catch(() => {
+        if (live) setGaveUp(today)
+      })
     return () => {
       live = false
+      window.clearTimeout(timer)
     }
   }, [today, days])
-  return state?.today === today ? state.counts : undefined
+  return {
+    counts: state?.today === today ? state.counts : undefined,
+    failed: gaveUp === today,
+  }
 }
 
 /** Dated sessions for the next 7 days from the weekly timetable, with live spot counts once they load. */
 export function useSessions(days = 7) {
   const catalog = useCatalog()
   const now = useClubNow()
-  const counts = useSessionCounts(now.dayNum, days)
+  const { counts, failed } = useSessionCounts(now.dayNum, days)
   const sessions = useMemo(
-    () => buildSessions(catalog, now.dayNum, counts, days),
-    [catalog, now.dayNum, counts, days]
+    () => buildSessions(catalog, now.dayNum, counts, days, failed),
+    [catalog, now.dayNum, counts, days, failed]
   )
   return { sessions, now, countsLoaded: counts !== undefined }
 }

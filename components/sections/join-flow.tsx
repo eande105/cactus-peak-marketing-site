@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import { LinkButton, TextLink } from "@/components/brand/atoms"
 import { ClubArt } from "@/components/brand/club-art"
 import { PlanComparisonTable } from "@/components/brand/plan-parts"
@@ -20,8 +20,12 @@ import {
   OverlayTitle,
   OverlayTrigger,
 } from "@/components/ui/overlay"
+import { RadioGroupBox } from "@/components/ui/radio-group-box"
 import type { ClientCatalog } from "@/lib/catalog"
 import { submitJoin } from "@/lib/forms/actions"
+import { JOIN_NETWORK_ERROR } from "@/lib/forms/messages"
+import { kidsCostLine } from "@/lib/labels"
+import { scheduleUrl } from "@/lib/links"
 import { digits, isEmail, useSessionState } from "@/lib/store"
 import { azNowKey } from "@/lib/time"
 import { cn } from "@/lib/utils"
@@ -143,6 +147,13 @@ export function totals(j: Join, cat: Pricing) {
   return { plan, fam, monthly, enroll: 0, today: monthly, billDay }
 }
 
+/** Focuses an Add button after the render that removes a person, so focus never falls to the page. */
+function focusAdd(kind: "adult" | "child") {
+  requestAnimationFrame(() =>
+    document.querySelector<HTMLElement>(`[data-add="${kind}"]`)?.focus()
+  )
+}
+
 function DOB({
   v,
   set,
@@ -154,12 +165,19 @@ function DOB({
   label: string
   err?: string
 }) {
+  // The error belongs to all three controls, so each one points at it and is marked invalid.
+  const errId = useId()
+  const a11y = {
+    "aria-invalid": !!err,
+    "aria-describedby": err ? errId : undefined,
+  }
   return (
     <fieldset>
       <legend className="text-label">{label}</legend>
       <div className="mt-1.5 grid grid-cols-[1.4fr_1fr_1fr] gap-2">
         <SelectControl
           aria-label="Month"
+          {...a11y}
           value={v.m}
           onChange={(m) => set({ m })}
           options={[
@@ -169,9 +187,10 @@ function DOB({
         />
         <Input
           aria-label="Day"
+          {...a11y}
           inputMode="numeric"
           maxLength={2}
-          placeholder="Day"
+          placeholder="DD"
           value={v.d}
           onChange={(e) => set({ d: digits(e.target.value) })}
           className="bg-card"
@@ -179,17 +198,30 @@ function DOB({
         />
         <Input
           aria-label="Year"
+          {...a11y}
           inputMode="numeric"
           maxLength={4}
-          placeholder="Year"
+          placeholder="YYYY"
           value={v.y}
           onChange={(e) => set({ y: digits(e.target.value) })}
           className="bg-card"
           autoComplete="bday-year"
         />
       </div>
+      {/* Visible names for the three parts. A placeholder disappears once the visitor types. */}
+      <div
+        aria-hidden="true"
+        className="mt-1 grid grid-cols-[1.4fr_1fr_1fr] gap-2 text-caption text-muted-foreground"
+      >
+        <span>Month</span>
+        <span>Day</span>
+        <span>Year</span>
+      </div>
       {err ? (
-        <p className="mt-1.5 text-caption font-medium text-destructive">
+        <p
+          id={errId}
+          className="mt-1.5 text-caption font-medium text-destructive"
+        >
           {err}
         </p>
       ) : null}
@@ -231,7 +263,7 @@ function Summary({ j, editable = true }: { j: Join; editable?: boolean }) {
   const c = cat.clubBySlug(j.club)
   return (
     <>
-      <dl className="divide-y divide-border">
+      <dl className="rule-rows">
         <Row
           editable={editable}
           l={`${t.plan.name} plan`}
@@ -260,18 +292,70 @@ function Summary({ j, editable = true }: { j: Join; editable?: boolean }) {
             edit="/join/family"
           />
         ) : null}
-        <Row editable={editable} l="Enrollment (Fall climb)" v="$0" />
+        <Row
+          editable={editable}
+          l="Enrollment (fall offer, through Nov 30)"
+          v="$0"
+        />
         <div className="flex items-baseline justify-between pt-3">
           <dt className="text-body-strong">Today</dt>
           <dd className="tabular font-data text-h2 font-bold">${t.today}</dd>
         </div>
       </dl>
+      {/* The one note under the summary: the monthly charge and the yearly fee. No sums or working. */}
       <p className="pt-3 text-caption text-muted-foreground">
-        Then ${t.monthly} a month on the {t.billDay}. Annual facility fee: $
-        {cat.prices.facilityFee} in March.
+        Then ${t.monthly} a month on the {t.billDay}, plus a $
+        {cat.prices.facilityFee} facility fee each March.
       </p>
     </>
   )
+}
+
+/** Errors on the details step. Pure, so the form can re-run it as the visitor types. */
+function detailsErrors(j: Join) {
+  const e: Record<string, string> = {}
+  if (!j.first.trim()) e.first = "Enter your first name."
+  if (!j.last.trim()) e.last = "Enter your last name."
+  if (!isEmail(j.email)) e.email = "Enter an email like name@example.com."
+  if (digits(j.phone).length !== 10) e.phone = "Enter a 10-digit mobile number."
+  const age = ageAt(j.m, j.d, j.y)
+  if (age === null) e.dob = "Enter your date of birth."
+  else if (age < 18)
+    e.dob =
+      "Members must be 18 or older. Add younger family members in the next step."
+  if (!/^\d{5}$/.test(j.zip)) e.zip = "Enter a 5-digit ZIP code."
+  return e
+}
+/** Errors on the family step. */
+function familyErrors(j: Join, kidsClubHere = true) {
+  const e: Record<string, string> = {}
+  if (j.mode === "family") {
+    j.adults.forEach((a, i) => {
+      if (!a.first.trim()) e[`a${i}f`] = `Adult ${i + 1}: enter a first name.`
+      if (!a.last.trim()) e[`a${i}n`] = `Adult ${i + 1}: enter a last name.`
+      if (!isEmail(a.email) || a.email === j.email)
+        e[`a${i}e`] = `Adult ${i + 1}: enter a different email.`
+      const ag = ageAt(a.m, a.d, a.y)
+      if (ag === null || ag < 18)
+        e[`a${i}d`] = `Adult ${i + 1}: members must be 18 or older.`
+    })
+    j.kids.forEach((k, i) => {
+      if (!k.first.trim()) e[`k${i}f`] = `Child ${i + 1}: enter a first name.`
+      if (!k.last.trim()) e[`k${i}n`] = `Child ${i + 1}: enter a last name.`
+      if (!k.m || !k.d || !k.y)
+        e[`k${i}d`] = `Child ${i + 1}: enter a date of birth.`
+      else {
+        const mo = ageMonths(k.m, k.d, k.y)
+        if (mo < 6 || (ageAt(k.m, k.d, k.y) ?? 0) > 17)
+          e[`k${i}d`] =
+            `Child ${i + 1}: children must be 6 months to 17. Anyone 18 or older joins as an adult.`
+      }
+      if (kidsClubHere && k.kids && !k.photo)
+        e[`k${i}p`] =
+          `Child ${i + 1}: agree to photo consent for kids club, or untick kids club.`
+    })
+  }
+  return e
 }
 
 export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
@@ -317,7 +401,34 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
       }))
   }, [sp, step, setJ, planBySlug])
   const club = j.club || sp.get("club") || mine?.slug || ""
+  // Two clubs have no kids club. A family that joins there is told where it is instead of being asked.
+  const homeClub = clubs.find((x) => x.slug === club)
+  const homeHasKids = !homeClub || homeClub.has.kids
+  const kidsClubNames = (() => {
+    const n = clubs.filter((x) => x.has.kids).map((x) => x.name)
+    return n.length > 1
+      ? `${n.slice(0, -1).join(", ")} and ${n.at(-1)}`
+      : (n[0] ?? "")
+  })()
   const t = totals(j, cat)
+  // Drop an error the moment its field becomes valid, so the summary does not nag about fixed fields.
+  useEffect(() => {
+    if (step !== "details" && step !== "family") return
+    setErrors((prev) => {
+      if (!Object.keys(prev).length) return prev
+      const now =
+        step === "details" ? detailsErrors(j) : familyErrors(j, homeHasKids)
+      const kept = Object.fromEntries(
+        Object.keys(prev)
+          .filter((k) => k in now)
+          .map((k) => [k, now[k]])
+      )
+      return Object.keys(kept).length === Object.keys(prev).length &&
+        Object.keys(kept).every((k) => kept[k] === prev[k])
+        ? prev
+        : kept
+    })
+  }, [j, step, homeHasKids])
   const next = (to: string) => router.push(to)
   // Guard: a step opens only when the steps before it are done. Otherwise go to the first incomplete step.
   const clubOk = !!(j.club || sp.get("club") || mine?.slug)
@@ -338,55 +449,16 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
   }
 
   const submitDetails = () => {
-    const e: Record<string, string> = {}
-    if (!j.first.trim()) e.first = "Enter your first name."
-    if (!j.last.trim()) e.last = "Enter your last name."
-    if (!isEmail(j.email)) e.email = "Enter an email like name@example.com."
-    if (digits(j.phone).length !== 10)
-      e.phone = "Enter a 10-digit mobile number."
-    const age = ageAt(j.m, j.d, j.y)
-    if (age === null) e.dob = "Enter your date of birth."
-    else if (age < 18)
-      e.dob =
-        "Members must be 18 or older. Add younger family members in the next step."
-    if (!/^\d{5}$/.test(j.zip)) e.zip = "Enter a 5-digit ZIP code."
-    if (!fail(e)) next("/join/family")
+    if (!fail(detailsErrors(j))) next("/join/family")
   }
   const submitFamily = () => {
-    const e: Record<string, string> = {}
-    if (j.mode === "family") {
-      j.adults.forEach((a, i) => {
-        if (!a.first.trim()) e[`a${i}f`] = `Adult ${i + 1}: enter a first name.`
-        if (!a.last.trim()) e[`a${i}n`] = `Adult ${i + 1}: enter a last name.`
-        if (!isEmail(a.email) || a.email === j.email)
-          e[`a${i}e`] = `Adult ${i + 1}: enter a different email.`
-        const ag = ageAt(a.m, a.d, a.y)
-        if (ag === null || ag < 18)
-          e[`a${i}d`] = `Adult ${i + 1}: members must be 18 or older.`
-      })
-      j.kids.forEach((k, i) => {
-        if (!k.first.trim()) e[`k${i}f`] = `Child ${i + 1}: enter a first name.`
-        if (!k.last.trim()) e[`k${i}n`] = `Child ${i + 1}: enter a last name.`
-        if (!k.m || !k.d || !k.y)
-          e[`k${i}d`] = `Child ${i + 1}: enter a date of birth.`
-        else {
-          const mo = ageMonths(k.m, k.d, k.y)
-          if (mo < 6 || (ageAt(k.m, k.d, k.y) ?? 0) > 17)
-            e[`k${i}d`] =
-              `Child ${i + 1}: children must be 6 months to 17. Anyone 18 or older joins as an adult.`
-        }
-        if (k.kids && !k.photo)
-          e[`k${i}p`] =
-            `Child ${i + 1}: agree to photo consent for kids club, or untick kids club.`
-      })
-    }
-    if (!fail(e)) next("/join/payment")
+    if (!fail(familyErrors(j, homeHasKids))) next("/join/payment")
   }
   const submitPay = (form: HTMLFormElement) => {
     const e: Record<string, string> = {}
     const num = digits(card.num)
     if (num.length < 13 || num.length > 19)
-      e.num = "Your card number is incomplete."
+      e.num = "Enter the full card number."
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.exp))
       e.exp = "Enter the expiry as MM/YY."
     if (!/^\d{3,4}$/.test(card.cvc))
@@ -439,19 +511,24 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
       }).catch(() => null)
       if (!r?.ok) {
         setBusy(false)
-        fail(
-          r
-            ? serverErrors(r)
-            : { form: "We could not send that. Check your connection." }
-        )
+        fail(r ? serverErrors(r) : { form: JOIN_NETWORK_ERROR })
         return
       }
       setJ((q) => ({ ...q, club: club as string, done: true }))
       router.push("/join/confirmed")
     }, 900)
   }
+  // Below lg the bar shows the amount next to the button, so the button names the action only. At 320 px the
+  // full label pushed the button past the screen edge.
   const primaryLabel =
-    step === "payment" ? `Join and pay $${t.today} today` : "Continue"
+    step === "payment" ? (
+      <>
+        Join and pay
+        <span className="max-lg:hidden"> ${t.today} today</span>
+      </>
+    ) : (
+      "Continue"
+    )
   const onContinue = (form?: HTMLFormElement) => {
     if (step === "plan") {
       setJ((q) => ({ ...q, plan: q.plan || "ridge" }))
@@ -503,7 +580,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                 </Collapsible.Indicator>
               </Collapsible.Trigger>
               <Collapsible.Panel>
-                <Summary j={j} />
+                <Summary j={{ ...j, club }} />
               </Collapsible.Panel>
             </Collapsible.Root>
           ) : null}
@@ -526,14 +603,13 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                     tabIndex={-1}
                     className="font-display-wide text-h1 outline-none"
                   >
-                    Choose your plan.
+                    Pick your plan.
                   </h1>
                   <p className="mt-2 text-body text-muted-foreground">
                     Month to month. Change it any time.
                   </p>
                 </div>
-                <div
-                  role="radiogroup"
+                <RadioGroupBox
                   aria-label="Plan"
                   className="flex flex-col gap-3"
                 >
@@ -583,15 +659,12 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       </button>
                     )
                   })}
-                </div>
+                </RadioGroupBox>
                 <Overlay>
                   <OverlayTrigger className="min-h-11 self-start text-label text-link underline-offset-4 hover:underline">
                     Compare every detail
                   </OverlayTrigger>
-                  <OverlayPopup
-                    label="Compare plans"
-                    className="w-[min(860px,calc(100vw-32px))]!"
-                  >
+                  <OverlayPopup className="w-[min(860px,calc(100vw-32px))]!">
                     <OverlayTitle className="pr-8">Compare plans</OverlayTitle>
                     <div className="overflow-y-auto">
                       <PlanComparisonTable />
@@ -625,8 +698,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       : "Your home club is where you start. You can train at all 5."}
                   </p>
                 </div>
-                <div
-                  role="radiogroup"
+                <RadioGroupBox
                   aria-label="Home club"
                   className="flex flex-col gap-3"
                 >
@@ -658,7 +730,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             {c.name}
                           </span>
                           <span className="block text-body text-muted-foreground">
-                            {c.cross}
+                            {c.city}
                           </span>
                           {j.plan === "trailhead" && !c.has.pool ? (
                             <span className="mt-1 block text-body font-semibold">
@@ -675,7 +747,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       </button>
                     )
                   })}
-                </div>
+                </RadioGroupBox>
               </>
             ) : null}
             {step === "details" ? (
@@ -784,12 +856,11 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                     Add your family.
                   </h1>
                   <p className="mt-2 text-body text-muted-foreground">
-                    Same access as your plan. Kids club is included for children
-                    12 and under. Teens 13 to 17 follow the teen rules.
+                    Same access as your plan. {kidsCostLine(cat.prices.child)}{" "}
+                    Teens 13 to 17 follow the teen rules.
                   </p>
                 </div>
-                <div
-                  role="radiogroup"
+                <RadioGroupBox
                   aria-label="Who is joining"
                   className="flex w-fit rounded-md edge ring-border-strong"
                 >
@@ -809,7 +880,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       {m === "solo" ? "Just me" : "Add family"}
                     </button>
                   ))}
-                </div>
+                </RadioGroupBox>
                 {j.mode === "family" ? (
                   <>
                     {j.adults.map((a, i) => (
@@ -818,12 +889,16 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                         key={i}
                         className="flex flex-col gap-4 rounded-lg bg-card p-4 edge ring-border"
                       >
-                        <legend className="px-2 text-label">
+                        {/* A visible legend sits on the card border, so the legend is for screen readers and the title is a row inside the card. */}
+                        <legend className="sr-only">
+                          Adult {i + 1}, plus ${prices.adult} a month
+                        </legend>
+                        <p aria-hidden="true" className="text-label">
                           Adult {i + 1}{" "}
                           <span className="font-normal text-muted-foreground">
                             +${prices.adult}/mo
                           </span>
-                        </legend>
+                        </p>
                         <div className="grid gap-4 sm:grid-cols-2">
                           <TextField
                             label="First name"
@@ -856,12 +931,13 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                           variant="ghost"
                           size="sm"
                           className="self-start"
-                          onClick={() =>
+                          onClick={() => {
                             setJ((q) => ({
                               ...q,
                               adults: q.adults.filter((_, k) => k !== i),
                             }))
-                          }
+                            focusAdd("adult")
+                          }}
                         >
                           Remove adult {i + 1}
                         </Button>
@@ -875,12 +951,15 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                           key={i}
                           className="flex flex-col gap-4 rounded-lg bg-card p-4 edge ring-border"
                         >
-                          <legend className="px-2 text-label">
+                          <legend className="sr-only">
+                            Child {i + 1}, plus ${prices.child} a month
+                          </legend>
+                          <p aria-hidden="true" className="text-label">
                             Child {i + 1}{" "}
                             <span className="font-normal text-muted-foreground">
                               +${prices.child}/mo
                             </span>
-                          </legend>
+                          </p>
                           <div className="grid gap-4 sm:grid-cols-2">
                             <TextField
                               label="First name"
@@ -909,14 +988,20 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             </p>
                           ) : null}
                           {ag === null || ag <= 12 ? (
-                            <CheckRow
-                              checked={!!a.kids}
-                              onChange={(c) => setKid(i, { kids: c })}
-                            >
-                              Needs kids club
-                            </CheckRow>
+                            homeHasKids ? (
+                              <CheckRow
+                                checked={!!a.kids}
+                                onChange={(c) => setKid(i, { kids: c })}
+                              >
+                                Needs kids club
+                              </CheckRow>
+                            ) : (
+                              <p className="text-body text-muted-foreground">
+                                Kids club is at {kidsClubNames}.
+                              </p>
+                            )
                           ) : null}
-                          {a.kids ? (
+                          {a.kids && homeHasKids ? (
                             <CheckRow
                               checked={!!a.photo}
                               onChange={(c) => setKid(i, { photo: c })}
@@ -950,12 +1035,13 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             variant="ghost"
                             size="sm"
                             className="self-start"
-                            onClick={() =>
+                            onClick={() => {
                               setJ((q) => ({
                                 ...q,
                                 kids: q.kids.filter((_, k) => k !== i),
                               }))
-                            }
+                              focusAdd("child")
+                            }}
                           >
                             Remove child {i + 1}
                           </Button>
@@ -966,7 +1052,9 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       <Button
                         type="button"
                         variant="outline"
+                        data-add="adult"
                         disabled={j.adults.length >= 4}
+                        focusableWhenDisabled
                         onClick={() =>
                           setJ((q) => ({
                             ...q,
@@ -980,7 +1068,9 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                       <Button
                         type="button"
                         variant="outline"
+                        data-add="child"
                         disabled={j.kids.length >= 6}
+                        focusableWhenDisabled
                         onClick={() =>
                           setJ((q) => ({ ...q, kids: [...q.kids, blank()] }))
                         }
@@ -1023,7 +1113,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   </p>
                 </div>
                 <div className="rounded-lg bg-card p-4 edge ring-border lg:hidden">
-                  <Summary j={j} editable={false} />
+                  <Summary j={{ ...j, club }} editable={false} />
                 </div>
                 {declined ? (
                   <p
@@ -1104,7 +1194,10 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                 ) : null}
               </>
             ) : null}
-            <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-border bg-card px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))] lg:static lg:z-auto lg:border-0 lg:bg-transparent lg:p-0">
+            <div
+              data-action-bar
+              className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 bg-card px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))] rule-t lg:static lg:z-auto lg:bg-transparent lg:p-0 lg:rule-none"
+            >
               {back ? (
                 <LinkButton href={back} variant="ghost">
                   Back
@@ -1129,7 +1222,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
           <aside className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-8 rounded-lg bg-card p-6 edge ring-border">
               <h2 className="font-display-wide mb-2 text-h3">Your plan</h2>
-              <Summary j={j} editable={step !== "payment"} />
+              <Summary j={{ ...j, club }} editable={step !== "payment"} />
             </div>
           </aside>
         </Container>
@@ -1151,15 +1244,15 @@ export function JoinConfirmed() {
           No membership started yet.
         </h1>
         <LinkButton href="/join/plan" className="mt-4">
-          Choose your plan
+          Pick your plan
         </LinkButton>
       </Container>
     )
   const t = totals(j, cat)
   const hours =
     now.weekday === 0 || now.weekday === 6
-      ? "6 a.m.–8 p.m. weekends"
-      : "4:30 a.m.–10 p.m. weekdays"
+      ? "6 am–8 pm weekends"
+      : "4:30 am–10 pm weekdays"
   return (
     <Container className="py-10 lg:py-16">
       <CircleCheck className="size-12 text-success" aria-hidden="true" />
@@ -1193,7 +1286,7 @@ export function JoinConfirmed() {
           onClick={() => window.print()}
           className="min-h-11 text-label text-link underline-offset-4 hover:underline"
         >
-          Download receipt
+          Print receipt
         </button>
       </div>
       <ol className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -1220,7 +1313,7 @@ export function JoinConfirmed() {
           <p className="mt-1 text-body text-muted-foreground">
             Pick a class for this week.
           </p>
-          <LinkButton href={`/schedule?club=${c.slug}`} className="mt-4">
+          <LinkButton href={scheduleUrl({ club: c.slug })} className="mt-4">
             See this week&apos;s classes
           </LinkButton>
           <p className="mt-2">

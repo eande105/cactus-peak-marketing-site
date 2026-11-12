@@ -1,14 +1,16 @@
-import type { SpaceGraphicId } from "@/components/brand/graphics"
+import type { SpaceId } from "@/components/brand/graphics"
+import { kidsCostLine } from "./labels"
+import { scheduleUrl } from "./links"
 import type { Club, ClubSlug } from "./types"
 
 /**
  * The spaces of a club, derived from the club's own data.
  * The web page and the future iOS app read this one mapping.
- * `graphic` is a `SpaceGraphic` id. The app can map it to its own asset.
+ * `graphic` is a space id: a key of `spaceObjects`. The app can map it to its own asset.
  */
 export type ClubSpace = {
   id: string
-  graphic: SpaceGraphicId
+  graphic: SpaceId
   name: string
   /** One line. */
   line: string
@@ -21,14 +23,14 @@ export type ClubSpace = {
 /** An amenity that applies to the whole club. */
 export type ClubAmenity = {
   id: string
-  graphic: SpaceGraphicId
+  graphic: SpaceId
   name: string
   link?: { href: string; label: string }
 }
 
 export type ClubSpaces = { primary: ClubSpace[]; amenities: ClubAmenity[] }
 
-type SpaceId =
+type SpaceKind =
   | "pool"
   | "courts"
   | "recovery"
@@ -38,11 +40,18 @@ type SpaceId =
   | "deck"
 
 /** The order of the large spaces for each club. The first four become primary spaces. The rest become amenities. */
-const ORDER: Record<ClubSlug, SpaceId[] | undefined> = {
-  "mesa-dobson": ["pool", "courts", "recovery", "strength", "studios", "kids"],
-  "mesa-red-mountain": ["pool", "courts", "strength", "studios", "kids"],
-  "mesa-downtown": ["strength", "studios", "recovery"],
-  "gilbert-val-vista": [
+const ORDER: Record<ClubSlug, SpaceKind[] | undefined> = {
+  "dobson-southern": [
+    "pool",
+    "courts",
+    "recovery",
+    "strength",
+    "studios",
+    "kids",
+  ],
+  "power-mckellips": ["pool", "courts", "strength", "studios", "kids"],
+  "main-center": ["strength", "studios", "recovery"],
+  "val-vista-warner": [
     "pool",
     "kids",
     "courts",
@@ -50,13 +59,13 @@ const ORDER: Record<ClubSlug, SpaceId[] | undefined> = {
     "studios",
     "recovery",
   ],
-  "gilbert-heritage": ["strength", "studios", "recovery", "deck"],
+  "gilbert-page": ["strength", "studios", "recovery", "deck"],
 }
 
 const plural = (n: number, one: string, many = `${one}s`) =>
   `${n} ${n === 1 ? one : many}`
 
-function build(id: SpaceId, c: Club): ClubSpace | null {
+function build(id: SpaceKind, c: Club, childPrice: number): ClubSpace | null {
   const s = c.slug
   switch (id) {
     case "pool":
@@ -65,24 +74,29 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         id,
         graphic: "lap-pool",
         name:
-          s === "gilbert-val-vista"
+          s === "val-vista-warner"
             ? "Pool and splash pad"
-            : s === "mesa-dobson"
+            : s === "dobson-southern"
               ? "Pools"
               : "Pool",
         line:
-          s === "mesa-red-mountain"
+          s === "power-mckellips"
             ? "A 25-m outdoor pool under shade sails."
-            : s === "mesa-dobson"
+            : s === "dobson-southern"
               ? "A 25-yd lap pool and a warm-water pool."
               : "A 25-yd lap pool, a splash pad and swim school.",
         amenities: [
           `${c.lanes} lap lanes`,
-          ...(s === "mesa-dobson" ? ["Warm-water pool, 90 to 92°F"] : []),
-          ...(s === "gilbert-val-vista"
-            ? ["Splash pad", "Swim school, levels 1–5"]
+          ...(s === "dobson-southern" ? ["Warm-water pool, 90 to 92°F"] : []),
+          ...(s === "val-vista-warner"
+            ? [
+                "Splash pad",
+                "Swim school, ages 3–12, levels 1–5",
+                "$72 a 6-week session for a member’s child, $108 for a non-member",
+                "Non-members can enrol: front desk, (480) 555-0142, or on a tour",
+              ]
             : []),
-          ...(s === "mesa-red-mountain" ? ["Shade sails", "Aqua Fit"] : []),
+          ...(s === "power-mckellips" ? ["Shade sails", "Aqua Fit"] : []),
           "Lane reservations",
           "Warm showers",
         ],
@@ -103,7 +117,10 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         line: "Book a 60- or 90-minute slot up to 3 days ahead.",
         amenities: [
           ...counts,
-          "Open play and clinics",
+          // Open play runs only where the timetable has it; Dobson & Southern has clinics and tennis drills.
+          c.slug === "dobson-southern"
+            ? "Clinics and tennis drills"
+            : "Open play and clinics",
           "Loaner paddles at the desk",
         ],
         link: { href: "/courts", label: "About courts" },
@@ -115,14 +132,14 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         id,
         graphic: "recovery",
         name:
-          s === "mesa-dobson" || s === "gilbert-val-vista"
+          s === "dobson-southern" || s === "val-vista-warner"
             ? "Recovery suite"
             : "Recovery lounge",
         line: "A Summit benefit.",
         amenities: [
           "Sauna",
           "Compression",
-          s === "mesa-dobson" || s === "gilbert-val-vista"
+          s === "dobson-southern" || s === "val-vista-warner"
             ? "Cold plunge"
             : "Stretch area",
         ],
@@ -140,8 +157,8 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         amenities: [
           "Racks",
           "Cardio",
-          ...(s === "gilbert-heritage" ? ["Olympic lifting platforms"] : []),
-          ...(s === "mesa-red-mountain" ? ["Turf lane"] : []),
+          ...(s === "gilbert-page" ? ["Olympic lifting platforms"] : []),
+          ...(s === "power-mckellips" ? ["Turf lane"] : []),
         ],
       }
     case "studios":
@@ -151,7 +168,7 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         name: "Studios",
         line: `${plural(c.studios, "studio")} and a cycle studio.`,
         amenities: [`${plural(c.studios, "group studio")}`, "Cycle studio"],
-        link: { href: "/classes", label: "See classes" },
+        link: { href: scheduleUrl({ club: s }), label: "See classes" },
       }
     case "kids":
       if (!c.has.kids) return null
@@ -161,15 +178,16 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
         name: "Kids club",
         line: "Ages 6 months to 12 years, while you train.",
         amenities: [
-          "Monday to Saturday",
+          "Mon–Sat 8 am–12 pm and 4–8 pm",
           "2-hour blocks",
           "Parent check-in",
           "Allergy notes",
+          kidsCostLine(childPrice),
         ],
         link: { href: "/kids", label: "About kids club" },
       }
     case "deck":
-      if (s !== "gilbert-heritage") return null
+      if (s !== "gilbert-page") return null
       return {
         id,
         graphic: "deck",
@@ -181,7 +199,7 @@ function build(id: SpaceId, c: Club): ClubSpace | null {
 }
 
 /** The 3 or 4 spaces to feature, and the amenities for the whole club. */
-export function clubSpaces(club: Club): ClubSpaces {
+export function clubSpaces(club: Club, childPrice: number): ClubSpaces {
   // A club that is not in ORDER gets the spaces its facility flags allow, in a default order.
   const all = (
     ORDER[club.slug] ?? [
@@ -193,7 +211,7 @@ export function clubSpaces(club: Club): ClubSpaces {
       "kids",
     ]
   )
-    .map((id) => build(id, club))
+    .map((id) => build(id, club, childPrice))
     .filter((x): x is ClubSpace => x !== null)
   const primary = all.slice(0, 4)
   const rest = all.slice(4)
@@ -203,7 +221,7 @@ export function clubSpaces(club: Club): ClubSpaces {
     name: r.id === "studios" ? "Studios and cycle" : r.name,
     link: r.link && r.id !== "studios" ? r.link : undefined,
   }))
-  if (club.slug === "mesa-red-mountain") {
+  if (club.slug === "power-mckellips") {
     amenities.unshift({ id: "deck", graphic: "deck", name: "Cardio deck" })
   }
   if (club.has.pool)
@@ -212,7 +230,7 @@ export function clubSpaces(club: Club): ClubSpaces {
       graphic: "lockers",
       name: "Changing rooms",
     })
-  if (club.slug === "mesa-dobson")
+  if (club.slug === "dobson-southern")
     amenities.push({ id: "cafe", graphic: "lounge", name: "Café" })
   return { primary, amenities }
 }
