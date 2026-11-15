@@ -515,10 +515,7 @@ export function PlanClasses({
   const most = Math.max(...weeks.map((w) => w.n))
   return (
     <div
-      className={cn(
-        "grid gap-xxl lg:grid-cols-12 lg:gap-section",
-        className
-      )}
+      className={cn("grid gap-xxl lg:grid-cols-12 lg:gap-section", className)}
     >
       <div className="lg:col-span-5">
         <p className="tabular font-data text-figure-xl font-heavy">{total}</p>

@@ -8,7 +8,9 @@ This app runs on Graphical. This folder is its Graphical project.
 
 ## App-owned additions
 
-- `install/analyze-styles.mjs`, `install/import.mjs`: this app's analysis and import scripts. `captured-theme.json` is the project as saved in Graphical before the import.
+- `themes/graphical.json` is this app's installed copy of the "Cactus Peak Athletic" theme saved on graphicalui.com, the source of truth for both Cactus Peak apps.
+- `install/pull-theme.mjs`: installs the account theme from a graphicalui.com registry link, mapping the font roles to the next/font variables.
+- `install/analyze-styles.mjs`, `install/import.mjs`: this app's analysis and import scripts. `captured-theme.json` is only a record of the account theme before the import; the account now holds the imported theme.
 - `install/write-merge-config.mjs`: writes `generated/tailwind-merge.cjs` for `cn` in `lib/utils.ts` (shadcn's `cn` package takes the same config). Run it after `graphical-install --theme`.
 - `install/write-theme-reference.mjs`: writes `gui/themes/cactus-peak-athletic.md` from the installed theme. Run it after `graphical-install --theme`.
 - `editor-root.tsx`, `development-editor.tsx`, `installed-editor.tsx`, `editor.css`: the development-only editor mount. `editor.css` puts the editor's stylesheet in its own cascade layer, so it can't override the app's utilities.
