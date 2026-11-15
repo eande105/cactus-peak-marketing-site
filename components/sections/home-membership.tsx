@@ -49,12 +49,7 @@ export function HomeMembership({ className }: { className?: string }) {
   const { plans } = useCatalog()
   const featured = plans.find((p) => p.badge) ?? plans[0]
   return (
-    <div
-      className={cn(
-        "grid gap-section lg:grid-cols-12",
-        className
-      )}
-    >
+    <div className={cn("grid gap-section lg:grid-cols-12", className)}>
       <div className="lg:col-span-6">
         <p className="max-w-[46ch] text-body-l text-pretty">
           Every plan includes every class at your club. Ridge and Summit open

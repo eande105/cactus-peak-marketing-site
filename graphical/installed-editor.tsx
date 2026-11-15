@@ -42,7 +42,6 @@ export default function InstalledEditor({
       colorMode={resolvedTheme === "dark" ? "dark" : "light"}
       onColorModeChange={onColorModeChange}
       adoptSkillPath=".agents/skills/graphical-adopt/SKILL.md"
-      initialPanelOpen
     >
       {children}
     </GraphicalInstalledEditor>

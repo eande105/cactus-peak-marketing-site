@@ -82,9 +82,7 @@ export function ProgramHero({
             {heading("max-w-[11ch] lg:col-span-7")}
             {body("lg:col-span-5 lg:pb-xs")}
           </div>
-          <div className="mt-xxl min-w-0 lg:mt-section">
-            {picture}
-          </div>
+          <div className="mt-xxl min-w-0 lg:mt-section">{picture}</div>
         </Container>
       </section>
     )

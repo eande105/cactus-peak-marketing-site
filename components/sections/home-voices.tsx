@@ -69,10 +69,7 @@ export function HomeVoices({
 
   return (
     <div
-      className={cn(
-        "grid gap-xxl lg:grid-cols-12 lg:gap-section",
-        className
-      )}
+      className={cn("grid gap-xxl lg:grid-cols-12 lg:gap-section", className)}
     >
       <figure className="lg:col-span-5">
         <GymObject id={voiceIcon(lead.quote)} className="size-12" />

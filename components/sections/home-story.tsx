@@ -33,12 +33,7 @@ export function HomeStory({
     .sort((a, b) => b.iso.localeCompare(a.iso))
     .slice(0, 3)
   return (
-    <div
-      className={cn(
-        "grid gap-section lg:grid-cols-12",
-        className
-      )}
-    >
+    <div className={cn("grid gap-section lg:grid-cols-12", className)}>
       <div className="lg:col-span-5">
         <h3 className="font-display-wide flex min-h-11 items-center text-body-l font-medium">
           The rule we kept

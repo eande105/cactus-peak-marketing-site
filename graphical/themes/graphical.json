@@ -3,104 +3,34 @@
   "name": "Cactus Peak Athletic",
   "theme": {
     "name": "Cactus Peak Athletic",
-    "iconStyle": "outlined",
-    "animation": {
-      "large": {
-        "easing": [0.16, 1, 0.3, 1],
-        "duration": 300
-      },
-      "easing": [0.2, 0.8, 0.2, 1],
-      "duration": 150,
-      "popupScale": 0.96,
-      "pressDistance": 1
-    },
-    "colors": {
-      "dark": {
-        "error": "#f28b7c",
-        "success": "#6fcb94",
-        "warning": "#f2b14c",
-        "neutral-1": "#121a16",
-        "neutral-2": "#1a241f",
-        "neutral-3": "#24302a",
-        "neutral-4": "#34423a",
-        "neutral-5": "#4a5850",
-        "neutral-6": "#6e7f74",
-        "neutral-7": "#a69f92",
-        "neutral-8": "#cfc8bb",
-        "neutral-9": "#e6e0d5",
-        "neutral-10": "#f2ece2",
-        "color-1": "#e0804f",
-        "color-2": "#ee9a6e",
-        "color-3": "#7fb0e8",
-        "color-4": "#f5a396",
-        "color-5": "#3e6b55"
-      },
-      "light": {
-        "error": "#b42318",
-        "success": "#2a7047",
-        "warning": "#8a5300",
-        "neutral-1": "#ffffff",
-        "neutral-2": "#fbf8f3",
-        "neutral-3": "#f6f1e8",
-        "neutral-4": "#efe7da",
-        "neutral-5": "#ddd2c1",
-        "neutral-6": "#8c7f6b",
-        "neutral-7": "#6b6457",
-        "neutral-8": "#4a443a",
-        "neutral-9": "#2e2a23",
-        "neutral-10": "#1d1b17",
-        "color-1": "#b5532c",
-        "color-2": "#9e4522",
-        "color-3": "#2e6db4",
-        "color-4": "#8f1c13",
-        "color-5": "#1c3328"
-      }
-    },
-    "spacing": {
-      "zero": 0,
-      "xxs": 4,
-      "xs": 8,
-      "s": 12,
-      "m": 16,
-      "l": 24,
-      "xl": 32,
-      "xxl": 48
-    },
-    "letterSpacing": {
-      "l": 0.01,
-      "m": 0,
-      "s": -0.02,
-      "xl": 0.02,
-      "xs": -0.03
-    },
     "text": {
-      "xxs": {
-        "size": 10,
-        "lineHeight": 14.000000000288956
-      },
-      "xs": {
-        "size": 12,
-        "lineHeight": 16.000000000805098
-      },
-      "s": {
-        "size": 14,
-        "lineHeight": 20.000000000512728
+      "l": {
+        "size": 18.970364466,
+        "lineHeight": 25.293819288
       },
       "m": {
         "size": 16,
         "lineHeight": 24
       },
-      "l": {
-        "size": 18.970364466,
-        "lineHeight": 25.293819288
+      "s": {
+        "size": 14,
+        "lineHeight": 20.000000000512728
       },
       "xl": {
         "size": 22.492170499,
         "lineHeight": 24.991300554
       },
+      "xs": {
+        "size": 12,
+        "lineHeight": 16.000000000805098
+      },
       "xxl": {
         "size": 26,
         "lineHeight": 28.166666666666668
+      },
+      "xxs": {
+        "size": 10,
+        "lineHeight": 14.000000000288956
       }
     },
     "fonts": {
@@ -112,14 +42,6 @@
           "regular": 400
         }
       },
-      "display": {
-        "family": "var(--font-archivo), system-ui, sans-serif",
-        "weights": {
-          "heavy": 800,
-          "medium": 700,
-          "regular": 500
-        }
-      },
       "data": {
         "family": "var(--font-archivo), system-ui, sans-serif",
         "weights": {
@@ -127,6 +49,62 @@
           "medium": 500,
           "regular": 400
         }
+      },
+      "display": {
+        "family": "var(--font-archivo), system-ui, sans-serif",
+        "weights": {
+          "heavy": 800,
+          "medium": 700,
+          "regular": 500
+        }
+      }
+    },
+    "border": {
+      "l": 2,
+      "m": 1,
+      "s": 1,
+      "none": 0
+    },
+    "colors": {
+      "dark": {
+        "error": "#f28b7c",
+        "color-1": "#e0804f",
+        "color-2": "#ee9a6e",
+        "color-3": "#7fb0e8",
+        "color-4": "#f5a396",
+        "color-5": "#3e6b55",
+        "success": "#6fcb94",
+        "warning": "#f2b14c",
+        "neutral-1": "#121a16",
+        "neutral-2": "#1a241f",
+        "neutral-3": "#24302a",
+        "neutral-4": "#34423a",
+        "neutral-5": "#4a5850",
+        "neutral-6": "#6e7f74",
+        "neutral-7": "#a69f92",
+        "neutral-8": "#cfc8bb",
+        "neutral-9": "#e6e0d5",
+        "neutral-10": "#f2ece2"
+      },
+      "light": {
+        "error": "#b42318",
+        "color-1": "#b5532c",
+        "color-2": "#9e4522",
+        "color-3": "#2e6db4",
+        "color-4": "#8f1c13",
+        "color-5": "#1c3328",
+        "success": "#2a7047",
+        "warning": "#8a5300",
+        "neutral-1": "#ffffff",
+        "neutral-2": "#fbf8f3",
+        "neutral-3": "#f6f1e8",
+        "neutral-4": "#efe7da",
+        "neutral-5": "#ddd2c1",
+        "neutral-6": "#8c7f6b",
+        "neutral-7": "#6b6457",
+        "neutral-8": "#4a443a",
+        "neutral-9": "#2e2a23",
+        "neutral-10": "#1d1b17"
       }
     },
     "radius": {
@@ -138,25 +116,49 @@
       "full": 9999,
       "zero": 0
     },
-    "border": {
-      "l": 2,
-      "m": 1,
-      "s": 1,
-      "none": 0
+    "display": {
+      "l": {
+        "size": 42,
+        "lineHeight": 45.5
+      },
+      "m": {
+        "size": 35.55705599999999,
+        "lineHeight": 38.52014399999999
+      },
+      "s": {
+        "size": 31.190399999999997,
+        "lineHeight": 33.7896
+      },
+      "xl": {
+        "size": 48,
+        "lineHeight": 52.00000000000001
+      },
+      "xs": {
+        "size": 27.36,
+        "lineHeight": 29.640000000000004
+      },
+      "xxl": {
+        "size": 55,
+        "lineHeight": 59.58333333333335
+      },
+      "xxs": {
+        "size": 23,
+        "lineHeight": 24.91666666666667
+      }
     },
     "shadows": {
       "l": {
-        "type": "box",
-        "position": "outside",
         "x": 0,
         "y": 24,
         "blur": 60,
+        "type": "box",
+        "color": {
+          "dark": "neutral-10",
+          "light": "neutral-10"
+        },
         "spread": -20,
         "opacity": 50,
-        "color": {
-          "light": "neutral-10",
-          "dark": "neutral-10"
-        }
+        "position": "outside"
       },
       "m": {
         "x": 0,
@@ -170,100 +172,155 @@
         "opacity": 0
       },
       "s": {
-        "type": "box",
-        "position": "outside",
         "x": 0,
         "y": 1,
         "blur": 0,
+        "type": "box",
+        "color": {
+          "dark": "neutral-10",
+          "light": "neutral-10"
+        },
         "spread": 0,
         "opacity": 0,
-        "color": {
-          "light": "neutral-10",
-          "dark": "neutral-10"
-        }
+        "position": "outside"
       }
     },
+    "spacing": {
+      "l": 24,
+      "m": 16,
+      "s": 12,
+      "xl": 32,
+      "xs": 8,
+      "xxl": 48,
+      "xxs": 4,
+      "zero": 0
+    },
+    "animation": {
+      "large": {
+        "easing": [0.16, 1, 0.3, 1],
+        "duration": 300
+      },
+      "easing": [0.2, 0.8, 0.2, 1],
+      "duration": 150,
+      "popupScale": 0.96,
+      "pressDistance": 1
+    },
+    "iconStyle": "outlined",
     "iconFamily": "Lucide",
     "neutralTone": "warm",
     "buttonRadius": "s",
     "colorEmphasis": 50,
+    "letterSpacing": {
+      "l": 0.01,
+      "m": 0,
+      "s": -0.02,
+      "xl": 0.02,
+      "xs": -0.03
+    },
+    "characterProfile": "imported",
+    "colorTranslucent": {
+      "dark": {
+        "color-5": 56,
+        "success": 26
+      },
+      "light": {
+        "color-1": 29,
+        "color-2": 27,
+        "warning": 25
+      }
+    },
+    "colorTranslucency": {
+      "dark": {
+        "color-5": 31,
+        "success": 14
+      },
+      "light": {
+        "color-1": 10,
+        "color-2": 9,
+        "warning": 9
+      }
+    },
     "primaryForeground": {},
-    "primaryActionColor": "color-1",
     "adjustmentBaseline": {
-      "version": 1,
-      "textM": 16,
       "text": {
-        "xxs": {
-          "size": 10,
-          "lineHeight": 14.000000000288956
-        },
-        "xs": {
-          "size": 12,
-          "lineHeight": 16.000000000805098
-        },
-        "s": {
-          "size": 14,
-          "lineHeight": 20.000000000512728
+        "l": {
+          "size": 18.970364466,
+          "lineHeight": 25.293819288
         },
         "m": {
           "size": 16,
           "lineHeight": 24
         },
-        "l": {
-          "size": 18.970364466,
-          "lineHeight": 25.293819288
+        "s": {
+          "size": 14,
+          "lineHeight": 20.000000000512728
         },
         "xl": {
           "size": 22.492170499,
           "lineHeight": 24.991300554
         },
+        "xs": {
+          "size": 12,
+          "lineHeight": 16.000000000805098
+        },
         "xxl": {
           "size": 26,
           "lineHeight": 28.166666666666668
+        },
+        "xxs": {
+          "size": 10,
+          "lineHeight": 14.000000000288956
         }
       },
+      "textM": 16,
       "display": {
-        "xxs": {
-          "size": 23,
-          "lineHeight": 24.91666666666667
-        },
-        "xs": {
-          "size": 27.36,
-          "lineHeight": 29.640000000000004
-        },
-        "s": {
-          "size": 31.190399999999997,
-          "lineHeight": 33.7896
+        "l": {
+          "size": 42,
+          "lineHeight": 45.5
         },
         "m": {
           "size": 35.55705599999999,
           "lineHeight": 38.52014399999999
         },
-        "l": {
-          "size": 42,
-          "lineHeight": 45.5
+        "s": {
+          "size": 31.190399999999997,
+          "lineHeight": 33.7896
         },
         "xl": {
           "size": 48,
           "lineHeight": 52.00000000000001
         },
+        "xs": {
+          "size": 27.36,
+          "lineHeight": 29.640000000000004
+        },
         "xxl": {
           "size": 55,
           "lineHeight": 59.58333333333335
+        },
+        "xxs": {
+          "size": 23,
+          "lineHeight": 24.91666666666667
         }
       },
       "spacing": {
-        "zero": 0,
-        "xxs": 4,
-        "xs": 8,
-        "s": 12,
-        "m": 16,
         "l": 24,
+        "m": 16,
+        "s": 12,
         "xl": 32,
-        "xxl": 48
+        "xs": 8,
+        "xxl": 48,
+        "xxs": 4,
+        "zero": 0
       },
+      "version": 1,
       "character": {
-        "profile": "imported",
+        "border": {
+          "l": 2,
+          "m": 1,
+          "s": 1,
+          "none": 0
+        },
         "radius": {
           "l": 20,
           "m": 14,
@@ -273,15 +330,15 @@
           "full": 9999,
           "zero": 0
         },
-        "border": {
-          "l": 2,
-          "m": 1,
-          "s": 1,
-          "none": 0
-        },
+        "profile": "imported",
         "weights": {
           "body": {
             "heavy": 600,
+            "medium": 500,
+            "regular": 400
+          },
+          "data": {
+            "heavy": 700,
             "medium": 500,
             "regular": 400
           },
@@ -289,17 +346,13 @@
             "heavy": 800,
             "medium": 700,
             "regular": 500
-          },
-          "data": {
-            "heavy": 700,
-            "medium": 500,
-            "regular": 400
           }
         },
-        "colorEmphasis": 50,
-        "buttonRadius": "s"
+        "buttonRadius": "s",
+        "colorEmphasis": 50
       }
     },
+    "primaryActionColor": "color-1",
     "colorPalettes": [
       {
         "id": "atlas-party",
@@ -679,60 +732,7 @@
       "#ff2c9c",
       "#ff2863",
       "#fc032d"
-    ],
-    "display": {
-      "xxs": {
-        "size": 23,
-        "lineHeight": 24.91666666666667
-      },
-      "xs": {
-        "size": 27.36,
-        "lineHeight": 29.640000000000004
-      },
-      "s": {
-        "size": 31.190399999999997,
-        "lineHeight": 33.7896
-      },
-      "m": {
-        "size": 35.55705599999999,
-        "lineHeight": 38.52014399999999
-      },
-      "l": {
-        "size": 42,
-        "lineHeight": 45.5
-      },
-      "xl": {
-        "size": 48,
-        "lineHeight": 52.00000000000001
-      },
-      "xxl": {
-        "size": 55,
-        "lineHeight": 59.58333333333335
-      }
-    },
-    "colorTranslucency": {
-      "light": {
-        "warning": 9,
-        "color-1": 10,
-        "color-2": 9
-      },
-      "dark": {
-        "success": 14,
-        "color-5": 31
-      }
-    },
-    "colorTranslucent": {
-      "light": {
-        "warning": 25,
-        "color-1": 29,
-        "color-2": 27
-      },
-      "dark": {
-        "success": 26,
-        "color-5": 56
-      }
-    },
-    "characterProfile": "imported"
+    ]
   },
   "componentTokens": {
     "button:ghost:part:label:rest": {
@@ -843,6 +843,9 @@
         "opacity": 100
       }
     },
+    "select:default:part:control:rest": {
+      "borderColor": "neutral-6"
+    },
     "switch:default:part:control:rest": {
       "background": "neutral-6"
     },
@@ -880,6 +883,9 @@
         "width": 2,
         "opacity": 100
       }
+    },
+    "select:default:part:control:hover": {
+      "borderColor": "neutral-8"
     },
     "switch:default:part:control:focus": {
       "focusRing": {
@@ -988,12 +994,6 @@
         "width": 2,
         "opacity": 100
       }
-    },
-    "select:default:part:control:rest": {
-      "borderColor": "neutral-6"
-    },
-    "select:default:part:control:hover": {
-      "borderColor": "neutral-8"
     }
   },
   "componentVariants": {}
