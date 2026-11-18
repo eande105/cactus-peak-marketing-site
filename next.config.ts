@@ -27,6 +27,9 @@ const classRedirects = [
 ]
 
 const nextConfig: NextConfig = {
+  experimental: {
+    agentUpgrade: "security",
+  },
   async redirects() {
     return [
       ...Object.entries(oldClubSlugs).map(([from, to]) => ({
