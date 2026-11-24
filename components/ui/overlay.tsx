@@ -7,7 +7,7 @@ import { Dialog, Drawer } from "@/components/graphical"
 import { useMedia } from "@/lib/use-media"
 import { cn } from "@/lib/utils"
 
-// Shared overlay on the Graphical Dialog and Drawer (gui/components/cactus-peak-athletic/dialog.md, drawer.md).
+// Shared overlay on the Graphical Dialog and Drawer.
 // The runtime owns the popup surface, padding, gap, radius, shadow, backdrop fill, title and description type, the
 // ghost close button and the Large enter and exit motion. This file keeps the site's own placements and layering:
 // backdrop at z 80 and popup at z 90, above the site menu (z 70), so the club switcher can open from the menu.

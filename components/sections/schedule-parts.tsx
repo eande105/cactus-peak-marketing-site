@@ -52,7 +52,7 @@ export function ScheduleDayStrip({
         const d = dayInfo(i, dayNum)
         const on = value === i
         return (
-          // One line per day. An empty day dims; the count lives in the list below (REDESIGN.md goal 7).
+          // One line per day. An empty day dims; the count lives in the list below.
           // The dim is a data state, so its muted text stays on the unpressed toggle.
           <Toggle
             // biome-ignore lint/suspicious/noArrayIndexKey: seven fixed weekday buttons never reorder

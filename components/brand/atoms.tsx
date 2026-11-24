@@ -145,7 +145,7 @@ export function AmenityChip({
   )
 }
 
-// The heading is the section's only label (REDESIGN.md goal 1). A lede is one line that adds a fact, never a restatement.
+// The heading is the section's only label. A lede is one line that adds a fact, never a restatement.
 export function SectionHead({
   title,
   lede,

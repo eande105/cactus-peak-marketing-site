@@ -22,7 +22,7 @@ const fonts = {
   display: {
     ...captured.theme.fonts.display,
     family: "var(--font-archivo), system-ui, sans-serif",
-    // The site sets h3 and quiet display text at 700 (REDESIGN.md). The saved project says 600.
+    // The site sets h3 and quiet display text at 700. The saved project says 600.
     weights: { ...captured.theme.fonts.display.weights, medium: 700 },
   },
   data: {

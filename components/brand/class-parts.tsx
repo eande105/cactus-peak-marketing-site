@@ -224,7 +224,7 @@ export function ClassCard({
 }
 
 /** Timetable. A row is the time, the class, one muted line (coach and studio) and Book. Spots show only when they run low.
- *  Duration, category and intensity live in the booking sheet and on the class page (REDESIGN.md goal 4). */
+ *  Duration, category and intensity live in the booking sheet and on the class page. */
 export function ScheduleList({
   sessions,
   showClub,

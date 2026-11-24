@@ -192,7 +192,7 @@
   --default-transition-timing-function: var(--motion-easing);
 }
 
-/* Graphical draws a visible edge as a zero-blur shadow, never a native border (gui/foundations.md).
+/* Graphical draws a visible edge as a zero-blur shadow, never a native border.
    `hairline` is that edge at the theme's small stroke. Set its color with a ring color utility (ring-input,
    ring-accent) and add an elevation with shadow-s. It composes with both. Graphical's own `edge-*` classes set a
    native border width; use them only where a real border is meant, such as a dashed rule. */
@@ -213,7 +213,7 @@
     var(--tw-shadow, 0 0 #0000);
 }
 
-/* Dividers are one-sided inset shadows (gui/foundations.md), never native borders. Each side is its own
+/* Dividers are one-sided inset shadows, never native borders. Each side is its own
    custom property, and every rule utility draws all four, so sides combine (rule-t with md:rule-l) and turn off
    per breakpoint (sm:rule-t-0) the way border sides do. The properties do not inherit, so a parent's rule never
    reaches its children. The colour is --border; rule-strong, rule-night and rule-heavy change it on the same
@@ -311,7 +311,7 @@
   --rule-w: calc(var(--border-l) * 2);
   --rule-c: var(--primary);
 }
-/* Heavy rules: the theme's large border width in the text colour. They open a ruled list or table (REDESIGN.md). */
+/* Heavy rules: the theme's large border width in the text colour. They open a ruled list or table. */
 @utility rule-heavy {
   --rule-w: var(--border-l);
   --rule-c: var(--foreground);
@@ -439,7 +439,7 @@
   --weight-medium: var(--weight-data-medium);
   --weight-heavy: var(--weight-data-heavy);
 }
-/* A quiet label for data: a column, a legend, a footer group. Sentence case, never above a heading (REDESIGN.md goal 1).
+/* A quiet label for data: a column, a legend, a footer group. Sentence case, never above a heading.
    In the components layer so a color utility on the same element (a badge's text-primary-foreground) wins. */
 @layer components {
   .eyebrow {

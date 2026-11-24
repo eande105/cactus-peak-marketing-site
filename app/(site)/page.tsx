@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Pools, courts, classes and recovery at five East Valley clubs. Climb at your own pace. Book a free tour or a 3-day pass.",
 }
 
-// One job per section (REDESIGN.md goal 3). Each band introduces a part of the site and links to its pages:
+// One job per section. Each band introduces a part of the site and links to its pages:
 // clubs, classes (and the coaches), the programs past the gym floor, plans (and the app), members, and who
 // runs the clubs (About, the Journal and Careers). The schedule, the tour steps and the FAQ have their own pages.
 export default async function Home() {

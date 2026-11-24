@@ -12,7 +12,7 @@ import {
 import { Checkbox, Select, Tooltip } from "@/components/graphical"
 import { cn } from "@/lib/utils"
 
-// Form controls on the Graphical runtime (gui/components/cactus-peak-athletic/*.md). The runtime owns fill, edge,
+// Form controls on the Graphical runtime. The runtime owns fill, edge,
 // radius, type and state paint, so callers pass layout classes only. Patterns follow web-app/components/kit/ui.tsx.
 
 /** Checkbox with its visible label. `name`, `value` and `required` reach Base UI's hidden input for native forms. */
@@ -38,7 +38,7 @@ export function CheckRow({
   className?: string
 }) {
   return (
-    // The 44 px minimum keeps the whole row a touch target (BUILD-NOTES accessibility).
+    // The 44 px minimum keeps the whole row a touch target.
     <Checkbox.Row className={cn("min-h-11", className)}>
       <Checkbox.Root
         id={id}
