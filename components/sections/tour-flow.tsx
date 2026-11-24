@@ -12,7 +12,7 @@ import { MinimalCheckoutHeader } from "@/components/site/chrome"
 import { useMyClub } from "@/components/site/club-context"
 import { Button } from "@/components/ui/button"
 import { CheckRow, Textarea } from "@/components/ui/controls"
-import { RadioGroupBox } from "@/components/ui/radio-group-box"
+import { RadioCard, RadioGroupBox } from "@/components/ui/radio-group-box"
 import { submitTour } from "@/lib/forms/actions"
 import { NETWORK_ERROR } from "@/lib/forms/messages"
 import { directionsHref } from "@/lib/geo"
@@ -299,19 +299,19 @@ export function TourFlow() {
                 ) : null}
                 <fieldset className="mt-xl">
                   <legend className="text-body-s font-heavy">Club</legend>
-                  <RadioGroupBox className="mt-xs flex flex-col gap-xs">
+                  <RadioGroupBox
+                    value={club}
+                    onValueChange={(club) =>
+                      setT((p) => ({ ...p, club, time: null }))
+                    }
+                    className="mt-xs flex flex-col gap-xs"
+                  >
                     {clubs.map((x) => {
                       const on = club === x.slug
                       return (
-                        // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                        <button
+                        <RadioCard
                           key={x.slug}
-                          role="radio"
-                          aria-checked={on}
-                          type="button"
-                          onClick={() =>
-                            setT((p) => ({ ...p, club: x.slug, time: null }))
-                          }
+                          value={x.slug}
                           className={cn(
                             "flex min-h-16 items-center gap-s hairline",
                             "corner-m px-s py-xs",
@@ -341,7 +341,7 @@ export function TourFlow() {
                               aria-hidden="true"
                             />
                           ) : null}
-                        </button>
+                        </RadioCard>
                       )
                     })}
                   </RadioGroupBox>
@@ -349,6 +349,10 @@ export function TourFlow() {
                 <fieldset className="mt-xl">
                   <legend className="text-body-s font-heavy">Day</legend>
                   <RadioGroupBox
+                    value={t.day}
+                    onValueChange={(day) =>
+                      setT((p) => ({ ...p, day, time: null }))
+                    }
                     className={cn(
                       "flex gap-xs overflow-x-auto",
                       "-mx-m mt-xs px-m",
@@ -363,16 +367,10 @@ export function TourFlow() {
                         const on = t.day === i
                         const d = new Date(i * DAY_MS)
                         return (
-                          // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                          <button
+                          <RadioCard
                             key={i}
-                            type="button"
-                            role="radio"
-                            aria-checked={on}
+                            value={i}
                             disabled={!has}
-                            onClick={() =>
-                              setT((p) => ({ ...p, day: i, time: null }))
-                            }
                             aria-label={`${dateLabel(i, true)}${has ? "" : ", no tours"}`}
                             className={cn(
                               "tabular flex min-h-16 min-w-[76px] shrink-0 flex-col items-start justify-center hairline",
@@ -407,7 +405,7 @@ export function TourFlow() {
                                 timeZone: "UTC",
                               })}
                             </span>
-                          </button>
+                          </RadioCard>
                         )
                       }
                     )}
@@ -457,17 +455,19 @@ export function TourFlow() {
                     list.length ? (
                       <fieldset key={g} className="mt-l">
                         <legend className="eyebrow mb-xs">{g}</legend>
-                        <RadioGroupBox className="grid grid-cols-2 gap-xs lg:grid-cols-3">
+                        <RadioGroupBox
+                          value={t.time}
+                          onValueChange={(time) =>
+                            setT((p) => ({ ...p, time }))
+                          }
+                          className="grid grid-cols-2 gap-xs lg:grid-cols-3"
+                        >
                           {list.map((m) => {
                             const on = t.time === m
                             return (
-                              // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                              <button
+                              <RadioCard
                                 key={m}
-                                type="button"
-                                role="radio"
-                                aria-checked={on}
-                                onClick={() => setT((p) => ({ ...p, time: m }))}
+                                value={m}
                                 className={cn(
                                   "tabular inline-flex min-h-11 items-center justify-center gap-xs hairline",
                                   "corner-s",
@@ -484,7 +484,7 @@ export function TourFlow() {
                                   />
                                 ) : null}
                                 {fmtTime(m)}
-                              </button>
+                              </RadioCard>
                             )
                           })}
                         </RadioGroupBox>

@@ -1,5 +1,6 @@
 "use client"
 
+import { Autocomplete as BaseAutocomplete } from "@base-ui/react/autocomplete"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
@@ -7,6 +8,7 @@ import { LinkButton } from "@/components/brand/atoms"
 import { ClubArt } from "@/components/brand/club-art"
 import { CategoryIcon } from "@/components/brand/icons"
 import { IntensityRibs } from "@/components/brand/meters"
+import { Autocomplete } from "@/components/graphical"
 import {
   CalendarDays,
   Dumbbell,
@@ -213,7 +215,6 @@ export function SearchDialog({
   onOpenChange: (o: boolean) => void
 }) {
   const [q, setQ] = useState("")
-  const [active, setActive] = useState(0)
   const router = useRouter()
   const catalog = useCatalog()
   const { club: mine } = useMyClub()
@@ -249,7 +250,6 @@ export function SearchDialog({
       ),
     })),
   ]
-  const list = q.trim() ? flat : popular
   const go = (href: string) => {
     onOpenChange(false)
     router.push(href)
@@ -261,7 +261,6 @@ export function SearchDialog({
         onOpenChange(o)
         if (!o) {
           setQ("")
-          setActive(0)
         }
       }}
     >
@@ -270,116 +269,108 @@ export function SearchDialog({
         <OverlayTitle className="sr-only">
           Search clubs, classes and coaches
         </OverlayTitle>
-        <div className="flex items-center gap-s px-m rule-b focus-within:-outline-offset-2 focus-within:outline-(length:--border-l) focus-within:outline-ring focus-within:outline-solid">
-          <Search className="size-5 text-muted-foreground" aria-hidden="true" />
-          <label htmlFor="site-search" className="sr-only">
-            Search clubs, classes, coaches
-          </label>
-          <input
-            id="site-search"
-            // biome-ignore lint/a11y/noAutofocus: the search field is the dialog's first and only target, so focus it on open
-            autoFocus
-            role="combobox"
-            aria-autocomplete="list"
-            aria-expanded={!(q.trim() && !flat.length)}
-            aria-controls={q.trim() && !flat.length ? undefined : "search-list"}
-            aria-activedescendant={list[active] ? `sr-${active}` : undefined}
-            autoComplete="off"
-            value={q}
-            onChange={(e) => {
-              setQ(e.target.value)
-              setActive(0)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowDown") {
-                e.preventDefault()
-                setActive((a) => Math.min(a + 1, list.length - 1))
-              }
-              if (e.key === "ArrowUp") {
-                e.preventDefault()
-                setActive((a) => Math.max(a - 1, 0))
-              }
-              if (e.key === "Enter") {
-                e.preventDefault()
-                if (list[active]) go(list[active].href)
-                else if (q) go(`/search?q=${encodeURIComponent(q)}`)
-              }
-            }}
-            placeholder="Search clubs, classes, coaches…"
-            className="h-14 flex-1 bg-transparent text-body-m outline-none placeholder:text-muted-foreground"
-          />
-          <kbd
-            className={cn(
-              "hidden",
-              "corner-xs px-xs py-xxs",
-              "text-body-s",
-              "bg-muted text-muted-foreground",
-              "sm:block"
-            )}
-          >
-            Esc
-          </kbd>
-        </div>
-        {/* The count is announced as the visitor types. The status region stays mounted so screen readers hear changes. */}
-        <p role="status" className="sr-only">
-          {q.trim()
-            ? flat.length === 1
-              ? "1 result"
-              : `${flat.length} results`
-            : ""}
-        </p>
-        {q.trim() && !flat.length ? (
-          // Outside the listbox: a listbox may hold only options, and these are buttons.
-          <div className="min-h-0 flex-1 overflow-y-auto p-xs">
-            <EmptyState
-              title={`We found nothing for “${q}”.`}
-              text="Try “cycle”, “pool” or “kids club”."
+        {/* Graphical's Autocomplete (Base UI) owns the combobox and listbox roles, the highlight and the arrow keys.
+            The list is inline, not a popup, so it stays open under the field. Hits are ranked by runSearch, so the
+            autocomplete does not filter them again (mode "none"). */}
+        <Autocomplete.Root
+          inline
+          open
+          mode="none"
+          autoHighlight="always"
+          value={q}
+          onValueChange={setQ}
+          itemToStringValue={(h: Hit) => h.title}
+        >
+          <div className="gap-s px-m flex items-center rule-b focus-within:-outline-offset-2 focus-within:outline-(length:--border-l) focus-within:outline-ring focus-within:outline-solid">
+            <Search
+              className="size-5 text-muted-foreground"
+              aria-hidden="true"
+            />
+            <label htmlFor="site-search" className="sr-only">
+              Search clubs, classes, coaches
+            </label>
+            {/* The plain Base UI input: the search row is the field's frame, so the themed input box would draw a
+                second frame inside it. */}
+            <BaseAutocomplete.Input
+              id="site-search"
+              // The search field is the dialog's first and only target, so focus it on open.
+              autoFocus
+              autoComplete="off"
+              onKeyDown={(e) => {
+                // Enter on a highlighted hit follows its link. With no hits, Enter opens the full results page.
+                // Base UI keeps the last highlight after the list empties, so its own Enter handling is stopped.
+                if (e.key === "Enter" && q.trim() && !flat.length) {
+                  e.preventDefault()
+                  e.preventBaseUIHandler()
+                  go(`/search?q=${encodeURIComponent(q)}`)
+                }
+              }}
+              placeholder="Search clubs, classes, coaches…"
+              className="h-14 flex-1 bg-transparent text-body-m outline-none placeholder:text-muted-foreground"
+            />
+            <kbd
+              className={cn(
+                "hidden",
+                "px-xs py-xxs corner-xs",
+                "text-body-s",
+                "bg-muted text-muted-foreground",
+                "sm:block"
+              )}
             >
-              <LinkButton
-                href="/classes"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                See all classes
-              </LinkButton>
-              <LinkButton
-                href="/contact"
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-              >
-                Ask a person
-              </LinkButton>
-            </EmptyState>
+              Esc
+            </kbd>
           </div>
-        ) : (
-          <div
-            id="search-list"
-            role="listbox"
-            aria-label="Results"
-            className="min-h-0 flex-1 overflow-y-auto p-xs"
-          >
-            {(q.trim() ? groups : [{ name: "Popular", items: popular }]).map(
-              (g) => (
-                // biome-ignore lint/a11y/useSemanticElements: role=group on a non-form control group; fieldset adds default min-inline-size and a legend that would change the layout
-                <div key={g.name} role="group" aria-label={g.name}>
-                  <p className="eyebrow px-s pt-s pb-xxs text-muted-foreground">
-                    {g.name}
-                  </p>
-                  {g.items.map((h) => {
-                    const i = list.indexOf(h)
-                    return (
-                      <Link
+          {/* The count is announced as the visitor types. The status region stays mounted so screen readers hear changes. */}
+          <p role="status" className="sr-only">
+            {q.trim()
+              ? flat.length === 1
+                ? "1 result"
+                : `${flat.length} results`
+              : ""}
+          </p>
+          {q.trim() && !flat.length ? (
+            // Outside the listbox: a listbox may hold only options, and these are buttons.
+            <div className="p-xs min-h-0 flex-1 overflow-y-auto">
+              <EmptyState
+                title={`We found nothing for “${q}”.`}
+                text="Try “cycle”, “pool” or “kids club”."
+              >
+                <LinkButton
+                  href="/classes"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                >
+                  See all classes
+                </LinkButton>
+                <LinkButton
+                  href="/contact"
+                  variant="ghost"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Ask a person
+                </LinkButton>
+              </EmptyState>
+            </div>
+          ) : (
+            <Autocomplete.List
+              aria-label="Results"
+              className="p-xs min-h-0 flex-1 overflow-y-auto"
+            >
+              {(q.trim() ? groups : [{ name: "Popular", items: popular }]).map(
+                (g) => (
+                  <Autocomplete.Group key={g.name}>
+                    <Autocomplete.GroupLabel className="eyebrow px-s pt-s pb-xxs text-muted-foreground">
+                      {g.name}
+                    </Autocomplete.GroupLabel>
+                    {g.items.map((h) => (
+                      <Autocomplete.Item
                         key={h.href + h.title}
-                        id={`sr-${i}`}
-                        role="option"
-                        tabIndex={-1}
-                        aria-selected={i === active}
-                        href={h.href}
+                        value={h}
+                        render={<Link href={h.href} />}
                         onClick={() => onOpenChange(false)}
-                        onMouseMove={() => setActive(i)}
                         className={cn(
-                          "flex min-h-14 items-center gap-s corner-m px-s py-xs",
-                          i === active && "bg-muted ring-2 ring-ring"
+                          "gap-s px-s py-xs flex min-h-14 items-center corner-m",
+                          "data-highlighted:bg-muted data-highlighted:ring-2 data-highlighted:ring-ring"
                         )}
                       >
                         <span className="flex w-10 shrink-0 justify-center">
@@ -396,14 +387,14 @@ export function SearchDialog({
                         {h.group === "Classes" ? (
                           <ClassRibs catalog={catalog} title={h.title} />
                         ) : null}
-                      </Link>
-                    )
-                  })}
-                </div>
-              )
-            )}
-          </div>
-        )}
+                      </Autocomplete.Item>
+                    ))}
+                  </Autocomplete.Group>
+                )
+              )}
+            </Autocomplete.List>
+          )}
+        </Autocomplete.Root>
         {q.trim() ? (
           <Link
             href={`/search?q=${encodeURIComponent(q)}`}

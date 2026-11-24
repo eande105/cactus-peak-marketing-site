@@ -4,7 +4,7 @@ import { useState } from "react"
 import { LinkButton } from "@/components/brand/atoms"
 import { ChildHead, Minus, Plus, User } from "@/components/icons"
 import { useCatalog } from "@/components/site/catalog-context"
-import { RadioGroupBox } from "@/components/ui/radio-group-box"
+import { RadioCard, RadioGroupBox } from "@/components/ui/radio-group-box"
 import type { Club, Plan } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
@@ -158,15 +158,15 @@ export function FamilyCalculator({ className }: { className?: string }) {
       <div className="lg:col-span-7">
         <fieldset>
           <legend className="text-body-s font-heavy">Plan for everyone</legend>
-          <RadioGroupBox className="mt-s grid grid-cols-3 gap-xs">
+          <RadioGroupBox
+            value={plan}
+            onValueChange={setPlan}
+            className="mt-s grid grid-cols-3 gap-xs"
+          >
             {plans.map((x) => (
-              // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-              <button
+              <RadioCard
                 key={x.slug}
-                type="button"
-                role="radio"
-                aria-checked={plan === x.slug}
-                onClick={() => setPlan(x.slug)}
+                value={x.slug}
                 className={cn(
                   "flex min-h-14 flex-col items-start justify-center hairline",
                   "corner-s px-m py-xs",
@@ -180,7 +180,7 @@ export function FamilyCalculator({ className }: { className?: string }) {
                 <span className="text-body-s text-muted-foreground tabular-nums">
                   ${x.price}/mo
                 </span>
-              </button>
+              </RadioCard>
             ))}
           </RadioGroupBox>
         </fieldset>

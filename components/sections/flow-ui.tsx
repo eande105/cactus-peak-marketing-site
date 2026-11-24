@@ -145,7 +145,7 @@ function fieldFor(message: string) {
     shown
       ?.closest("fieldset, div")
       ?.querySelector<HTMLElement>(
-        'input, select, textarea, button:not([tabindex="-1"]), [role="radio"][tabindex="0"]'
+        'input:not([aria-hidden="true"]), select, textarea, button:not([tabindex="-1"]), [role="radio"][tabindex="0"]'
       ) ?? null
   )
 }

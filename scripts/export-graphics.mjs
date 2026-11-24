@@ -9,9 +9,10 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
  * stripping (Node 22.18+ / 23.6+); the resolve hook below adds the ".ts" extension that the
  * bundler-style imports leave out.
  *
- * Output: ../brand-graphics/svg/objects/<id>-<mode>.svg and ../brand-graphics/svg/category/<category>[-cut]-<mode>.svg,
+ * Output: ../brand-graphics/svg/objects/<id>-<mode>.svg, ../brand-graphics/svg/category/<category>[-cut]-<mode>.svg and
+ * ../brand-graphics/svg/crop/class-<category>-<ratio>-<mode>.svg,
  * with colours resolved to hex for the light and dark themes, because native renderers and <img> tags cannot read
- * CSS variables. The script replaces only these two folders. The other folders in svg/ hold frozen exports of the
+ * CSS variables. The script replaces only these folders. The other folders in svg/ hold frozen exports of the
  * retired sets, which the iOS app still reads (brand-graphics/README.md).
  * The token values come from components/graphical/theme.ts (neutrals, Saguaro Night) and
  * app/globals.css (category colours), so a palette change flows through on the next export.
@@ -28,6 +29,15 @@ registerHooks({
       if (specifier.startsWith(".")) return next(`${specifier}.ts`, context)
       throw err
     }
+  },
+  // theme.ts imports the Graphical theme JSON the bundler way, without `with { type: "json" }`. Node needs it.
+  load(url, context, next) {
+    if (url.endsWith(".json"))
+      return next(url, {
+        ...context,
+        importAttributes: { ...context.importAttributes, type: "json" },
+      })
+    return next(url, context)
   },
 })
 
@@ -77,10 +87,11 @@ export async function loadGraphics() {
 
 async function main() {
   const out = resolve(root, "../brand-graphics/svg")
-  for (const set of ["objects", "category", "rack"])
-    rmSync(join(out, set), { recursive: true, force: true })
+  // Load first, so a failed load leaves the last export in place.
   const tokens = await loadTokens()
   const g = await loadGraphics()
+  for (const set of ["objects", "category", "crop", "rack"])
+    rmSync(join(out, set), { recursive: true, force: true })
   let count = 0
   const write = (rel, svg) => {
     const file = join(out, rel)
@@ -123,23 +134,27 @@ async function main() {
           )
         )
 
-  // rack/: the Night orbit of each class type, for the class heroes and cards in the iOS app (the class pages
-  // on the site draw the same Rack). The apps show no Rack for a club or a space.
-  // Racks are decorative, so they carry no title.
-  const rackSvg = (name, ratio, opts) => {
+  // crop/: each class category's object, large and cut by the frame, on the category tint. The same picture as
+  // ClassCard on the site and the class cards in the web app (ObjectCrop with { category }), for the iOS class
+  // heroes and cards. 16x9 uses the web app's 16/9 placement; 2x1 is the short card band. Decorative: no title.
+  const cropSvg = (cat, ratio, opts) => {
     const [w, h] = ratio.split("x").map(Number)
     for (const mode of ["light", "dark"])
       write(
-        `rack/${name}-${ratio}-${mode}.svg`,
-        objectSvg(g.compose.rack(w / h, opts), "night", mode, undefined, 1200)
+        `crop/class-${cat}-${ratio}-${mode}.svg`,
+        objectSvg(
+          g.compose.crop(g.objects.categoryObject[cat], w / h, opts),
+          { category: cat },
+          mode,
+          undefined,
+          1200
+        )
       )
   }
-  for (const [cat, focus] of Object.entries(g.objects.categoryObject))
-    rackSvg(`class-${cat}`, "16x9", {
-      layout: "orbit",
-      focus,
-      ids: g.objects.categoryRelated[cat],
-    })
+  for (const cat of Object.keys(g.objects.categoryObject)) {
+    cropSvg(cat, "16x9", { scale: 0.5, x: 0.48, y: 0.18 })
+    cropSvg(cat, "2x1", { scale: 0.46, x: 0.5, y: 0.16 })
+  }
 
   console.log(`Wrote ${count} SVG files to ${out}`)
 }

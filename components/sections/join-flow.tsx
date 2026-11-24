@@ -20,7 +20,7 @@ import {
   OverlayTitle,
   OverlayTrigger,
 } from "@/components/ui/overlay"
-import { RadioGroupBox } from "@/components/ui/radio-group-box"
+import { RadioCard, RadioGroupBox } from "@/components/ui/radio-group-box"
 import type { ClientCatalog } from "@/lib/catalog"
 import { submitJoin } from "@/lib/forms/actions"
 import { JOIN_NETWORK_ERROR } from "@/lib/forms/messages"
@@ -612,19 +612,17 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   </p>
                 </div>
                 <RadioGroupBox
+                  value={j.plan}
+                  onValueChange={(plan) => setJ((q) => ({ ...q, plan }))}
                   aria-label="Plan"
                   className="flex flex-col gap-s"
                 >
                   {plans.map((p) => {
                     const on = j.plan === p.slug
                     return (
-                      // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                      <button
+                      <RadioCard
                         key={p.slug}
-                        type="button"
-                        role="radio"
-                        aria-checked={on}
-                        onClick={() => setJ((q) => ({ ...q, plan: p.slug }))}
+                        value={p.slug}
                         className={cn(
                           "relative grid grid-cols-[1fr_auto] gap-x-m gap-y-xxs hairline",
                           "corner-m p-m",
@@ -657,11 +655,11 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             />
                           ) : null}
                         </span>
-                        {/* Name, price and who it is for. "Compare every detail" holds the feature list (REDESIGN.md goal 4). */}
+                        {/* Name, price and who it is for. "Compare every detail" holds the feature list. */}
                         <span className="col-span-2 text-body-m text-muted-foreground">
                           {p.bestFor}
                         </span>
-                      </button>
+                      </RadioCard>
                     )
                   })}
                 </RadioGroupBox>
@@ -704,19 +702,17 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   </p>
                 </div>
                 <RadioGroupBox
+                  value={club}
+                  onValueChange={(club) => setJ((q) => ({ ...q, club }))}
                   aria-label="Home club"
                   className="flex flex-col gap-s"
                 >
                   {clubs.map((c) => {
                     const on = club === c.slug
                     return (
-                      // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                      <button
+                      <RadioCard
                         key={c.slug}
-                        type="button"
-                        role="radio"
-                        aria-checked={on}
-                        onClick={() => setJ((q) => ({ ...q, club: c.slug }))}
+                        value={c.slug}
                         className={cn(
                           "flex items-center gap-m hairline",
                           "corner-m p-s",
@@ -752,7 +748,7 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                             aria-hidden="true"
                           />
                         ) : null}
-                      </button>
+                      </RadioCard>
                     )
                   })}
                 </RadioGroupBox>
@@ -869,24 +865,22 @@ export function JoinFlow({ step }: { step: (typeof STEPS)[number] }) {
                   </p>
                 </div>
                 <RadioGroupBox
+                  value={j.mode}
+                  onValueChange={(mode) => setJ((q) => ({ ...q, mode }))}
                   aria-label="Who is joining"
                   className="flex w-fit corner-s hairline ring-border-strong"
                 >
                   {(["solo", "family"] as const).map((m) => (
-                    // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                    <button
+                    <RadioCard
                       key={m}
-                      type="button"
-                      role="radio"
-                      aria-checked={j.mode === m}
-                      onClick={() => setJ((q) => ({ ...q, mode: m }))}
+                      value={m}
                       className={cn(
                         "min-h-11 px-l text-body-s first:corner-l-s last:corner-r-s font-heavy",
                         j.mode === m && "bg-night text-night-foreground"
                       )}
                     >
                       {m === "solo" ? "Just me" : "Add family"}
-                    </button>
+                    </RadioCard>
                   ))}
                 </RadioGroupBox>
                 {j.mode === "family" ? (

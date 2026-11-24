@@ -26,7 +26,7 @@ import {
   OverlayTitle,
   OverlayTrigger,
 } from "@/components/ui/overlay"
-import { RadioGroupBox } from "@/components/ui/radio-group-box"
+import { RadioCard, RadioGroupBox } from "@/components/ui/radio-group-box"
 import { distancesFrom } from "@/lib/geo"
 import { clubStatus } from "@/lib/time"
 import type { ClubSlug } from "@/lib/types"
@@ -254,21 +254,22 @@ export function ClubSwitcher({
           <FacilityLegend keys={keys} className="mt-l" />
           <fieldset className="mt-s">
             <legend className="sr-only">Clubs</legend>
-            <RadioGroupBox className="flex flex-col gap-xs" aria-label="Clubs">
+            <RadioGroupBox
+              value={selected}
+              onValueChange={setPick}
+              className="flex flex-col gap-xs"
+              aria-label="Clubs"
+            >
               {list.map((c) => {
                 const on = selected === c.slug
                 return (
-                  // biome-ignore lint/a11y/useSemanticElements: button radiogroup is a keyboard-tested pattern from the approved a11y audit (axe clean); native radios would restructure the component
-                  <button
+                  <RadioCard
                     key={c.slug}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
+                    value={c.slug}
                     // The name is the club and its distance. The status, busyness and amenities are a description,
                     // so a screen reader says the name first and keeps the rest for after.
                     aria-labelledby={`pick-${c.slug}-name`}
                     aria-describedby={`pick-${c.slug}-more`}
-                    onClick={() => setPick(c.slug)}
                     className={cn(
                       "relative flex min-h-16 w-full flex-col gap-xxs hairline",
                       "corner-m px-m py-s",
@@ -315,7 +316,7 @@ export function ClubSwitcher({
                         className="mt-xs"
                       />
                     </span>
-                  </button>
+                  </RadioCard>
                 )
               })}
             </RadioGroupBox>
